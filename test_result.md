@@ -107,51 +107,63 @@ user_problem_statement: "Build a mobile iOS native app that shows and compares a
 backend:
   - task: "GET /api/countries - Fetch list of available countries"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Implemented endpoint to fetch countries from Nager.Date API with MongoDB caching"
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - Retrieved 120 countries successfully from Nager.Date API. Response includes proper structure with countryCode and name fields. Caching working correctly. US and GB countries available for testing."
 
   - task: "GET /api/holidays/{country_code}/{year} - Get holidays for a country"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Implemented endpoint to fetch holidays with MongoDB caching"
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - Successfully tested US/2025 (16 holidays) and GB/2025 (13 holidays). Proper response structure with required fields (date, name, localName, countryCode). Year validation working. MongoDB caching operational."
 
   - task: "POST /api/compare - Compare holidays between multiple countries"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Implemented comparison endpoint with overlap detection"
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - Compare endpoint working perfectly. Tested US vs GB 2025: Found 4 overlapping holidays correctly (New Year's Day, Good Friday, Memorial Day/Spring Bank Holiday). Response structure valid with proper overlap detection logic. Edge cases handled: single country (400), too many countries (400), invalid countries (200 graceful)."
 
   - task: "Health check endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "low"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Basic health check endpoint"
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - Health endpoint returns proper status and timestamp. GET /api/health responding correctly."
 
 frontend:
   - task: "Main screen with country selector and year picker"

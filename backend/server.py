@@ -63,11 +63,23 @@ class HolidayWithCountries(BaseModel):
     isOverlap: bool
     countries: List[str]
 
+class LongWeekendOpportunity(BaseModel):
+    startDate: str
+    endDate: str
+    totalDays: int
+    holidayDays: int
+    weekendDays: int
+    type: str  # "long_weekend", "consecutive", "bridge"
+    description: str
+    holidays: List[Dict[str, Any]]
+    countries: List[str]
+
 class CompareResponse(BaseModel):
     year: int
     countries: List[Country]
     holidays: List[HolidayWithCountries]
     totalOverlaps: int
+    longWeekends: List[LongWeekendOpportunity] = []
 
 class SavedComparison(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))

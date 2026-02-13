@@ -196,28 +196,32 @@ export default function SettingsScreen() {
           </View>
           
           <Text style={styles.modalParagraph}>
-            Sync Holidays is your go-to app for comparing public holidays across different countries and 
-            discovering the best opportunities to maximize your time off. Whether you're planning international 
-            travel, coordinating with global teams, or looking for the perfect long weekend getaway, we've got you covered.
+            Sync Holidays is your go-to app for exploring public holidays and discovering the best opportunities 
+            to maximize your time off. Whether you're planning a solo vacation in your home country, coordinating 
+            international travel, or syncing schedules with global teams, we've got you covered.
           </Text>
           
           <Text style={styles.modalSubheading}>Key Features</Text>
           <View style={styles.featureList}>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Compare holidays across 100+ countries</Text>
+              <Text style={styles.featureText}>View holidays for 1-5 countries at once</Text>
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Identify overlapping holiday dates</Text>
+              <Text style={styles.featureText}>100+ countries supported worldwide</Text>
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Detect long weekend opportunities (3-4+ days)</Text>
+              <Text style={styles.featureText}>Smart long weekend detection (3-4+ days)</Text>
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Find bridge day opportunities to maximize time off</Text>
+              <Text style={styles.featureText}>Bridge day suggestions to maximize time off</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
+              <Text style={styles.featureText}>Identify overlapping holidays across countries</Text>
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
@@ -225,11 +229,11 @@ export default function SettingsScreen() {
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>View holidays for multiple years</Text>
+              <Text style={styles.featureText}>Plan ahead with multi-year support</Text>
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Beautiful, easy-to-use interface</Text>
+              <Text style={styles.featureText}>Beautiful, intuitive interface</Text>
             </View>
           </View>
           

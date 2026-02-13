@@ -335,7 +335,7 @@ export default function HomeScreen() {
           ) : (
             <>
               <Ionicons name="git-compare-outline" size={20} color="#FFF" />
-              <Text style={styles.compareButtonText}>Compare Holidays</Text>
+              <Text style={styles.compareButtonText}>Sync Holidays</Text>
             </>
           )}
         </TouchableOpacity>

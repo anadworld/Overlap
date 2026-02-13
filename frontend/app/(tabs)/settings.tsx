@@ -111,7 +111,7 @@ export default function SettingsScreen() {
           <View style={styles.sectionContent}>
             <SettingsItem
               icon="information-circle-outline"
-              title="About Holiday Compare"
+              title="About Sync Holidays"
               subtitle="Learn more about the app"
               onPress={() => setShowAboutModal(true)}
             />

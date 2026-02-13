@@ -49,11 +49,24 @@ interface HolidayWithCountries {
   countries: string[];
 }
 
+interface LongWeekendOpportunity {
+  startDate: string;
+  endDate: string;
+  totalDays: number;
+  holidayDays: number;
+  weekendDays: number;
+  type: string;
+  description: string;
+  holidays: HolidayDetail[];
+  countries: string[];
+}
+
 interface CompareResponse {
   year: number;
   countries: Country[];
   holidays: HolidayWithCountries[];
   totalOverlaps: number;
+  longWeekends: LongWeekendOpportunity[];
 }
 
 // Pastel color palette for countries

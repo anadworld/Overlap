@@ -425,8 +425,37 @@ export default function HomeScreen() {
               <Text style={[styles.statValue, { color: '#8FBC8F' }]}>
                 {comparisonResult.totalOverlaps}
               </Text>
-              <Text style={styles.statLabel}>Overlapping Dates</Text>
+              <Text style={styles.statLabel}>Overlaps</Text>
             </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={[styles.statValue, { color: '#D97706' }]}>
+                {comparisonResult.longWeekends?.length || 0}
+              </Text>
+              <Text style={styles.statLabel}>Long Weekends</Text>
+            </View>
+          </View>
+
+          {/* Tab Switcher */}
+          <View style={styles.tabSwitcher}>
+            <TouchableOpacity
+              style={[styles.tabButton, activeTab === 'holidays' && styles.tabButtonActive]}
+              onPress={() => setActiveTab('holidays')}
+            >
+              <Ionicons name="calendar-outline" size={18} color={activeTab === 'holidays' ? '#7C9CBF' : '#9CA3AF'} />
+              <Text style={[styles.tabButtonText, activeTab === 'holidays' && styles.tabButtonTextActive]}>
+                All Holidays
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.tabButton, activeTab === 'longweekends' && styles.tabButtonActive]}
+              onPress={() => setActiveTab('longweekends')}
+            >
+              <Ionicons name="sunny-outline" size={18} color={activeTab === 'longweekends' ? '#D97706' : '#9CA3AF'} />
+              <Text style={[styles.tabButtonText, activeTab === 'longweekends' && styles.tabButtonTextActive]}>
+                Long Weekends
+              </Text>
+            </TouchableOpacity>
           </View>
 
           {/* Country Legend */}

@@ -60,7 +60,7 @@ export default function SettingsScreen() {
   };
 
   const handleContactSupport = () => {
-    Linking.openURL('mailto:holidaysync@anadworld.com?subject=Sync Holidays Support');
+    Linking.openURL('mailto:syncholidays@anadworld.com?subject=Sync Holidays Support');
   };
 
   const handleShareApp = async () => {
@@ -317,7 +317,7 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>9. Contact Information</Text>
           <Text style={styles.modalParagraph}>
-            For questions about these Terms, please contact us at: holidaysync@anadworld.com
+            For questions about these Terms, please contact us at: syncholidays@anadworld.com
           </Text>
         </View>
       ))}
@@ -392,7 +392,7 @@ export default function SettingsScreen() {
           <Text style={styles.modalSubheading}>9. Contact Us</Text>
           <Text style={styles.modalParagraph}>
             If you have questions or concerns about this Privacy Policy, please contact us at:
-            {"\n"}Email: holidaysync@anadworld.com
+            {"\n"}Email: syncholidays@anadworld.com
           </Text>
         </View>
       ))}

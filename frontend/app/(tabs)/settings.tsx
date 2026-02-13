@@ -60,12 +60,12 @@ export default function SettingsScreen() {
   };
 
   const handleContactSupport = () => {
-    Linking.openURL('mailto:syncholidays@anadworld.com?subject=Sync Holidays Support');
+    Linking.openURL('mailto:overlap@anadworld.com?subject=Overlap Holiday Calendar Support');
   };
 
   const handleShareApp = async () => {
     // This would typically use expo-sharing or react-native-share
-    const message = 'Check out Sync Holidays - Compare public holidays across countries! https://syncholidays.app';
+    const message = 'Check out Overlap – Holiday Calendar - Compare public holidays across countries! https://overlap.anadworld.com';
     try {
       await Linking.openURL(`sms:&body=${encodeURIComponent(message)}`);
     } catch (error) {
@@ -111,7 +111,7 @@ export default function SettingsScreen() {
           <View style={styles.sectionContent}>
             <SettingsItem
               icon="information-circle-outline"
-              title="About Sync Holidays"
+              title="About Overlap"
               subtitle="Learn more about the app"
               onPress={() => setShowAboutModal(true)}
             />

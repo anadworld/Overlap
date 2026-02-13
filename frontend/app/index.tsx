@@ -265,8 +265,8 @@ export default function HolidayCompareApp() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <StatusBar barStyle="dark-content" backgroundColor="#F8FAFC" />
 
       {/* Header */}
       <View style={styles.header}>

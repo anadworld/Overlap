@@ -56,13 +56,21 @@ interface CompareResponse {
   totalOverlaps: number;
 }
 
-// Color palette for countries
+// Pastel color palette for countries
 const COUNTRY_COLORS = [
-  '#3B82F6', // Blue
-  '#10B981', // Green
-  '#F59E0B', // Amber
-  '#EF4444', // Red
-  '#8B5CF6', // Purple
+  '#7C9CBF', // Pastel blue
+  '#8FBC8F', // Pastel green
+  '#DDA0DD', // Pastel purple
+  '#F4A460', // Pastel orange
+  '#87CEEB', // Sky blue
+];
+
+const COUNTRY_BG_COLORS = [
+  '#E8F0F8', // Light blue bg
+  '#E8F5E8', // Light green bg
+  '#F5E8F5', // Light purple bg
+  '#FDF5E6', // Light orange bg
+  '#E8F8F8', // Light sky bg
 ];
 
 export default function HolidayCompareApp() {
@@ -78,6 +86,12 @@ export default function HolidayCompareApp() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showOnlyOverlaps, setShowOnlyOverlaps] = useState(false);
+
+  // Create a map for country names
+  const countryNameMap = comparisonResult?.countries.reduce((acc, c) => {
+    acc[c.countryCode] = c.name;
+    return acc;
+  }, {} as Record<string, string>) || {};
 
   // Fetch available countries
   const fetchCountries = useCallback(async () => {
@@ -158,7 +172,16 @@ export default function HolidayCompareApp() {
   // Get color for country
   const getCountryColor = (countryCode: string): string => {
     const index = selectedCountries.findIndex((c) => c.countryCode === countryCode);
+    if (index === -1) {
+      const comparisonIndex = comparisonResult?.countries.findIndex((c) => c.countryCode === countryCode) || 0;
+      return COUNTRY_COLORS[comparisonIndex % COUNTRY_COLORS.length];
+    }
     return COUNTRY_COLORS[index % COUNTRY_COLORS.length];
+  };
+
+  const getCountryBgColor = (countryCode: string): string => {
+    const index = comparisonResult?.countries.findIndex((c) => c.countryCode === countryCode) || 0;
+    return COUNTRY_BG_COLORS[index % COUNTRY_BG_COLORS.length];
   };
 
   // Format date
@@ -212,7 +235,13 @@ export default function HolidayCompareApp() {
         </View>
 
         {holiday.holidays.map((h, index) => (
-          <View key={`${h.countryCode}-${index}`} style={styles.holidayDetail}>
+          <View 
+            key={`${h.countryCode}-${index}`} 
+            style={[
+              styles.holidayDetail,
+              { backgroundColor: getCountryBgColor(h.countryCode) }
+            ]}
+          >
             <View
               style={[
                 styles.countryIndicator,
@@ -223,6 +252,7 @@ export default function HolidayCompareApp() {
               {getCountryFlag(h.countryCode)}
             </Text>
             <View style={styles.holidayInfo}>
+              <Text style={styles.countryName}>{countryNameMap[h.countryCode] || h.countryCode}</Text>
               <Text style={styles.holidayName}>{h.name}</Text>
               {h.localName !== h.name && (
                 <Text style={styles.localName}>{h.localName}</Text>
@@ -236,7 +266,7 @@ export default function HolidayCompareApp() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Header */}
       <View style={styles.header}>
@@ -255,12 +285,12 @@ export default function HolidayCompareApp() {
           disabled={isLoadingCountries}
         >
           <View style={styles.selectorContent}>
-            <Ionicons name="globe-outline" size={20} color="#3B82F6" />
+            <Ionicons name="globe-outline" size={20} color="#7C9CBF" />
             <Text style={styles.selectorLabel}>Countries</Text>
           </View>
           <View style={styles.selectorValue}>
             {isLoadingCountries ? (
-              <ActivityIndicator size="small" color="#3B82F6" />
+              <ActivityIndicator size="small" color="#7C9CBF" />
             ) : selectedCountries.length > 0 ? (
               <View style={styles.selectedFlags}>
                 {selectedCountries.map((c) => (
@@ -272,7 +302,7 @@ export default function HolidayCompareApp() {
             ) : (
               <Text style={styles.placeholderText}>Select 2-5 countries</Text>
             )}
-            <Ionicons name="chevron-forward" size={20} color="#6B7280" />
+            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
           </View>
         </TouchableOpacity>
 
@@ -282,12 +312,12 @@ export default function HolidayCompareApp() {
           onPress={() => setShowYearPicker(true)}
         >
           <View style={styles.selectorContent}>
-            <Ionicons name="calendar-outline" size={20} color="#3B82F6" />
+            <Ionicons name="calendar-outline" size={20} color="#7C9CBF" />
             <Text style={styles.selectorLabel}>Year</Text>
           </View>
           <View style={styles.selectorValue}>
             <Text style={styles.selectedValue}>{selectedYear}</Text>
-            <Ionicons name="chevron-forward" size={20} color="#6B7280" />
+            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
           </View>
         </TouchableOpacity>
 
@@ -314,7 +344,7 @@ export default function HolidayCompareApp() {
       {/* Error Message */}
       {error && (
         <View style={styles.errorContainer}>
-          <Ionicons name="alert-circle" size={20} color="#EF4444" />
+          <Ionicons name="alert-circle" size={20} color="#E57373" />
           <Text style={styles.errorText}>{error}</Text>
         </View>
       )}
@@ -324,7 +354,7 @@ export default function HolidayCompareApp() {
         <ScrollView
           style={styles.resultsContainer}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#3B82F6" />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7C9CBF" />
           }
         >
           {/* Stats Card */}
@@ -335,7 +365,7 @@ export default function HolidayCompareApp() {
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: '#10B981' }]}>
+              <Text style={[styles.statValue, { color: '#8FBC8F' }]}>
                 {comparisonResult.totalOverlaps}
               </Text>
               <Text style={styles.statLabel}>Overlapping Dates</Text>
@@ -345,7 +375,7 @@ export default function HolidayCompareApp() {
           {/* Country Legend */}
           <View style={styles.legendContainer}>
             {comparisonResult.countries.map((country, index) => (
-              <View key={country.countryCode} style={styles.legendItem}>
+              <View key={country.countryCode} style={[styles.legendItem, { backgroundColor: COUNTRY_BG_COLORS[index % COUNTRY_BG_COLORS.length] }]}>
                 <View
                   style={[
                     styles.legendColor,
@@ -370,7 +400,7 @@ export default function HolidayCompareApp() {
             <Ionicons
               name={showOnlyOverlaps ? 'checkbox' : 'square-outline'}
               size={20}
-              color="#3B82F6"
+              color="#7C9CBF"
             />
             <Text style={styles.filterToggleText}>Show only overlapping holidays</Text>
           </TouchableOpacity>
@@ -399,7 +429,7 @@ export default function HolidayCompareApp() {
       {/* Empty State */}
       {!comparisonResult && !isLoading && (
         <View style={styles.emptyState}>
-          <Ionicons name="calendar" size={64} color="#4B5563" />
+          <Ionicons name="calendar" size={64} color="#B8C5D3" />
           <Text style={styles.emptyStateTitle}>Compare Public Holidays</Text>
           <Text style={styles.emptyStateText}>
             Select 2-5 countries and a year to see all public holidays and find overlapping dates.
@@ -420,7 +450,7 @@ export default function HolidayCompareApp() {
               style={styles.modalCloseButton}
               onPress={() => setShowCountryPicker(false)}
             >
-              <Ionicons name="close" size={24} color="#FFF" />
+              <Ionicons name="close" size={24} color="#4A5568" />
             </TouchableOpacity>
           </View>
 
@@ -437,18 +467,18 @@ export default function HolidayCompareApp() {
 
           {/* Search */}
           <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color="#6B7280" />
+            <Ionicons name="search" size={20} color="#9CA3AF" />
             <TextInput
               style={styles.searchInput}
               placeholder="Search countries..."
-              placeholderTextColor="#6B7280"
+              placeholderTextColor="#9CA3AF"
               value={searchQuery}
               onChangeText={setSearchQuery}
               autoCorrect={false}
             />
             {searchQuery.length > 0 && (
               <TouchableOpacity onPress={() => setSearchQuery('')}>
-                <Ionicons name="close-circle" size={20} color="#6B7280" />
+                <Ionicons name="close-circle" size={20} color="#9CA3AF" />
               </TouchableOpacity>
             )}
           </View>
@@ -477,7 +507,7 @@ export default function HolidayCompareApp() {
                     <Text style={styles.countryItemCode}>{item.countryCode}</Text>
                   </View>
                   {isSelected && (
-                    <Ionicons name="checkmark-circle" size={24} color="#3B82F6" />
+                    <Ionicons name="checkmark-circle" size={24} color="#7C9CBF" />
                   )}
                 </TouchableOpacity>
               );
@@ -527,7 +557,7 @@ export default function HolidayCompareApp() {
                   {year}
                 </Text>
                 {year === selectedYear && (
-                  <Ionicons name="checkmark" size={20} color="#3B82F6" />
+                  <Ionicons name="checkmark" size={20} color="#7C9CBF" />
                 )}
               </TouchableOpacity>
             ))}
@@ -547,21 +577,22 @@ export default function HolidayCompareApp() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#F8FAFC',
   },
   header: {
     paddingHorizontal: 20,
     paddingTop: Platform.OS === 'android' ? 40 : 10,
     paddingBottom: 16,
+    backgroundColor: '#F8FAFC',
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: '#2D3748',
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: '#718096',
     marginTop: 4,
   },
   selectionArea: {
@@ -572,10 +603,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   selectorContent: {
     flexDirection: 'row',
@@ -584,7 +622,7 @@ const styles = StyleSheet.create({
   },
   selectorLabel: {
     fontSize: 16,
-    color: '#FFF',
+    color: '#4A5568',
     fontWeight: '500',
   },
   selectorValue: {
@@ -601,24 +639,30 @@ const styles = StyleSheet.create({
   },
   placeholderText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: '#A0AEC0',
   },
   selectedValue: {
     fontSize: 16,
-    color: '#FFF',
+    color: '#4A5568',
     fontWeight: '500',
   },
   compareButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#7C9CBF',
     borderRadius: 12,
     padding: 16,
     gap: 8,
+    shadowColor: '#7C9CBF',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
   },
   compareButtonDisabled: {
-    backgroundColor: '#374151',
+    backgroundColor: '#CBD5E0',
+    shadowOpacity: 0,
   },
   compareButtonText: {
     fontSize: 16,
@@ -628,14 +672,16 @@ const styles = StyleSheet.create({
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#7F1D1D',
+    backgroundColor: '#FEE2E2',
     marginHorizontal: 16,
     padding: 12,
     borderRadius: 8,
     gap: 8,
+    borderWidth: 1,
+    borderColor: '#FECACA',
   },
   errorText: {
-    color: '#FCA5A5',
+    color: '#DC2626',
     fontSize: 14,
     flex: 1,
   },
@@ -645,28 +691,36 @@ const styles = StyleSheet.create({
   },
   statsCard: {
     flexDirection: 'row',
-    backgroundColor: '#1E293B',
-    borderRadius: 12,
-    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   statItem: {
     flex: 1,
     alignItems: 'center',
   },
   statValue: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
-    color: '#3B82F6',
+    color: '#7C9CBF',
   },
   statLabel: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: '#718096',
     marginTop: 4,
+    fontWeight: '500',
   },
   statDivider: {
     width: 1,
-    backgroundColor: '#374151',
+    backgroundColor: '#E2E8F0',
     marginHorizontal: 16,
   },
   legendContainer: {
@@ -678,34 +732,37 @@ const styles = StyleSheet.create({
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
     borderRadius: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
     gap: 6,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   legendColor: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
   legendFlag: {
-    fontSize: 14,
+    fontSize: 16,
   },
   legendText: {
-    fontSize: 12,
-    color: '#E5E7EB',
-    maxWidth: 80,
+    fontSize: 13,
+    color: '#4A5568',
+    fontWeight: '500',
+    maxWidth: 100,
   },
   filterToggle: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     marginBottom: 16,
+    paddingVertical: 8,
   },
   filterToggleText: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: '#718096',
   },
   monthSection: {
     marginBottom: 20,
@@ -713,18 +770,26 @@ const styles = StyleSheet.create({
   monthTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#FFF',
+    color: '#2D3748',
     marginBottom: 12,
   },
   holidayCard: {
-    backgroundColor: '#1E293B',
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
     padding: 16,
-    marginBottom: 10,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   overlapCard: {
-    borderWidth: 1,
-    borderColor: '#10B981',
+    borderWidth: 2,
+    borderColor: '#8FBC8F',
+    backgroundColor: '#F0FFF4',
   },
   holidayHeader: {
     flexDirection: 'row',
@@ -735,14 +800,14 @@ const styles = StyleSheet.create({
   holidayDate: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#9CA3AF',
+    color: '#718096',
   },
   overlapBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#10B981',
+    backgroundColor: '#8FBC8F',
     paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     borderRadius: 12,
     gap: 4,
   },
@@ -753,30 +818,42 @@ const styles = StyleSheet.create({
   },
   holidayDetail: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
+    alignItems: 'flex-start',
+    marginBottom: 10,
+    padding: 12,
+    borderRadius: 10,
     gap: 10,
   },
   countryIndicator: {
     width: 4,
-    height: 32,
+    height: '100%',
+    minHeight: 40,
     borderRadius: 2,
   },
   countryFlag: {
-    fontSize: 20,
+    fontSize: 24,
   },
   holidayInfo: {
     flex: 1,
   },
+  countryName: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#7C9CBF',
+    marginBottom: 2,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
   holidayName: {
     fontSize: 15,
-    fontWeight: '500',
-    color: '#FFF',
+    fontWeight: '600',
+    color: '#2D3748',
   },
   localName: {
     fontSize: 12,
-    color: '#6B7280',
+    color: '#718096',
     marginTop: 2,
+    fontStyle: 'italic',
   },
   bottomPadding: {
     height: 40,
@@ -790,19 +867,19 @@ const styles = StyleSheet.create({
   emptyStateTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#FFF',
+    color: '#4A5568',
     marginTop: 16,
   },
   emptyStateText: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: '#718096',
     textAlign: 'center',
     marginTop: 8,
     lineHeight: 20,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#F8FAFC',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -810,12 +887,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B',
+    borderBottomColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#FFF',
+    color: '#2D3748',
   },
   modalCloseButton: {
     padding: 4,
@@ -826,32 +904,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
+    backgroundColor: '#FFFFFF',
   },
   modalSubtitle: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: '#718096',
   },
   clearButton: {
     fontSize: 14,
-    color: '#3B82F6',
+    color: '#7C9CBF',
+    fontWeight: '500',
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
+    backgroundColor: '#FFFFFF',
     marginHorizontal: 16,
+    marginVertical: 12,
     borderRadius: 10,
     paddingHorizontal: 12,
     gap: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   searchInput: {
     flex: 1,
     paddingVertical: 12,
     fontSize: 16,
-    color: '#FFF',
+    color: '#2D3748',
   },
   countryList: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
     marginTop: 8,
   },
   countryItem: {
@@ -859,10 +943,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B',
+    borderBottomColor: '#F1F5F9',
+    backgroundColor: '#FFFFFF',
   },
   countryItemSelected: {
-    backgroundColor: '#1E3A5F',
+    backgroundColor: '#F0F9FF',
   },
   countryItemFlag: {
     fontSize: 28,
@@ -874,20 +959,21 @@ const styles = StyleSheet.create({
   countryItemName: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#FFF',
+    color: '#2D3748',
   },
   countryItemCode: {
     fontSize: 12,
-    color: '#6B7280',
+    color: '#A0AEC0',
     marginTop: 2,
   },
   modalFooter: {
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#1E293B',
+    borderTopColor: '#E2E8F0',
+    backgroundColor: '#FFFFFF',
   },
   doneButton: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#7C9CBF',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -899,21 +985,26 @@ const styles = StyleSheet.create({
   },
   yearPickerOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   yearPickerContainer: {
-    backgroundColor: '#1E293B',
-    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
     padding: 20,
     width: width * 0.8,
     maxWidth: 300,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
   yearPickerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#FFF',
+    color: '#2D3748',
     textAlign: 'center',
     marginBottom: 16,
   },
@@ -926,14 +1017,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   yearOptionSelected: {
-    backgroundColor: '#0F172A',
+    backgroundColor: '#F0F9FF',
   },
   yearOptionText: {
     fontSize: 16,
-    color: '#9CA3AF',
+    color: '#718096',
   },
   yearOptionTextSelected: {
-    color: '#3B82F6',
+    color: '#7C9CBF',
     fontWeight: '600',
   },
   yearPickerCancel: {
@@ -941,10 +1032,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: 'center',
     borderTopWidth: 1,
-    borderTopColor: '#374151',
+    borderTopColor: '#E2E8F0',
   },
   yearPickerCancelText: {
     fontSize: 16,
-    color: '#6B7280',
+    color: '#A0AEC0',
   },
 });

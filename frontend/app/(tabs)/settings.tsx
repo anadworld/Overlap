@@ -178,7 +178,7 @@ export default function SettingsScreen() {
         <View style={styles.versionContainer}>
           <Text style={styles.versionText}>Sync Holidays</Text>
           <Text style={styles.versionNumber}>Version {APP_VERSION} ({BUILD_NUMBER})</Text>
-          <Text style={styles.copyrightText}> 2025 Holiday Compare. All rights reserved.</Text>
+          <Text style={styles.copyrightText}> 2025 Sync Holidays. All rights reserved.</Text>
         </View>
 
         <View style={styles.bottomPadding} />

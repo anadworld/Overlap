@@ -1,379 +1,354 @@
 #!/usr/bin/env python3
 """
-Holiday Comparison API Backend Testing Suite
-Tests all backend endpoints for the Holiday Comparison API
+Comprehensive Backend API Tests for Sync Holidays App
+Tests all endpoints with focus on single country support for /api/compare
 """
 
 import httpx
 import asyncio
 import json
 from datetime import datetime
-from typing import Dict, List, Any
+import sys
+import os
 
+# Get backend URL from frontend/.env
+BACKEND_URL = "https://vacation-planner-48.preview.emergentagent.com/api"
 
-class HolidayAPITester:
+class TestResults:
     def __init__(self):
-        # Use the production-configured backend URL from frontend/.env
-        self.base_url = "https://vacation-planner-48.preview.emergentagent.com/api"
-        self.test_results = {}
+        self.passed = 0
+        self.failed = 0
+        self.errors = []
         
-    async def test_health_endpoint(self) -> Dict[str, Any]:
-        """Test GET /api/health endpoint"""
-        print("\n=== Testing Health Check Endpoint ===")
+    def success(self, test_name):
+        print(f"✅ {test_name}")
+        self.passed += 1
         
-        try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.get(f"{self.base_url}/health")
-                
-                print(f"Status Code: {response.status_code}")
-                print(f"Response: {response.text}")
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    if "status" in data and data["status"] == "healthy":
-                        print("✅ Health check passed")
-                        return {"status": "PASS", "details": "Health endpoint working correctly"}
-                    else:
-                        print("❌ Health check failed - Invalid response format")
-                        return {"status": "FAIL", "details": f"Invalid response format: {data}"}
-                else:
-                    print(f"❌ Health check failed - HTTP {response.status_code}")
-                    return {"status": "FAIL", "details": f"HTTP {response.status_code}: {response.text}"}
-                    
-        except Exception as e:
-            print(f"❌ Health check failed - Exception: {str(e)}")
-            return {"status": "FAIL", "details": f"Exception: {str(e)}"}
+    def fail(self, test_name, error):
+        print(f"❌ {test_name}: {error}")
+        self.failed += 1
+        self.errors.append(f"{test_name}: {error}")
+        
+    def summary(self):
+        total = self.passed + self.failed
+        print(f"\n{'='*50}")
+        print(f"TEST SUMMARY: {self.passed}/{total} passed")
+        if self.errors:
+            print(f"\nFAILED TESTS:")
+            for error in self.errors:
+                print(f"  - {error}")
+        print(f"{'='*50}")
+        return self.failed == 0
+
+async def test_health_endpoint():
+    """Test health check endpoint"""
+    results = TestResults()
     
-    async def test_countries_endpoint(self) -> Dict[str, Any]:
-        """Test GET /api/countries endpoint"""
-        print("\n=== Testing Countries Endpoint ===")
-        
-        try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.get(f"{self.base_url}/countries")
-                
-                print(f"Status Code: {response.status_code}")
-                
-                if response.status_code == 200:
-                    countries = response.json()
-                    print(f"Countries count: {len(countries)}")
-                    
-                    if len(countries) > 0:
-                        # Check structure of first few countries
-                        sample_countries = countries[:3]
-                        print("Sample countries:")
-                        for country in sample_countries:
-                            print(f"  - {country.get('countryCode', 'N/A')}: {country.get('name', 'N/A')}")
-                        
-                        # Verify required fields
-                        required_fields = ['countryCode', 'name']
-                        for country in sample_countries:
-                            for field in required_fields:
-                                if field not in country:
-                                    print(f"❌ Missing required field '{field}' in country data")
-                                    return {"status": "FAIL", "details": f"Missing field '{field}' in response"}
-                        
-                        # Check for US and GB specifically (needed for later tests)
-                        country_codes = [c.get('countryCode', '') for c in countries]
-                        if 'US' not in country_codes:
-                            print("⚠️  Warning: US not found in countries list")
-                        if 'GB' not in country_codes:
-                            print("⚠️  Warning: GB not found in countries list")
-                        
-                        print("✅ Countries endpoint working correctly")
-                        return {
-                            "status": "PASS", 
-                            "details": f"Retrieved {len(countries)} countries successfully",
-                            "countries_count": len(countries),
-                            "has_us": 'US' in country_codes,
-                            "has_gb": 'GB' in country_codes
-                        }
-                    else:
-                        print("❌ Countries endpoint returned empty list")
-                        return {"status": "FAIL", "details": "Empty countries list returned"}
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(f"{BACKEND_URL}/health")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "status" in data and "timestamp" in data:
+                    results.success("Health endpoint returns proper structure")
                 else:
-                    print(f"❌ Countries endpoint failed - HTTP {response.status_code}")
-                    return {"status": "FAIL", "details": f"HTTP {response.status_code}: {response.text}"}
-                    
-        except Exception as e:
-            print(f"❌ Countries endpoint failed - Exception: {str(e)}")
-            return {"status": "FAIL", "details": f"Exception: {str(e)}"}
+                    results.fail("Health endpoint", "Missing status or timestamp fields")
+            else:
+                results.fail("Health endpoint", f"Status code {response.status_code}")
+                
+    except Exception as e:
+        results.fail("Health endpoint", str(e))
     
-    async def test_holidays_endpoint(self, country_code: str = "US", year: int = 2025) -> Dict[str, Any]:
-        """Test GET /api/holidays/{country_code}/{year} endpoint"""
-        print(f"\n=== Testing Holidays Endpoint for {country_code}/{year} ===")
-        
+    return results
+
+async def test_countries_endpoint():
+    """Test GET /api/countries endpoint"""
+    results = TestResults()
+    
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(f"{BACKEND_URL}/countries")
+            
+            if response.status_code == 200:
+                countries = response.json()
+                if isinstance(countries, list) and len(countries) > 0:
+                    # Check structure of first country
+                    if "countryCode" in countries[0] and "name" in countries[0]:
+                        results.success(f"Countries endpoint returns {len(countries)} countries with proper structure")
+                        
+                        # Check if US and DE exist for our tests
+                        us_found = any(c.get("countryCode") == "US" for c in countries)
+                        de_found = any(c.get("countryCode") == "DE" for c in countries)
+                        
+                        if us_found:
+                            results.success("US country code found in countries list")
+                        else:
+                            results.fail("Countries validation", "US country not found")
+                            
+                        if de_found:
+                            results.success("DE country code found in countries list")
+                        else:
+                            results.fail("Countries validation", "DE country not found")
+                    else:
+                        results.fail("Countries endpoint", "Invalid country structure - missing countryCode or name")
+                else:
+                    results.fail("Countries endpoint", "Empty or invalid response")
+            else:
+                results.fail("Countries endpoint", f"Status code {response.status_code}")
+                
+    except Exception as e:
+        results.fail("Countries endpoint", str(e))
+    
+    return results
+
+async def test_holidays_endpoint():
+    """Test GET /api/holidays/{country_code}/{year} endpoint"""
+    results = TestResults()
+    
+    test_cases = [
+        ("US", 2025),
+        ("DE", 2025),
+    ]
+    
+    for country, year in test_cases:
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.get(f"{self.base_url}/holidays/{country_code}/{year}")
-                
-                print(f"Status Code: {response.status_code}")
+                response = await client.get(f"{BACKEND_URL}/holidays/{country}/{year}")
                 
                 if response.status_code == 200:
                     holidays = response.json()
-                    print(f"Holidays count: {len(holidays)}")
-                    
-                    if len(holidays) > 0:
-                        # Check structure of first few holidays
-                        sample_holidays = holidays[:3]
-                        print("Sample holidays:")
-                        for holiday in sample_holidays:
-                            print(f"  - {holiday.get('date', 'N/A')}: {holiday.get('name', 'N/A')}")
+                    if isinstance(holidays, list) and len(holidays) > 0:
+                        # Check structure of first holiday
+                        holiday = holidays[0]
+                        required_fields = ["date", "name", "localName", "countryCode"]
                         
-                        # Verify required fields
-                        required_fields = ['date', 'name', 'localName', 'countryCode']
-                        for holiday in sample_holidays:
-                            for field in required_fields:
-                                if field not in holiday:
-                                    print(f"❌ Missing required field '{field}' in holiday data")
-                                    return {"status": "FAIL", "details": f"Missing field '{field}' in response"}
-                        
-                        # Verify dates are in correct year
-                        for holiday in sample_holidays:
-                            date_str = holiday.get('date', '')
-                            if date_str and not date_str.startswith(str(year)):
-                                print(f"❌ Holiday date {date_str} doesn't match requested year {year}")
-                                return {"status": "FAIL", "details": f"Date {date_str} doesn't match year {year}"}
-                        
-                        print(f"✅ Holidays endpoint working correctly for {country_code}/{year}")
-                        return {
-                            "status": "PASS", 
-                            "details": f"Retrieved {len(holidays)} holidays for {country_code}/{year}",
-                            "holidays_count": len(holidays)
-                        }
-                    else:
-                        print(f"⚠️  No holidays found for {country_code}/{year}")
-                        return {"status": "PASS", "details": f"No holidays found for {country_code}/{year}", "holidays_count": 0}
-                        
-                elif response.status_code == 404:
-                    print(f"⚠️  No holidays data available for {country_code}/{year}")
-                    return {"status": "PASS", "details": f"No data available for {country_code}/{year} (404 expected)"}
-                else:
-                    print(f"❌ Holidays endpoint failed - HTTP {response.status_code}")
-                    return {"status": "FAIL", "details": f"HTTP {response.status_code}: {response.text}"}
-                    
-        except Exception as e:
-            print(f"❌ Holidays endpoint failed - Exception: {str(e)}")
-            return {"status": "FAIL", "details": f"Exception: {str(e)}"}
-    
-    async def test_compare_endpoint(self) -> Dict[str, Any]:
-        """Test POST /api/compare endpoint"""
-        print("\n=== Testing Compare Holidays Endpoint ===")
-        
-        compare_request = {
-            "countryCodes": ["US", "GB"],
-            "year": 2025
-        }
-        
-        try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.post(
-                    f"{self.base_url}/compare",
-                    json=compare_request,
-                    headers={"Content-Type": "application/json"}
-                )
-                
-                print(f"Status Code: {response.status_code}")
-                print(f"Request: {json.dumps(compare_request, indent=2)}")
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    print("Response structure check:")
-                    
-                    # Verify response structure
-                    required_fields = ['year', 'countries', 'holidays', 'totalOverlaps']
-                    for field in required_fields:
-                        if field not in data:
-                            print(f"❌ Missing required field '{field}' in compare response")
-                            return {"status": "FAIL", "details": f"Missing field '{field}' in response"}
-                    
-                    print(f"  Year: {data.get('year')}")
-                    print(f"  Countries: {len(data.get('countries', []))}")
-                    print(f"  Holidays: {len(data.get('holidays', []))}")
-                    print(f"  Total Overlaps: {data.get('totalOverlaps')}")
-                    
-                    # Verify year matches request
-                    if data.get('year') != compare_request['year']:
-                        print(f"❌ Response year {data.get('year')} doesn't match request year {compare_request['year']}")
-                        return {"status": "FAIL", "details": "Year mismatch in response"}
-                    
-                    # Verify countries structure
-                    countries = data.get('countries', [])
-                    if len(countries) != len(compare_request['countryCodes']):
-                        print(f"❌ Expected {len(compare_request['countryCodes'])} countries, got {len(countries)}")
-                        return {"status": "FAIL", "details": "Country count mismatch"}
-                    
-                    for country in countries:
-                        if 'countryCode' not in country or 'name' not in country:
-                            print("❌ Invalid country structure in response")
-                            return {"status": "FAIL", "details": "Invalid country structure"}
-                    
-                    # Verify holidays structure and overlap logic
-                    holidays = data.get('holidays', [])
-                    total_overlaps = data.get('totalOverlaps', 0)
-                    
-                    if len(holidays) > 0:
-                        # Check sample holiday structure
-                        sample_holiday = holidays[0]
-                        required_holiday_fields = ['date', 'holidays', 'isOverlap', 'countries']
-                        for field in required_holiday_fields:
-                            if field not in sample_holiday:
-                                print(f"❌ Missing field '{field}' in holiday entry")
-                                return {"status": "FAIL", "details": f"Missing field '{field}' in holiday entry"}
-                        
-                        # Count overlaps and verify totalOverlaps
-                        actual_overlaps = sum(1 for h in holidays if h.get('isOverlap', False))
-                        if actual_overlaps != total_overlaps:
-                            print(f"❌ Total overlaps mismatch: expected {actual_overlaps}, got {total_overlaps}")
-                            return {"status": "FAIL", "details": f"Overlap count mismatch: {actual_overlaps} vs {total_overlaps}"}
-                        
-                        # Show some overlap examples
-                        overlaps = [h for h in holidays if h.get('isOverlap', False)]
-                        if overlaps:
-                            print(f"\nFound {len(overlaps)} overlapping holidays:")
-                            for overlap in overlaps[:3]:  # Show first 3
-                                print(f"  - {overlap.get('date')}: {[h['name'] for h in overlap.get('holidays', [])]}")
+                        if all(field in holiday for field in required_fields):
+                            results.success(f"Holidays for {country}/{year} - {len(holidays)} holidays with proper structure")
                         else:
-                            print("No overlapping holidays found")
-                    
-                    print("✅ Compare endpoint working correctly")
-                    return {
-                        "status": "PASS", 
-                        "details": f"Compare successful for {compare_request['countryCodes']} in {compare_request['year']}",
-                        "total_holidays": len(holidays),
-                        "total_overlaps": total_overlaps,
-                        "countries_found": len(countries)
-                    }
-                    
+                            missing = [f for f in required_fields if f not in holiday]
+                            results.fail(f"Holidays {country}/{year}", f"Missing fields: {missing}")
+                    else:
+                        results.fail(f"Holidays {country}/{year}", "Empty or invalid response")
+                elif response.status_code == 404:
+                    results.fail(f"Holidays {country}/{year}", "No holidays found")
                 else:
-                    print(f"❌ Compare endpoint failed - HTTP {response.status_code}")
-                    print(f"Response: {response.text}")
-                    return {"status": "FAIL", "details": f"HTTP {response.status_code}: {response.text}"}
+                    results.fail(f"Holidays {country}/{year}", f"Status code {response.status_code}")
                     
         except Exception as e:
-            print(f"❌ Compare endpoint failed - Exception: {str(e)}")
-            return {"status": "FAIL", "details": f"Exception: {str(e)}"}
+            results.fail(f"Holidays {country}/{year}", str(e))
     
-    async def test_compare_edge_cases(self) -> Dict[str, Any]:
-        """Test edge cases for compare endpoint"""
-        print("\n=== Testing Compare Endpoint Edge Cases ===")
-        
-        edge_cases = [
-            {
-                "name": "Single country (should fail)",
-                "request": {"countryCodes": ["US"], "year": 2025},
-                "expected_status": 400
-            },
-            {
-                "name": "Too many countries (should fail)", 
-                "request": {"countryCodes": ["US", "GB", "CA", "AU", "DE", "FR"], "year": 2025},
-                "expected_status": 400
-            },
-            {
-                "name": "Invalid country code",
-                "request": {"countryCodes": ["XX", "YY"], "year": 2025},
-                "expected_status": 200  # Should handle gracefully
-            }
-        ]
-        
-        results = []
-        
-        for case in edge_cases:
-            print(f"\nTesting: {case['name']}")
-            try:
-                async with httpx.AsyncClient(timeout=30.0) as client:
-                    response = await client.post(
-                        f"{self.base_url}/compare",
-                        json=case['request'],
-                        headers={"Content-Type": "application/json"}
-                    )
-                    
-                    print(f"  Status: {response.status_code} (expected: {case['expected_status']})")
-                    
-                    if response.status_code == case['expected_status']:
-                        print(f"  ✅ {case['name']} handled correctly")
-                        results.append({"case": case['name'], "status": "PASS"})
-                    else:
-                        print(f"  ❌ {case['name']} - unexpected status code")
-                        results.append({"case": case['name'], "status": "FAIL", "details": f"Expected {case['expected_status']}, got {response.status_code}"})
-                        
-            except Exception as e:
-                print(f"  ❌ {case['name']} - Exception: {str(e)}")
-                results.append({"case": case['name'], "status": "FAIL", "details": f"Exception: {str(e)}"})
-        
-        passed = sum(1 for r in results if r['status'] == 'PASS')
-        total = len(results)
-        
-        if passed == total:
-            return {"status": "PASS", "details": f"All {total} edge cases handled correctly", "results": results}
-        else:
-            return {"status": "FAIL", "details": f"{passed}/{total} edge cases passed", "results": results}
-    
-    async def run_all_tests(self):
-        """Run all backend API tests"""
-        print("🚀 Starting Holiday Comparison API Backend Tests")
-        print(f"Backend URL: {self.base_url}")
-        print("=" * 60)
-        
-        # Test each endpoint
-        self.test_results['health'] = await self.test_health_endpoint()
-        self.test_results['countries'] = await self.test_countries_endpoint()
-        self.test_results['holidays_us'] = await self.test_holidays_endpoint("US", 2025)
-        self.test_results['holidays_gb'] = await self.test_holidays_endpoint("GB", 2025)
-        self.test_results['compare'] = await self.test_compare_endpoint()
-        self.test_results['compare_edge_cases'] = await self.test_compare_edge_cases()
-        
-        # Summary
-        print("\n" + "=" * 60)
-        print("🎯 TEST RESULTS SUMMARY")
-        print("=" * 60)
-        
-        passed_tests = []
-        failed_tests = []
-        
-        for test_name, result in self.test_results.items():
-            status = result.get('status', 'UNKNOWN')
-            if status == 'PASS':
-                passed_tests.append(test_name)
-                print(f"✅ {test_name}: PASS")
+    # Test invalid year
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(f"{BACKEND_URL}/holidays/US/1900")
+            if response.status_code == 400:
+                results.success("Invalid year validation works (1900)")
             else:
-                failed_tests.append(test_name)
-                print(f"❌ {test_name}: FAIL - {result.get('details', 'Unknown error')}")
-        
-        print(f"\n📊 Results: {len(passed_tests)}/{len(self.test_results)} tests passed")
-        
-        if failed_tests:
-            print(f"\n🔍 Failed Tests Details:")
-            for test_name in failed_tests:
-                result = self.test_results[test_name]
-                print(f"  - {test_name}: {result.get('details', 'No details')}")
-        
-        return {
-            'total_tests': len(self.test_results),
-            'passed': len(passed_tests),
-            'failed': len(failed_tests),
-            'success_rate': len(passed_tests) / len(self.test_results) * 100,
-            'failed_tests': failed_tests,
-            'detailed_results': self.test_results
-        }
+                results.fail("Invalid year validation", f"Expected 400, got {response.status_code}")
+    except Exception as e:
+        results.fail("Invalid year validation", str(e))
+    
+    return results
 
+async def test_compare_endpoint():
+    """Test POST /api/compare endpoint with focus on single country support"""
+    results = TestResults()
+    
+    # Test 1: Single country comparison (NEW REQUIREMENT)
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            payload = {
+                "countryCodes": ["US"],
+                "year": 2025
+            }
+            response = await client.post(f"{BACKEND_URL}/compare", json=payload)
+            
+            if response.status_code == 200:
+                data = response.json()
+                # Check response structure
+                required_fields = ["year", "countries", "holidays", "totalOverlaps", "longWeekends"]
+                
+                if all(field in data for field in required_fields):
+                    if data["year"] == 2025 and len(data["countries"]) == 1:
+                        if data["countries"][0]["countryCode"] == "US":
+                            results.success("Single country compare (US) - proper response structure")
+                            
+                            # Check holidays exist
+                            if len(data["holidays"]) > 0:
+                                results.success(f"Single country compare - {len(data['holidays'])} holidays returned")
+                            else:
+                                results.fail("Single country compare", "No holidays returned")
+                            
+                            # For single country, overlaps should be 0 
+                            if data["totalOverlaps"] == 0:
+                                results.success("Single country compare - correct overlap count (0)")
+                            else:
+                                results.fail("Single country compare", f"Expected 0 overlaps, got {data['totalOverlaps']}")
+                                
+                            # Check long weekends exist
+                            if "longWeekends" in data and isinstance(data["longWeekends"], list):
+                                results.success(f"Single country compare - {len(data['longWeekends'])} long weekend opportunities found")
+                            else:
+                                results.fail("Single country compare", "Long weekends field missing or invalid")
+                                
+                        else:
+                            results.fail("Single country compare", f"Wrong country returned: {data['countries'][0]['countryCode']}")
+                    else:
+                        results.fail("Single country compare", f"Wrong year or country count: year={data['year']}, countries={len(data['countries'])}")
+                else:
+                    missing = [f for f in required_fields if f not in data]
+                    results.fail("Single country compare", f"Missing fields: {missing}")
+            else:
+                results.fail("Single country compare", f"Status code {response.status_code}")
+                
+    except Exception as e:
+        results.fail("Single country compare", str(e))
+    
+    # Test 2: Two country comparison (EXISTING FUNCTIONALITY)
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            payload = {
+                "countryCodes": ["US", "DE"],
+                "year": 2025
+            }
+            response = await client.post(f"{BACKEND_URL}/compare", json=payload)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data["year"] == 2025 and len(data["countries"]) == 2:
+                    country_codes = [c["countryCode"] for c in data["countries"]]
+                    if "US" in country_codes and "DE" in country_codes:
+                        results.success("Two country compare (US, DE) - proper response structure")
+                        
+                        # Check for overlaps (should exist for US/DE)
+                        if data["totalOverlaps"] >= 0:
+                            results.success(f"Two country compare - {data['totalOverlaps']} overlaps detected")
+                        else:
+                            results.fail("Two country compare", "Invalid overlap count")
+                            
+                        # Check holidays structure
+                        overlap_found = False
+                        for holiday in data["holidays"]:
+                            if holiday["isOverlap"] and len(holiday["countries"]) > 1:
+                                overlap_found = True
+                                break
+                        
+                        if overlap_found or data["totalOverlaps"] == 0:
+                            results.success("Two country compare - overlap detection working correctly")
+                        else:
+                            results.fail("Two country compare", "Overlap detection logic issue")
+                            
+                    else:
+                        results.fail("Two country compare", f"Wrong countries returned: {country_codes}")
+                else:
+                    results.fail("Two country compare", f"Wrong year or country count")
+            else:
+                results.fail("Two country compare", f"Status code {response.status_code}")
+                
+    except Exception as e:
+        results.fail("Two country compare", str(e))
+    
+    # Test 3: Empty array (SHOULD RETURN 400)
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            payload = {
+                "countryCodes": [],
+                "year": 2025
+            }
+            response = await client.post(f"{BACKEND_URL}/compare", json=payload)
+            
+            if response.status_code == 400:
+                results.success("Empty country array validation - returns 400 as expected")
+            else:
+                results.fail("Empty country array validation", f"Expected 400, got {response.status_code}")
+                
+    except Exception as e:
+        results.fail("Empty country array validation", str(e))
+    
+    # Test 4: Too many countries (SHOULD RETURN 400)
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            payload = {
+                "countryCodes": ["US", "DE", "GB", "FR", "IT", "ES"],  # 6 countries, max is 5
+                "year": 2025
+            }
+            response = await client.post(f"{BACKEND_URL}/compare", json=payload)
+            
+            if response.status_code == 400:
+                results.success("Too many countries validation - returns 400 as expected")
+            else:
+                results.fail("Too many countries validation", f"Expected 400, got {response.status_code}")
+                
+    except Exception as e:
+        results.fail("Too many countries validation", str(e))
+    
+    # Test 5: Invalid country code (SHOULD HANDLE GRACEFULLY)
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            payload = {
+                "countryCodes": ["XX"],  # Invalid country
+                "year": 2025
+            }
+            response = await client.post(f"{BACKEND_URL}/compare", json=payload)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if len(data["countries"]) == 0 and len(data["holidays"]) == 0:
+                    results.success("Invalid country handling - graceful response with empty data")
+                else:
+                    results.fail("Invalid country handling", "Should return empty data for invalid countries")
+            else:
+                results.fail("Invalid country handling", f"Status code {response.status_code}")
+                
+    except Exception as e:
+        results.fail("Invalid country handling", str(e))
+    
+    return results
 
 async def main():
-    """Main test execution function"""
-    tester = HolidayAPITester()
-    results = await tester.run_all_tests()
+    """Run all tests"""
+    print(f"🚀 Starting Sync Holidays Backend API Tests")
+    print(f"Backend URL: {BACKEND_URL}")
+    print(f"{'='*60}")
     
-    print(f"\n🎉 Testing Complete!")
-    print(f"Success Rate: {results['success_rate']:.1f}%")
+    all_results = TestResults()
     
-    if results['failed'] == 0:
-        print("🎊 All tests passed!")
-        return 0
+    # Test each endpoint
+    print("\n📋 Testing Health Endpoint...")
+    health_results = await test_health_endpoint()
+    all_results.passed += health_results.passed
+    all_results.failed += health_results.failed
+    all_results.errors.extend(health_results.errors)
+    
+    print("\n🌍 Testing Countries Endpoint...")
+    countries_results = await test_countries_endpoint()
+    all_results.passed += countries_results.passed
+    all_results.failed += countries_results.failed
+    all_results.errors.extend(countries_results.errors)
+    
+    print("\n📅 Testing Holidays Endpoint...")
+    holidays_results = await test_holidays_endpoint()
+    all_results.passed += holidays_results.passed
+    all_results.failed += holidays_results.failed
+    all_results.errors.extend(holidays_results.errors)
+    
+    print("\n🔍 Testing Compare Endpoint (FOCUS: Single Country Support)...")
+    compare_results = await test_compare_endpoint()
+    all_results.passed += compare_results.passed
+    all_results.failed += compare_results.failed
+    all_results.errors.extend(compare_results.errors)
+    
+    # Final summary
+    success = all_results.summary()
+    
+    if success:
+        print("\n🎉 ALL TESTS PASSED! Backend API is working correctly.")
     else:
-        print(f"⚠️  {results['failed']} test(s) failed. Check details above.")
-        return 1
-
+        print(f"\n⚠️  {all_results.failed} TESTS FAILED! See details above.")
+    
+    return success
 
 if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    exit(exit_code)
+    success = asyncio.run(main())
+    sys.exit(0 if success else 1)

@@ -65,7 +65,7 @@ export default function SettingsScreen() {
 
   const handleShareApp = async () => {
     // This would typically use expo-sharing or react-native-share
-    const message = 'Check out Holiday Compare - Compare public holidays across countries! https://holidaycompare.app';
+    const message = 'Check out Sync Holidays - Compare public holidays across countries! https://syncholidays.app';
     try {
       await Linking.openURL(`sms:&body=${encodeURIComponent(message)}`);
     } catch (error) {

@@ -374,12 +374,12 @@ async def get_holidays(country_code: str, year: int):
 
 @api_router.post("/compare", response_model=CompareResponse)
 async def compare_holidays(request: CompareRequest):
-    """Compare holidays between multiple countries"""
-    if len(request.countryCodes) < 2:
-        raise HTTPException(status_code=400, detail="At least 2 countries required for comparison")
+    """Compare holidays between one or more countries"""
+    if len(request.countryCodes) < 1:
+        raise HTTPException(status_code=400, detail="At least 1 country required")
     
     if len(request.countryCodes) > 5:
-        raise HTTPException(status_code=400, detail="Maximum 5 countries allowed for comparison")
+        raise HTTPException(status_code=400, detail="Maximum 5 countries allowed")
     
     # Fetch holidays for all countries
     all_holidays = {}

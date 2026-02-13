@@ -130,8 +130,8 @@ export default function HomeScreen() {
 
   // Compare holidays
   const compareHolidays = async () => {
-    if (selectedCountries.length < 2) {
-      setError('Please select at least 2 countries to compare');
+    if (selectedCountries.length < 1) {
+      setError('Please select at least 1 country');
       return;
     }
 
@@ -160,7 +160,7 @@ export default function HomeScreen() {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    if (selectedCountries.length >= 2) {
+    if (selectedCountries.length >= 1) {
       await compareHolidays();
     }
     setRefreshing(false);

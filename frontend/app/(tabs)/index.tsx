@@ -214,6 +214,49 @@ export default function HomeScreen() {
     return date.toLocaleDateString('en-US', { month: 'long' });
   };
 
+  // Format date range
+  const formatDateRange = (startDate: string, endDate: string): string => {
+    const start = new Date(startDate + 'T00:00:00');
+    const end = new Date(endDate + 'T00:00:00');
+    const startMonth = start.toLocaleDateString('en-US', { month: 'short' });
+    const endMonth = end.toLocaleDateString('en-US', { month: 'short' });
+    const startDay = start.getDate();
+    const endDay = end.getDate();
+    
+    if (startMonth === endMonth) {
+      return `${startMonth} ${startDay}-${endDay}`;
+    }
+    return `${startMonth} ${startDay} - ${endMonth} ${endDay}`;
+  };
+
+  // Get type badge color
+  const getTypeBadgeColor = (type: string): { bg: string; text: string } => {
+    switch (type) {
+      case 'bridge':
+        return { bg: '#FEF3C7', text: '#D97706' };
+      case 'consecutive':
+        return { bg: '#DBEAFE', text: '#2563EB' };
+      case 'long_weekend':
+        return { bg: '#D1FAE5', text: '#059669' };
+      default:
+        return { bg: '#E5E7EB', text: '#6B7280' };
+    }
+  };
+
+  // Get type icon
+  const getTypeIcon = (type: string): keyof typeof Ionicons.glyphMap => {
+    switch (type) {
+      case 'bridge':
+        return 'flash';
+      case 'consecutive':
+        return 'calendar';
+      case 'long_weekend':
+        return 'sunny';
+      default:
+        return 'time';
+    }
+  };
+
   // Group holidays by month
   const groupedHolidays = comparisonResult?.holidays.reduce((acc, holiday) => {
     const month = getMonthName(holiday.date);

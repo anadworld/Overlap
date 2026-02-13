@@ -14,7 +14,7 @@ from typing import Dict, List, Any
 class HolidayAPITester:
     def __init__(self):
         # Use the production-configured backend URL from frontend/.env
-        self.base_url = "https://holiday-sync-1.preview.emergentagent.com/api"
+        self.base_url = "https://vacation-planner-48.preview.emergentagent.com/api"
         self.test_results = {}
         
     async def test_health_endpoint(self) -> Dict[str, Any]:

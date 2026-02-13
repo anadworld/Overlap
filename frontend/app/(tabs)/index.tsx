@@ -99,6 +99,7 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showOnlyOverlaps, setShowOnlyOverlaps] = useState(false);
+  const [activeTab, setActiveTab] = useState<'holidays' | 'longweekends'>('holidays');
 
   // Create a map for country names
   const countryNameMap = comparisonResult?.countries.reduce((acc, c) => {

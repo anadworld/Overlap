@@ -270,7 +270,7 @@ export default function HomeScreen() {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Holiday Compare</Text>
+        <Text style={styles.headerTitle}>Sync Holidays</Text>
         <Text style={styles.headerSubtitle}>
           Compare public holidays across countries
         </Text>

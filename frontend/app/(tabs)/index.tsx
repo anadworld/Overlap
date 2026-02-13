@@ -1170,4 +1170,152 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#A0AEC0',
   },
+  // Tab Switcher styles
+  tabSwitcher: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 4,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  tabButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    gap: 6,
+  },
+  tabButtonActive: {
+    backgroundColor: '#F0F9FF',
+  },
+  tabButtonText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#9CA3AF',
+  },
+  tabButtonTextActive: {
+    color: '#4A5568',
+  },
+  // Long Weekends styles
+  longWeekendsContainer: {
+    marginTop: 4,
+  },
+  longWeekendsIntro: {
+    fontSize: 14,
+    color: '#718096',
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  longWeekendCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  longWeekendHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 10,
+  },
+  longWeekendDays: {
+    backgroundColor: '#FEF3C7',
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  longWeekendDaysNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#D97706',
+  },
+  longWeekendDaysLabel: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#D97706',
+    textTransform: 'uppercase',
+  },
+  longWeekendInfo: {
+    flex: 1,
+  },
+  longWeekendDateRange: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2D3748',
+    marginBottom: 6,
+  },
+  typeBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 6,
+    gap: 4,
+  },
+  typeBadgeText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  longWeekendDescription: {
+    fontSize: 14,
+    color: '#4A5568',
+    marginBottom: 12,
+  },
+  longWeekendDetails: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 12,
+  },
+  longWeekendDetailItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  longWeekendDetailText: {
+    fontSize: 12,
+    color: '#718096',
+  },
+  longWeekendHolidays: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 8,
+    padding: 10,
+    gap: 6,
+  },
+  longWeekendHolidayItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  longWeekendHolidayFlag: {
+    fontSize: 16,
+  },
+  longWeekendHolidayName: {
+    fontSize: 13,
+    color: '#4A5568',
+    flex: 1,
+  },
+  longWeekendMoreHolidays: {
+    fontSize: 12,
+    color: '#718096',
+    fontStyle: 'italic',
+    marginTop: 4,
+  },
+  emptyLongWeekends: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyLongWeekendsText: {
+    fontSize: 14,
+    color: '#9CA3AF',
+    marginTop: 12,
+  },
 });

@@ -292,7 +292,7 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>5. Intellectual Property</Text>
           <Text style={styles.modalParagraph}>
-            The App and its original content, features, and functionality are owned by Sync Holidays and 
+            The App and its original content, features, and functionality are owned by Overlap – Holiday Calendar and 
             are protected by international copyright, trademark, and other intellectual property laws.
           </Text>
           
@@ -304,7 +304,7 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>7. Limitation of Liability</Text>
           <Text style={styles.modalParagraph}>
-            IN NO EVENT SHALL SYNC HOLIDAYS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, 
+            IN NO EVENT SHALL OVERLAP – HOLIDAY CALENDAR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, 
             OR PUNITIVE DAMAGES ARISING OUT OF OR RELATED TO YOUR USE OF THE APP.
           </Text>
           
@@ -317,7 +317,7 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>9. Contact Information</Text>
           <Text style={styles.modalParagraph}>
-            For questions about these Terms, please contact us at: syncholidays@anadworld.com
+            For questions about these Terms, please contact us at: overlap@anadworld.com
           </Text>
         </View>
       ))}
@@ -329,7 +329,7 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>1. Introduction</Text>
           <Text style={styles.modalParagraph}>
-            Sync Holidays ("we," "our," or "us") is committed to protecting your privacy. This Privacy 
+            Overlap – Holiday Calendar ("we," "our," or "us") is committed to protecting your privacy. This Privacy 
             Policy explains how we collect, use, and safeguard your information when you use our mobile 
             application.
           </Text>

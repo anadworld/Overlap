@@ -242,7 +242,7 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>2. Description of Service</Text>
           <Text style={styles.modalParagraph}>
-            Holiday Compare provides information about public holidays in various countries. The App allows 
+            Sync Holidays provides information about public holidays in various countries. The App allows 
             users to compare holidays across multiple countries and identify overlapping dates.
           </Text>
           

@@ -327,7 +327,7 @@ export default function HomeScreen() {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Compare Holidays Worldwide</Text>
+        <Text style={styles.headerTitle}>Holiday Overlap</Text>
         <Text style={styles.headerSubtitle}>
           See public holidays across countries instantly.
         </Text>

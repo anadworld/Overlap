@@ -185,18 +185,18 @@ export default function SettingsScreen() {
       </ScrollView>
 
       {/* About Modal */}
-      {renderModal(showAboutModal, () => setShowAboutModal(false), 'About Holiday Compare', (
+      {renderModal(showAboutModal, () => setShowAboutModal(false), 'About Sync Holidays', (
         <View>
           <View style={styles.aboutHeader}>
             <View style={styles.appIconContainer}>
               <Ionicons name="calendar" size={48} color="#7C9CBF" />
             </View>
-            <Text style={styles.aboutAppName}>Holiday Compare</Text>
+            <Text style={styles.aboutAppName}>Sync Holidays</Text>
             <Text style={styles.aboutVersion}>Version {APP_VERSION}</Text>
           </View>
           
           <Text style={styles.modalParagraph}>
-            Holiday Compare is your go-to app for comparing public holidays across different countries. 
+            Sync Holidays is your go-to app for comparing public holidays across different countries. 
             Whether you're planning international travel, coordinating with global teams, or simply curious 
             about when different countries celebrate, we've got you covered.
           </Text>

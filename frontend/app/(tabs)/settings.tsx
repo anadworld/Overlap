@@ -259,7 +259,7 @@ export default function SettingsScreen() {
       {/* Terms of Use Modal */}
       {renderModal(showTermsModal, () => setShowTermsModal(false), 'Terms of Use', (
         <View>
-          <Text style={styles.modalLastUpdated}>Last Updated: January 2025</Text>
+          <Text style={styles.modalLastUpdated}>Last Updated: February 2026</Text>
           
           <Text style={styles.modalSubheading}>1. Acceptance of Terms</Text>
           <Text style={styles.modalParagraph}>
@@ -325,7 +325,7 @@ export default function SettingsScreen() {
       {/* Privacy Policy Modal */}
       {renderModal(showPrivacyModal, () => setShowPrivacyModal(false), 'Privacy Policy', (
         <View>
-          <Text style={styles.modalLastUpdated}>Last Updated: January 2025</Text>
+          <Text style={styles.modalLastUpdated}>Last Updated: February 2026</Text>
           
           <Text style={styles.modalSubheading}>1. Introduction</Text>
           <Text style={styles.modalParagraph}>

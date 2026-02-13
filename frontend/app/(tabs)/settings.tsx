@@ -176,27 +176,27 @@ export default function SettingsScreen() {
 
         {/* Version Info */}
         <View style={styles.versionContainer}>
-          <Text style={styles.versionText}>Sync Holidays</Text>
+          <Text style={styles.versionText}>Overlap – Holiday Calendar</Text>
           <Text style={styles.versionNumber}>Version {APP_VERSION} ({BUILD_NUMBER})</Text>
-          <Text style={styles.copyrightText}> 2026 Sync Holidays. All rights reserved.</Text>
+          <Text style={styles.copyrightText}> 2026 Overlap – Holiday Calendar. All rights reserved.</Text>
         </View>
 
         <View style={styles.bottomPadding} />
       </ScrollView>
 
       {/* About Modal */}
-      {renderModal(showAboutModal, () => setShowAboutModal(false), 'About Sync Holidays', (
+      {renderModal(showAboutModal, () => setShowAboutModal(false), 'About Overlap', (
         <View>
           <View style={styles.aboutHeader}>
             <View style={styles.appIconContainer}>
               <Ionicons name="calendar" size={48} color="#7C9CBF" />
             </View>
-            <Text style={styles.aboutAppName}>Sync Holidays</Text>
+            <Text style={styles.aboutAppName}>Overlap – Holiday Calendar</Text>
             <Text style={styles.aboutVersion}>Version {APP_VERSION}</Text>
           </View>
           
           <Text style={styles.modalParagraph}>
-            Sync Holidays is your go-to app for exploring public holidays and discovering the best opportunities 
+            Overlap – Holiday Calendar is your go-to app for exploring public holidays and discovering the best opportunities 
             to maximize your time off. Whether you're planning a solo vacation in your home country, coordinating 
             international travel, or syncing schedules with global teams, we've got you covered.
           </Text>
@@ -263,13 +263,13 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>1. Acceptance of Terms</Text>
           <Text style={styles.modalParagraph}>
-            By downloading, installing, or using the Holiday Compare application ("App"), you agree to be 
+            By downloading, installing, or using the Overlap – Holiday Calendar application ("App"), you agree to be 
             bound by these Terms of Use. If you do not agree to these terms, please do not use the App.
           </Text>
           
           <Text style={styles.modalSubheading}>2. Description of Service</Text>
           <Text style={styles.modalParagraph}>
-            Sync Holidays provides information about public holidays in various countries. The App allows 
+            Overlap – Holiday Calendar provides information about public holidays in various countries. The App allows 
             users to view holidays for one or more countries, compare holidays across multiple countries, 
             identify overlapping dates, and discover long weekend opportunities including bridge days and 
             consecutive holiday streaks.

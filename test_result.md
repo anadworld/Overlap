@@ -197,14 +197,13 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "GET /api/countries - Fetch list of available countries"
-    - "GET /api/holidays/{country_code}/{year} - Get holidays for a country"
-    - "POST /api/compare - Compare holidays between multiple countries"
+  current_focus: []
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
       message: "Initial implementation complete. Backend uses Nager.Date API (free, no key required) for holiday data. Please test all backend endpoints. Frontend is a React Native app with country selection modal, year picker, and comparison view showing overlaps."
+    - agent: "testing"
+      message: "✅ ALL BACKEND TESTS PASSED (6/6) - Comprehensive testing completed on Holiday Comparison API. All endpoints working correctly: Health check (200), Countries list (120 countries), Holidays fetch (US: 16, GB: 13), Compare function (4 overlaps detected for US/GB 2025), Edge cases handled properly. Nager.Date API integration functional, MongoDB caching operational, overlap detection logic accurate. Backend is production ready."

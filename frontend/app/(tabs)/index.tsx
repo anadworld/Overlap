@@ -478,35 +478,107 @@ export default function HomeScreen() {
             ))}
           </View>
 
-          {/* Filter Toggle */}
-          <TouchableOpacity
-            style={styles.filterToggle}
-            onPress={() => setShowOnlyOverlaps(!showOnlyOverlaps)}
-          >
-            <Ionicons
-              name={showOnlyOverlaps ? 'checkbox' : 'square-outline'}
-              size={20}
-              color="#7C9CBF"
-            />
-            <Text style={styles.filterToggleText}>Show only overlapping holidays</Text>
-          </TouchableOpacity>
+          {/* Holidays Tab Content */}
+          {activeTab === 'holidays' && (
+            <>
+              {/* Filter Toggle */}
+              <TouchableOpacity
+                style={styles.filterToggle}
+                onPress={() => setShowOnlyOverlaps(!showOnlyOverlaps)}
+              >
+                <Ionicons
+                  name={showOnlyOverlaps ? 'checkbox' : 'square-outline'}
+                  size={20}
+                  color="#7C9CBF"
+                />
+                <Text style={styles.filterToggleText}>Show only overlapping holidays</Text>
+              </TouchableOpacity>
 
-          {/* Holidays by Month */}
-          {groupedHolidays &&
-            Object.entries(groupedHolidays).map(([month, holidays]) => {
-              const visibleHolidays = showOnlyOverlaps
-                ? holidays.filter((h) => h.isOverlap)
-                : holidays;
+              {/* Holidays by Month */}
+              {groupedHolidays &&
+                Object.entries(groupedHolidays).map(([month, holidays]) => {
+                  const visibleHolidays = showOnlyOverlaps
+                    ? holidays.filter((h) => h.isOverlap)
+                    : holidays;
 
-              if (visibleHolidays.length === 0) return null;
+                  if (visibleHolidays.length === 0) return null;
 
-              return (
-                <View key={month} style={styles.monthSection}>
-                  <Text style={styles.monthTitle}>{month}</Text>
-                  {visibleHolidays.map(renderHolidayItem)}
+                  return (
+                    <View key={month} style={styles.monthSection}>
+                      <Text style={styles.monthTitle}>{month}</Text>
+                      {visibleHolidays.map(renderHolidayItem)}
+                    </View>
+                  );
+                })}
+            </>
+          )}
+
+          {/* Long Weekends Tab Content */}
+          {activeTab === 'longweekends' && (
+            <>
+              {comparisonResult.longWeekends && comparisonResult.longWeekends.length > 0 ? (
+                <View style={styles.longWeekendsContainer}>
+                  <Text style={styles.longWeekendsIntro}>
+                    Plan your vacations! Here are the best opportunities to maximize your time off:
+                  </Text>
+                  {comparisonResult.longWeekends.map((lw, index) => {
+                    const badgeColor = getTypeBadgeColor(lw.type);
+                    return (
+                      <View key={`${lw.startDate}-${index}`} style={styles.longWeekendCard}>
+                        <View style={styles.longWeekendHeader}>
+                          <View style={styles.longWeekendDays}>
+                            <Text style={styles.longWeekendDaysNumber}>{lw.totalDays}</Text>
+                            <Text style={styles.longWeekendDaysLabel}>days</Text>
+                          </View>
+                          <View style={styles.longWeekendInfo}>
+                            <Text style={styles.longWeekendDateRange}>
+                              {formatDateRange(lw.startDate, lw.endDate)}
+                            </Text>
+                            <View style={[styles.typeBadge, { backgroundColor: badgeColor.bg }]}>
+                              <Ionicons name={getTypeIcon(lw.type)} size={12} color={badgeColor.text} />
+                              <Text style={[styles.typeBadgeText, { color: badgeColor.text }]}>
+                                {lw.type === 'bridge' ? 'Bridge Day' : lw.type === 'consecutive' ? 'Consecutive' : 'Long Weekend'}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                        
+                        <Text style={styles.longWeekendDescription}>{lw.description}</Text>
+                        
+                        <View style={styles.longWeekendDetails}>
+                          <View style={styles.longWeekendDetailItem}>
+                            <Ionicons name="calendar" size={14} color="#718096" />
+                            <Text style={styles.longWeekendDetailText}>{lw.holidayDays} holiday{lw.holidayDays > 1 ? 's' : ''}</Text>
+                          </View>
+                          <View style={styles.longWeekendDetailItem}>
+                            <Ionicons name="sunny" size={14} color="#718096" />
+                            <Text style={styles.longWeekendDetailText}>{lw.weekendDays} weekend days</Text>
+                          </View>
+                        </View>
+
+                        <View style={styles.longWeekendHolidays}>
+                          {lw.holidays.slice(0, 3).map((h, hIndex) => (
+                            <View key={`${h.countryCode}-${hIndex}`} style={styles.longWeekendHolidayItem}>
+                              <Text style={styles.longWeekendHolidayFlag}>{getCountryFlag(h.countryCode)}</Text>
+                              <Text style={styles.longWeekendHolidayName} numberOfLines={1}>{h.name}</Text>
+                            </View>
+                          ))}
+                          {lw.holidays.length > 3 && (
+                            <Text style={styles.longWeekendMoreHolidays}>+{lw.holidays.length - 3} more</Text>
+                          )}
+                        </View>
+                      </View>
+                    );
+                  })}
                 </View>
-              );
-            })}
+              ) : (
+                <View style={styles.emptyLongWeekends}>
+                  <Ionicons name="sunny-outline" size={48} color="#CBD5E0" />
+                  <Text style={styles.emptyLongWeekendsText}>No long weekend opportunities found</Text>
+                </View>
+              )}
+            </>
+          )}
 
           <View style={styles.bottomPadding} />
         </ScrollView>

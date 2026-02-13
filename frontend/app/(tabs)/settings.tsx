@@ -196,9 +196,9 @@ export default function SettingsScreen() {
           </View>
           
           <Text style={styles.modalParagraph}>
-            Sync Holidays is your go-to app for comparing public holidays across different countries. 
-            Whether you're planning international travel, coordinating with global teams, or simply curious 
-            about when different countries celebrate, we've got you covered.
+            Sync Holidays is your go-to app for comparing public holidays across different countries and 
+            discovering the best opportunities to maximize your time off. Whether you're planning international 
+            travel, coordinating with global teams, or looking for the perfect long weekend getaway, we've got you covered.
           </Text>
           
           <Text style={styles.modalSubheading}>Key Features</Text>
@@ -213,6 +213,18 @@ export default function SettingsScreen() {
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
+              <Text style={styles.featureText}>Detect long weekend opportunities (3-4+ days)</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
+              <Text style={styles.featureText}>Find bridge day opportunities to maximize time off</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
+              <Text style={styles.featureText}>Spot consecutive holiday streaks</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
               <Text style={styles.featureText}>View holidays for multiple years</Text>
             </View>
             <View style={styles.featureItem}>
@@ -220,6 +232,17 @@ export default function SettingsScreen() {
               <Text style={styles.featureText}>Beautiful, easy-to-use interface</Text>
             </View>
           </View>
+          
+          <Text style={styles.modalSubheading}>Long Weekend Detection</Text>
+          <Text style={styles.modalParagraph}>
+            Our smart algorithm automatically detects:{"\n"}
+            • Friday holidays → 3-day weekends{"\n"}
+            • Monday holidays → 3-day weekends{"\n"}
+            • Thursday holidays → Bridge day opportunities{"\n"}
+            • Tuesday holidays → Bridge day opportunities{"\n"}
+            • Friday + Monday combos → 4-day weekends{"\n"}
+            • Consecutive holidays → Extended time off
+          </Text>
           
           <Text style={styles.modalSubheading}>Data Source</Text>
           <Text style={styles.modalParagraph}>

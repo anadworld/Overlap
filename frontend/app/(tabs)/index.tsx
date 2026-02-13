@@ -420,13 +420,17 @@ export default function HomeScreen() {
               <Text style={styles.statValue}>{comparisonResult.holidays.length}</Text>
               <Text style={styles.statLabel}>Total Holidays</Text>
             </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: '#8FBC8F' }]}>
-                {comparisonResult.totalOverlaps}
-              </Text>
-              <Text style={styles.statLabel}>Overlaps</Text>
-            </View>
+            {comparisonResult.countries.length > 1 && (
+              <>
+                <View style={styles.statDivider} />
+                <View style={styles.statItem}>
+                  <Text style={[styles.statValue, { color: '#8FBC8F' }]}>
+                    {comparisonResult.totalOverlaps}
+                  </Text>
+                  <Text style={styles.statLabel}>Overlaps</Text>
+                </View>
+              </>
+            )}
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={[styles.statValue, { color: '#D97706' }]}>
@@ -481,18 +485,20 @@ export default function HomeScreen() {
           {/* Holidays Tab Content */}
           {activeTab === 'holidays' && (
             <>
-              {/* Filter Toggle */}
-              <TouchableOpacity
-                style={styles.filterToggle}
-                onPress={() => setShowOnlyOverlaps(!showOnlyOverlaps)}
-              >
-                <Ionicons
-                  name={showOnlyOverlaps ? 'checkbox' : 'square-outline'}
-                  size={20}
-                  color="#7C9CBF"
-                />
-                <Text style={styles.filterToggleText}>Show only overlapping holidays</Text>
-              </TouchableOpacity>
+              {/* Filter Toggle - only show for multiple countries */}
+              {comparisonResult.countries.length > 1 && (
+                <TouchableOpacity
+                  style={styles.filterToggle}
+                  onPress={() => setShowOnlyOverlaps(!showOnlyOverlaps)}
+                >
+                  <Ionicons
+                    name={showOnlyOverlaps ? 'checkbox' : 'square-outline'}
+                    size={20}
+                    color="#7C9CBF"
+                  />
+                  <Text style={styles.filterToggleText}>Show only overlapping holidays</Text>
+                </TouchableOpacity>
+              )}
 
               {/* Holidays by Month */}
               {groupedHolidays &&

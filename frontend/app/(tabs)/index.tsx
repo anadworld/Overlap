@@ -244,7 +244,7 @@ export default function HomeScreen() {
   };
 
   // Get type icon
-  const getTypeIcon = (type: string): keyof typeof Ionicons.glyphMap => {
+  const getTypeIcon = (type: string): string => {
     switch (type) {
       case 'bridge':
         return 'flash';

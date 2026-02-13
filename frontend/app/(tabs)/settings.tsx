@@ -270,7 +270,9 @@ export default function SettingsScreen() {
           <Text style={styles.modalSubheading}>2. Description of Service</Text>
           <Text style={styles.modalParagraph}>
             Sync Holidays provides information about public holidays in various countries. The App allows 
-            users to compare holidays across multiple countries and identify overlapping dates.
+            users to view holidays for one or more countries, compare holidays across multiple countries, 
+            identify overlapping dates, and discover long weekend opportunities including bridge days and 
+            consecutive holiday streaks.
           </Text>
           
           <Text style={styles.modalSubheading}>3. Accuracy of Information</Text>
@@ -347,6 +349,7 @@ export default function SettingsScreen() {
           <Text style={styles.modalParagraph}>
             We use the information we collect to:
             {"\n"}• Provide and maintain the App
+            {"\n"}• Display holiday data and long weekend opportunities
             {"\n"}• Improve user experience
             {"\n"}• Analyze usage patterns
             {"\n"}• Fix bugs and technical issues
@@ -354,7 +357,8 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>4. Data Storage and Security</Text>
           <Text style={styles.modalParagraph}>
-            Your holiday comparison preferences are stored locally on your device. We implement appropriate 
+            Your country selections and preferences are stored locally on your device. Holiday data and 
+            long weekend calculations are processed in real-time and not stored. We implement appropriate 
             security measures to protect against unauthorized access to or alteration of your data.
           </Text>
           

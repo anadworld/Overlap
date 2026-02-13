@@ -357,7 +357,7 @@ export default function HomeScreen() {
                 ))}
               </View>
             ) : (
-              <Text style={styles.placeholderText}>Select 2-5 countries</Text>
+              <Text style={styles.placeholderText}>Select 1-5 countries</Text>
             )}
             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
           </View>
@@ -382,10 +382,10 @@ export default function HomeScreen() {
         <TouchableOpacity
           style={[
             styles.compareButton,
-            selectedCountries.length < 2 && styles.compareButtonDisabled,
+            selectedCountries.length < 1 && styles.compareButtonDisabled,
           ]}
           onPress={compareHolidays}
-          disabled={selectedCountries.length < 2 || isLoading}
+          disabled={selectedCountries.length < 1 || isLoading}
         >
           {isLoading ? (
             <ActivityIndicator color="#FFF" />
@@ -588,9 +588,9 @@ export default function HomeScreen() {
       {!comparisonResult && !isLoading && (
         <View style={styles.emptyState}>
           <Ionicons name="calendar" size={64} color="#B8C5D3" />
-          <Text style={styles.emptyStateTitle}>Compare Public Holidays</Text>
+          <Text style={styles.emptyStateTitle}>Discover Holidays</Text>
           <Text style={styles.emptyStateText}>
-            Select 2-5 countries and a year to see all public holidays and find overlapping dates.
+            Select 1-5 countries and a year to see all public holidays, find overlapping dates, and discover long weekend opportunities.
           </Text>
         </View>
       )}

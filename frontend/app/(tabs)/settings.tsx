@@ -60,7 +60,7 @@ export default function SettingsScreen() {
   };
 
   const handleContactSupport = () => {
-    Linking.openURL('mailto:support@holidaycompare.app?subject=Holiday Compare Support');
+    Linking.openURL('mailto:support@syncholidays.app?subject=Sync Holidays Support');
   };
 
   const handleShareApp = async () => {
@@ -317,7 +317,7 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>9. Contact Information</Text>
           <Text style={styles.modalParagraph}>
-            For questions about these Terms, please contact us at: support@holidaycompare.app
+            For questions about these Terms, please contact us at: support@syncholidays.app
           </Text>
         </View>
       ))}
@@ -392,7 +392,7 @@ export default function SettingsScreen() {
           <Text style={styles.modalSubheading}>9. Contact Us</Text>
           <Text style={styles.modalParagraph}>
             If you have questions or concerns about this Privacy Policy, please contact us at:
-            {"\n"}Email: privacy@holidaycompare.app
+            {"\n"}Email: privacy@syncholidays.app
           </Text>
         </View>
       ))}

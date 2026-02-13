@@ -750,7 +750,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#2D3748',
   },

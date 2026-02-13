@@ -535,7 +535,7 @@ export default function HomeScreen() {
                               {formatDateRange(lw.startDate, lw.endDate)}
                             </Text>
                             <View style={[styles.typeBadge, { backgroundColor: badgeColor.bg }]}>
-                              <Ionicons name={getTypeIcon(lw.type)} size={12} color={badgeColor.text} />
+                              <Ionicons name={getTypeIcon(lw.type) as any} size={12} color={badgeColor.text} />
                               <Text style={[styles.typeBadgeText, { color: badgeColor.text }]}>
                                 {lw.type === 'bridge' ? 'Bridge Day' : lw.type === 'consecutive' ? 'Consecutive' : 'Long Weekend'}
                               </Text>

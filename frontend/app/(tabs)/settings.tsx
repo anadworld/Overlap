@@ -392,7 +392,7 @@ export default function SettingsScreen() {
           <Text style={styles.modalSubheading}>9. Contact Us</Text>
           <Text style={styles.modalParagraph}>
             If you have questions or concerns about this Privacy Policy, please contact us at:
-            {"\n"}Email: syncholidays@anadworld.com
+            {"\n"}Email: overlap@anadworld.com
           </Text>
         </View>
       ))}
@@ -428,7 +428,7 @@ export default function SettingsScreen() {
           </Text>
           
           <Text style={styles.modalParagraph}>
-            For full license texts and additional attributions, please visit our website or contact us.
+            For full license texts and additional attributions, please visit our website or contact us at overlap@anadworld.com.
           </Text>
         </View>
       ))}

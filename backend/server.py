@@ -433,11 +433,15 @@ async def compare_holidays(request: CompareRequest):
             countries=countries_on_date
         ))
     
+    # Detect long weekend opportunities
+    long_weekends = detect_long_weekends(holidays_by_date, countries_map)
+    
     return CompareResponse(
         year=request.year,
         countries=countries_info,
         holidays=result_holidays,
-        totalOverlaps=total_overlaps
+        totalOverlaps=total_overlaps,
+        longWeekends=long_weekends
     )
 
 @api_router.post("/saved-comparisons", response_model=SavedComparison)

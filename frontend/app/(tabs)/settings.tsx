@@ -300,7 +300,7 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>1. Introduction</Text>
           <Text style={styles.modalParagraph}>
-            Holiday Compare ("we," "our," or "us") is committed to protecting your privacy. This Privacy 
+            Sync Holidays ("we," "our," or "us") is committed to protecting your privacy. This Privacy 
             Policy explains how we collect, use, and safeguard your information when you use our mobile 
             application.
           </Text>

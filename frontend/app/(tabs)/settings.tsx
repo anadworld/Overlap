@@ -263,7 +263,7 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>5. Intellectual Property</Text>
           <Text style={styles.modalParagraph}>
-            The App and its original content, features, and functionality are owned by Holiday Compare and 
+            The App and its original content, features, and functionality are owned by Sync Holidays and 
             are protected by international copyright, trademark, and other intellectual property laws.
           </Text>
           
@@ -275,7 +275,7 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>7. Limitation of Liability</Text>
           <Text style={styles.modalParagraph}>
-            IN NO EVENT SHALL HOLIDAY COMPARE BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, 
+            IN NO EVENT SHALL SYNC HOLIDAYS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, 
             OR PUNITIVE DAMAGES ARISING OUT OF OR RELATED TO YOUR USE OF THE APP.
           </Text>
           

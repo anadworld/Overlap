@@ -14,9 +14,8 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#000"
-      },
-      "edgeToEdgeEnabled": true
+        "backgroundColor": "#7C9CBF"
+      }
     },
     "web": {
       "bundler": "metro",

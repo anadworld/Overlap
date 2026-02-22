@@ -1279,11 +1279,39 @@ const styles = StyleSheet.create({
   longWeekendsContainer: {
     marginTop: 4,
   },
+  longWeekendsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+    gap: 12,
+  },
   longWeekendsIntro: {
     fontSize: 14,
     color: '#718096',
-    marginBottom: 16,
     lineHeight: 20,
+    flex: 1,
+  },
+  shareAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F0F9FF',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: '#7C9CBF',
+  },
+  shareAllButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#7C9CBF',
+  },
+  shareButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: '#F0F9FF',
   },
   longWeekendCard: {
     backgroundColor: '#FFFFFF',

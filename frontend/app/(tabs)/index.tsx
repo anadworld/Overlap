@@ -480,7 +480,7 @@ export default function HomeScreen() {
             </View>
           )}
 
-          {/* Holidays Tab */}
+          {/* Holidays Tab - All holidays */}
           {activeTab === 'holidays' && (
             <View style={styles.cardsContainer}>
               {comparisonResult.holidays.map((holiday) => {
@@ -511,6 +511,42 @@ export default function HomeScreen() {
                   </View>
                 );
               })}
+            </View>
+          )}
+
+          {/* Overlaps Tab - Only overlapping holidays */}
+          {activeTab === 'overlaps' && (
+            <View style={styles.cardsContainer}>
+              {comparisonResult.holidays.filter(h => h.isOverlap).length > 0 ? (
+                comparisonResult.holidays.filter(h => h.isOverlap).map((holiday) => (
+                  <View key={holiday.date} style={[styles.card, styles.cardOverlap]}>
+                    <View style={styles.cardHeader}>
+                      <View style={styles.overlapBadge}>
+                        <Ionicons name="link" size={12} color="#FFF" />
+                        <Text style={styles.overlapBadgeText}>Overlap</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.holidayCardDate}>
+                      {formatHolidayDate(holiday.date)}
+                    </Text>
+                    {holiday.holidays.map((h, hIndex) => (
+                      <View key={`${h.countryCode}-${hIndex}`} style={styles.holidayRow}>
+                        <View style={[styles.holidayDot, { backgroundColor: getCountryColor(h.countryCode) }]} />
+                        <Text style={styles.holidayFlag}>{getCountryFlag(h.countryCode)}</Text>
+                        <View style={styles.holidayDetails}>
+                          <Text style={styles.holidayCountry}>{countryNameMap[h.countryCode] || h.countryCode}</Text>
+                          <Text style={styles.holidayName}>{h.name}</Text>
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                ))
+              ) : (
+                <View style={styles.emptyState}>
+                  <Ionicons name="link-outline" size={48} color="#CBD5E0" />
+                  <Text style={styles.emptyStateText}>No overlapping holidays found</Text>
+                </View>
+              )}
             </View>
           )}
 

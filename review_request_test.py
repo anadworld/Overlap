@@ -6,7 +6,7 @@ Specific Review Request Test - Exactly as requested
 import requests
 import json
 
-BACKEND_URL = "https://vacation-planner-48.preview.emergentagent.com/api"
+BACKEND_URL = "https://overlap-holidays.preview.emergentagent.com/api"
 
 def test_specific_requests():
     """Test the exact scenarios requested in the review"""

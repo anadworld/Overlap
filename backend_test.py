@@ -307,6 +307,141 @@ async def test_compare_endpoint():
     
     return results
 
+async def test_holiday_deduplication():
+    """Test holiday deduplication specifically for /api/compare endpoint"""
+    results = TestResults()
+    
+    print("\n🔍 TESTING HOLIDAY DEDUPLICATION - CRITICAL FIX VERIFICATION")
+    print("-" * 60)
+    
+    # Test 1: US 2026 - Check for Good Friday duplicates (April 3, 2026)
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            payload = {"countryCodes": ["US"], "year": 2026}
+            response = await client.post(f"{BACKEND_URL}/compare", json=payload)
+            
+            if response.status_code == 200:
+                data = response.json()
+                print(f"✓ US 2026 response received - {len(data.get('holidays', []))} holiday groups")
+                
+                # Extract all holidays and analyze for duplicates
+                all_holidays = []
+                good_friday_count = 0
+                april_3_holidays = []
+                holidays_by_date_country = defaultdict(list)
+                
+                for holiday_group in data.get("holidays", []):
+                    date = holiday_group.get("date")
+                    holidays_list = holiday_group.get("holidays", [])
+                    
+                    for holiday in holidays_list:
+                        country_code = holiday.get("countryCode", "")
+                        name = holiday.get("name", "")
+                        
+                        all_holidays.append({
+                            "date": date,
+                            "name": name,
+                            "countryCode": country_code
+                        })
+                        
+                        # Track holidays by date+country for duplicate detection
+                        key = (date, country_code)
+                        holidays_by_date_country[key].append(name)
+                        
+                        # Specific Good Friday check
+                        if "Good Friday" in name:
+                            good_friday_count += 1
+                            print(f"  🎯 Found Good Friday: {date} - {name} ({country_code})")
+                        
+                        # April 3, 2026 specific check
+                        if date == "2026-04-03":
+                            april_3_holidays.append(holiday)
+                
+                print(f"  📊 Total holidays for US 2026: {len(all_holidays)}")
+                print(f"  📊 Good Friday occurrences: {good_friday_count}")
+                print(f"  📊 April 3, 2026 holidays: {len(april_3_holidays)}")
+                
+                # Check for duplicates on same date for same country
+                duplicates_found = False
+                for (date, country), names in holidays_by_date_country.items():
+                    if len(names) > 1:
+                        print(f"  ❌ DUPLICATE DETECTED: {date} for {country} has {len(names)} holidays: {names}")
+                        duplicates_found = True
+                        results.fail("US 2026 Deduplication", f"Duplicate holidays on {date} for {country}: {names}")
+                
+                if not duplicates_found:
+                    results.success("US 2026 Deduplication - No duplicates found")
+                    print(f"  ✅ NO DUPLICATES: Each date+country combination has unique holidays")
+                
+                # Specific Good Friday verification
+                if good_friday_count == 1:
+                    results.success("Good Friday Deduplication - Appears exactly once")
+                    print(f"  ✅ GOOD FRIDAY: Appears exactly once (expected)")
+                elif good_friday_count == 0:
+                    results.fail("Good Friday Detection", "Good Friday not found in US 2026")
+                    print(f"  ⚠️  GOOD FRIDAY: Not found (may be expected if not a US holiday)")
+                else:
+                    results.fail("Good Friday Deduplication", f"Good Friday appears {good_friday_count} times")
+                    print(f"  ❌ GOOD FRIDAY: Appears {good_friday_count} times (should be 1 or 0)")
+                
+            else:
+                results.fail("US 2026 Request", f"Status code {response.status_code}")
+                print(f"  ❌ Failed: Status {response.status_code}")
+                
+    except Exception as e:
+        results.fail("US 2026 Deduplication Test", str(e))
+        print(f"  ❌ Error: {str(e)}")
+    
+    # Test 2: Multiple countries (US, TH) 2026 - Check for any duplicates
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            payload = {"countryCodes": ["US", "TH"], "year": 2026}
+            response = await client.post(f"{BACKEND_URL}/compare", json=payload)
+            
+            if response.status_code == 200:
+                data = response.json()
+                print(f"\n✓ US+TH 2026 response received - {len(data.get('holidays', []))} holiday groups")
+                
+                # Extract and analyze for duplicates
+                holidays_by_date_country = defaultdict(list)
+                total_holidays = 0
+                
+                for holiday_group in data.get("holidays", []):
+                    date = holiday_group.get("date")
+                    holidays_list = holiday_group.get("holidays", [])
+                    
+                    for holiday in holidays_list:
+                        country_code = holiday.get("countryCode", "")
+                        name = holiday.get("name", "")
+                        total_holidays += 1
+                        
+                        # Track for duplicate detection
+                        key = (date, country_code)
+                        holidays_by_date_country[key].append(name)
+                
+                print(f"  📊 Total holidays for US+TH 2026: {total_holidays}")
+                
+                # Check for duplicates
+                duplicates_found = False
+                for (date, country), names in holidays_by_date_country.items():
+                    if len(names) > 1:
+                        print(f"  ❌ DUPLICATE: {date} for {country} has {len(names)} holidays: {names}")
+                        duplicates_found = True
+                        results.fail("Multi-country Deduplication", f"Duplicate holidays on {date} for {country}: {names}")
+                
+                if not duplicates_found:
+                    results.success("Multi-country Deduplication - No duplicates found")
+                    print(f"  ✅ NO DUPLICATES: All holidays properly deduplicated")
+                
+            else:
+                results.fail("US+TH 2026 Request", f"Status code {response.status_code}")
+                print(f"  ❌ Failed: Status {response.status_code}")
+                
+    except Exception as e:
+        results.fail("Multi-country Deduplication Test", str(e))
+        print(f"  ❌ Error: {str(e)}")
+    
+    return results
 async def main():
     """Run all tests"""
     print(f"🚀 Starting Sync Holidays Backend API Tests")

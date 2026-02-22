@@ -33,6 +33,12 @@ A mobile iOS/Android app that shows and compares public holidays between countri
 ## Bugs Fixed
 - **P0 (2024-12)**: Duplicate holidays bug - Backend deduplication logic added to filter duplicate entries from Nager API
 
+## New Features Added
+- **Share Feature (2024-12)**: Users can share long weekend opportunities with friends via native Share API
+  - Individual share button on each long weekend card
+  - "Share All" button to share a summary of top long weekends
+  - Formatted messages include dates, holiday names, country flags, and app branding
+
 ## Pending Issues
 - **P1**: Android safe area/status bar issue (renders under status bar)
 - **P2**: App name shows "frontend" on Android device

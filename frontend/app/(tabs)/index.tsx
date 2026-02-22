@@ -459,7 +459,7 @@ export default function HomeScreen() {
                               <Text style={styles.holidayName}>{h.name}</Text>
                             </View>
                             <Text style={styles.holidayDate}>
-                              {formatHolidayDate(lw.startDate)}
+                              {formatHolidayDate(h.date || lw.startDate)}
                             </Text>
                           </View>
                         ))}

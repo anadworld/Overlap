@@ -475,6 +475,12 @@ async def main():
     all_results.failed += compare_results.failed
     all_results.errors.extend(compare_results.errors)
     
+    print("\n🔍 Testing Holiday Deduplication (CRITICAL FIX VERIFICATION)...")
+    dedup_results = await test_holiday_deduplication()
+    all_results.passed += dedup_results.passed
+    all_results.failed += dedup_results.failed
+    all_results.errors.extend(dedup_results.errors)
+    
     # Final summary
     success = all_results.summary()
     

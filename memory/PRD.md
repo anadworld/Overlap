@@ -7,6 +7,7 @@ A mobile iOS/Android app that shows and compares public holidays between countri
 - Select 1-5 countries and a year to view public holidays
 - Identify overlapping holidays between selected countries
 - Detect and display "long weekends" (holidays adjacent to weekends)
+- Share long weekend opportunities with friends
 
 ## Tech Stack
 - **Frontend**: React Native (Expo), TypeScript, Expo Router
@@ -22,26 +23,37 @@ A mobile iOS/Android app that shows and compares public holidays between countri
 - POST `/api/compare` - Compare holidays with deduplication, overlap detection, and long weekend detection
 - Caching layer with MongoDB
 
-### Frontend (`/app/frontend/app/`)
-- Two-tab navigation: Home (Overlap) and Settings
-- Country selector (1-5 countries)
-- Year selector
-- Holiday results with toggle for "All" vs "Long Weekends"
-- Complete Settings page with About, Terms, Privacy, Contact info
-- Custom app icon
+### Frontend - New UI (`/app/frontend/app/(tabs)/index.tsx`)
+- **Selection Bar**: Country flags + Year with "Edit" button
+- **Tabs with counts**: "Holidays (17)" and "Long Weekends (10)"
+- **Stats pills**: holidays, overlaps, long weekends badges
+- **Country legend**: Color-coded pills with flags
+- **Unified cards** combining holidays + long weekends:
+  - "Overlap" + "Bridge Day" badges
+  - Calendar day-by-day view (THU 1, FRI 2, SAT 3...)
+  - "HOLIDAYS INCLUDED" section with country flags and dates
+  - Yellow bridge day suggestions ("Take Friday off for 4-day weekend!")
+- **Share functionality**: Individual and bulk share for long weekends
+
+### Frontend - Settings (`/app/frontend/app/(tabs)/settings.tsx`)
+- About, Rate App, Share App (fixed for iOS/Android stores)
+- Help & FAQ, Contact Support (overlap@anadworld.com)
+- Terms of Use, Privacy Policy, Open Source Licenses
+- Version info and branding
 
 ## Bugs Fixed
-- **P0 (2024-12)**: Duplicate holidays bug - Backend deduplication logic added to filter duplicate entries from Nager API
+- **P0 (2024-12)**: Duplicate holidays bug - Backend deduplication logic
+- **Settings**: Fixed Rate App links for Apple App Store (ID: 6740092498) and Google Play Store
+- **Settings**: Fixed Share App to use native Share API with correct store URLs
+- **Settings**: Updated old "Holiday Compare" reference to "Overlap – Holiday Calendar"
 
-## New Features Added
-- **Share Feature (2024-12)**: Users can share long weekend opportunities with friends via native Share API
-  - Individual share button on each long weekend card
-  - "Share All" button to share a summary of top long weekends
-  - Formatted messages include dates, holiday names, country flags, and app branding
+## Configuration
+- **App Store ID**: 6740092498
+- **Play Store Package**: com.anadworld.overlap
+- **Contact Email**: overlap@anadworld.com
 
 ## Pending Issues
 - **P1**: Android safe area/status bar issue (renders under status bar)
-- **P2**: App name shows "frontend" on Android device
 - **P4**: Web preview country selector (deprioritized)
 
 ## Branding

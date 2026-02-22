@@ -1015,6 +1015,16 @@ const styles = StyleSheet.create({
     color: '#718096',
     marginTop: 2,
   },
+  countryDaysBreakdown: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 4,
+  },
+  countryDaysText: {
+    fontSize: 12,
+    color: '#7C9CBF',
+    fontWeight: '500',
+  },
   shareBtn: {
     padding: 8,
     backgroundColor: '#F0F9FF',

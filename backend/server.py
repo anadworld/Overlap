@@ -279,7 +279,8 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
                 type="consecutive",
                 description=f"{len(consecutive_dates)} consecutive holiday days!",
                 holidays=consecutive_holidays,
-                countries=all_countries
+                countries=all_countries,
+                isOverlap=is_overlap
             ))
             for d in consecutive_dates:
                 processed_dates.add(d)

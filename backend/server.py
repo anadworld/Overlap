@@ -143,7 +143,8 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
                     type="consecutive",
                     description=f"4-day weekend! Friday & Monday holidays",
                     holidays=all_holidays,
-                    countries=all_countries if is_overlap else countries_on_date
+                    countries=all_countries,
+                    isOverlap=is_overlap
                 ))
                 processed_dates.add(date_str)
                 processed_dates.add(monday_str)

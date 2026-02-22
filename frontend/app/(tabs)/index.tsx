@@ -429,6 +429,8 @@ export default function HomeScreen() {
                     const isOverlap = lw.isOverlap;
                     const dayRange = getDayRange(lw.startDate, lw.endDate);
                     const bridgeSuggestion = getBridgeDaySuggestion(lw);
+                    const countryBreakdown = getCountryDaysBreakdown(lw);
+                    const showBreakdown = hasVariedDays(lw);
                     
                     return (
                       <View key={`${lw.startDate}-${index}`} style={[styles.card, isOverlap && styles.cardOverlap]}>
@@ -472,6 +474,16 @@ export default function HomeScreen() {
                         <View style={styles.dateInfo}>
                           <Text style={styles.dateRange}>{formatDateRange(lw.startDate, lw.endDate)}</Text>
                           <Text style={styles.weekdayRange}>{getWeekdayRange(lw.startDate, lw.endDate)}</Text>
+                          {/* Per-country breakdown when days vary */}
+                          {showBreakdown && (
+                            <View style={styles.countryDaysBreakdown}>
+                              {countryBreakdown.map((cb, i) => (
+                                <Text key={i} style={styles.countryDaysText}>
+                                  {cb.flag} {cb.days}d
+                                </Text>
+                              ))}
+                            </View>
+                          )}
                         </View>
                         <TouchableOpacity 
                           style={styles.shareBtn}

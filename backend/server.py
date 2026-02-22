@@ -197,7 +197,7 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
             
             if friday_str in holidays_by_date:
                 # Thursday + Friday holidays + weekend = 4-day (no bridge needed!)
-                friday_holidays = holidays_by_date[friday_str]
+                friday_holidays = add_date_to_holidays(holidays_by_date[friday_str], friday_str)
                 all_holidays = holidays_info + friday_holidays
                 all_countries = list(set(countries_on_date + [h["countryCode"] for h in friday_holidays]))
                 end_date = date + timedelta(days=3)  # Sunday

@@ -60,6 +60,7 @@ interface LongWeekendOpportunity {
   description: string;
   holidays: HolidayDetail[];
   countries: string[];
+  isOverlap: boolean;
 }
 
 interface CompareResponse {

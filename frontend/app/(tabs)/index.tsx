@@ -575,9 +575,19 @@ export default function HomeScreen() {
             <>
               {comparisonResult.longWeekends && comparisonResult.longWeekends.length > 0 ? (
                 <View style={styles.longWeekendsContainer}>
-                  <Text style={styles.longWeekendsIntro}>
-                    Plan your vacations! Here are the best opportunities to maximize your time off:
-                  </Text>
+                  <View style={styles.longWeekendsHeader}>
+                    <Text style={styles.longWeekendsIntro}>
+                      Plan your vacations! Here are the best opportunities to maximize your time off:
+                    </Text>
+                    <TouchableOpacity 
+                      style={styles.shareAllButton}
+                      onPress={shareAllLongWeekends}
+                      data-testid="share-all-long-weekends-btn"
+                    >
+                      <Ionicons name="share-outline" size={18} color="#7C9CBF" />
+                      <Text style={styles.shareAllButtonText}>Share All</Text>
+                    </TouchableOpacity>
+                  </View>
                   {comparisonResult.longWeekends.map((lw, index) => {
                     const badgeColor = getTypeBadgeColor(lw.type);
                     return (
@@ -598,6 +608,13 @@ export default function HomeScreen() {
                               </Text>
                             </View>
                           </View>
+                          <TouchableOpacity 
+                            style={styles.shareButton}
+                            onPress={() => shareLongWeekend(lw)}
+                            data-testid={`share-long-weekend-${index}-btn`}
+                          >
+                            <Ionicons name="share-outline" size={20} color="#7C9CBF" />
+                          </TouchableOpacity>
                         </View>
                         
                         <Text style={styles.longWeekendDescription}>{lw.description}</Text>

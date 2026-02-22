@@ -773,37 +773,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
   },
-  tabRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 12,
-  },
-  tabPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#E8F0F8',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 24,
-    gap: 6,
-  },
-  tabPillActive: {
-    backgroundColor: '#7C9CBF',
-  },
-  tabPillActiveOrange: {
-    backgroundColor: '#D97706',
-  },
-  tabPillText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#7C9CBF',
-  },
-  tabPillTextOrange: {
-    color: '#D97706',
-  },
-  tabPillTextActive: {
-    color: '#FFFFFF',
-  },
   statsRow: {
     flexDirection: 'row',
     gap: 10,

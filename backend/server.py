@@ -218,10 +218,26 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
                 ))
                 processed_dates.add(date_str)
                 processed_dates.add(friday_str)
-            # If Thursday is a holiday but Friday is NOT, it's NOT a long weekend
-            # (user would need to take Friday off - that's NOT an automatic long weekend)
+            else:
+                # Thursday holiday only - suggest taking Friday off (Bridge Day)
+                end_date = date + timedelta(days=3)  # Sunday
+                is_overlap = check_true_overlap([date_str], holidays_by_date, selected_countries)
+                
+                opportunities.append(LongWeekendOpportunity(
+                    startDate=date_str,
+                    endDate=end_date.strftime("%Y-%m-%d"),
+                    totalDays=4,
+                    holidayDays=1,
+                    weekendDays=2,
+                    type="bridge",
+                    description=f"Take Friday off for a 4-day weekend!",
+                    holidays=holidays_info,
+                    countries=countries_on_date,
+                    isOverlap=is_overlap
+                ))
+                processed_dates.add(date_str)
         
-        # Check for Tuesday holiday - ONLY a long weekend if Monday is ALSO a holiday
+        # Check for Tuesday holiday - suggest taking Monday off (Bridge Day)
         elif day_of_week == 1:  # Tuesday
             monday = date - timedelta(days=1)
             monday_str = monday.strftime("%Y-%m-%d")
@@ -229,7 +245,24 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
             if monday_str in holidays_by_date:
                 # Already processed as part of Monday check or will be
                 continue
-            # If Tuesday is a holiday but Monday is NOT, it's NOT a long weekend
+            else:
+                # Tuesday holiday only - suggest taking Monday off (Bridge Day)
+                start_date = date - timedelta(days=3)  # Saturday
+                is_overlap = check_true_overlap([date_str], holidays_by_date, selected_countries)
+                
+                opportunities.append(LongWeekendOpportunity(
+                    startDate=start_date.strftime("%Y-%m-%d"),
+                    endDate=date_str,
+                    totalDays=4,
+                    holidayDays=1,
+                    weekendDays=2,
+                    type="bridge",
+                    description=f"Take Monday off for a 4-day weekend!",
+                    holidays=holidays_info,
+                    countries=countries_on_date,
+                    isOverlap=is_overlap
+                ))
+                processed_dates.add(date_str)
     
     # Check for consecutive holidays (3+ days in a row)
     for i, date_str in enumerate(sorted_dates):

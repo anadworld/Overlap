@@ -161,7 +161,8 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
                     type="long_weekend",
                     description=f"3-day weekend! Friday holiday",
                     holidays=holidays_info,
-                    countries=countries_on_date if is_overlap else countries_on_date
+                    countries=countries_on_date,
+                    isOverlap=is_overlap
                 ))
                 processed_dates.add(date_str)
         

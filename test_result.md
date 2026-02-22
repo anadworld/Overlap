@@ -149,6 +149,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "✅ PASSED - Compare endpoint working perfectly. Tested US vs GB 2025: Found 4 overlapping holidays correctly (New Year's Day, Good Friday, Memorial Day/Spring Bank Holiday). Response structure valid with proper overlap detection logic. Edge cases handled: single country (400), too many countries (400), invalid countries (200 graceful)."
+        - working: true
+          agent: "testing"
+          comment: "✅ DEDUPLICATION VERIFIED - Holiday deduplication fix working correctly. Good Friday appears exactly once on April 3, 2026 for US (no duplicates). Columbus Day and Indigenous Peoples' Day on Oct 12, 2026 are legitimately different holidays (not duplicates). No true duplicate entries found for US+TH 2026 comparison. Deduplication logic properly prevents same country+date+name combinations."
 
   - task: "Health check endpoint"
     implemented: true

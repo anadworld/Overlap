@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Comprehensive Backend API Tests for Sync Holidays App
-Tests all endpoints with focus on single country support for /api/compare
+Tests all endpoints with focus on holiday deduplication for /api/compare
 """
 
 import httpx
@@ -10,6 +10,7 @@ import json
 from datetime import datetime
 import sys
 import os
+from collections import defaultdict
 
 # Get backend URL from frontend/.env
 BACKEND_URL = "https://vacation-planner-48.preview.emergentagent.com/api"

@@ -849,18 +849,18 @@ const styles = StyleSheet.create({
   },
   statsRowFixed: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 8,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 8,
     backgroundColor: '#F8FAFC',
   },
   statCard: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 8,
-    borderRadius: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 6,
+    borderRadius: 12,
   },
   statCardBlue: {
     backgroundColor: '#E8F0F8',
@@ -881,7 +881,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   statCardValue: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: '300',
   },
   statCardValueBlue: {
@@ -894,8 +894,8 @@ const styles = StyleSheet.create({
     color: '#D97706',
   },
   statCardLabel: {
-    fontSize: 13,
-    marginTop: 4,
+    fontSize: 11,
+    marginTop: 2,
   },
   statCardLabelBlue: {
     color: '#7C9CBF',

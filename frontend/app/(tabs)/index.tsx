@@ -881,8 +881,8 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   statCardValue: {
-    fontSize: 24,
-    fontWeight: '300',
+    fontSize: 16,
+    fontWeight: '600',
   },
   statCardValueBlue: {
     color: '#7C9CBF',

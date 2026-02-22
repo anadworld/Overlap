@@ -314,14 +314,9 @@ export default function HomeScreen() {
 
       {/* Results */}
       {comparisonResult ? (
-        <ScrollView
-          style={styles.resultsContainer}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7C9CBF" />
-          }
-        >
-          {/* Clickable Stats Row - Navigation */}
-          <View style={styles.statsRow}>
+        <>
+          {/* Fixed Stats Row - Navigation */}
+          <View style={styles.statsRowFixed}>
             <TouchableOpacity 
               style={[styles.statBadge, activeTab === 'holidays' && styles.statBadgeActive]}
               onPress={() => setActiveTab('holidays')}
@@ -350,34 +345,40 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Country Legend */}
-          <View style={styles.legendContainer}>
-            {comparisonResult.countries.map((country, index) => (
-              <View key={country.countryCode} style={styles.legendItem}>
-                <View style={[styles.legendDot, { backgroundColor: COUNTRY_COLORS[index % COUNTRY_COLORS.length] }]} />
-                <Text style={styles.legendFlag}>{getCountryFlag(country.countryCode)}</Text>
-                <Text style={styles.legendText}>{country.name}</Text>
-              </View>
-            ))}
-          </View>
+          <ScrollView
+            style={styles.resultsContainer}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7C9CBF" />
+            }
+          >
+            {/* Country Legend */}
+            <View style={styles.legendContainer}>
+              {comparisonResult.countries.map((country, index) => (
+                <View key={country.countryCode} style={styles.legendItem}>
+                  <View style={[styles.legendDot, { backgroundColor: COUNTRY_COLORS[index % COUNTRY_COLORS.length] }]} />
+                  <Text style={styles.legendFlag}>{getCountryFlag(country.countryCode)}</Text>
+                  <Text style={styles.legendText}>{country.name}</Text>
+                </View>
+              ))}
+            </View>
 
-          {/* Long Weekends Tab */}
-          {activeTab === 'longweekends' && (
-            <View style={styles.cardsContainer}>
-              {comparisonResult.longWeekends && comparisonResult.longWeekends.length > 0 ? (
-                comparisonResult.longWeekends.map((lw, index) => {
-                  const isOverlap = lw.countries.length > 1;
-                  const dayRange = getDayRange(lw.startDate, lw.endDate);
-                  const bridgeSuggestion = getBridgeDaySuggestion(lw);
-                  
-                  return (
-                    <View key={`${lw.startDate}-${index}`} style={[styles.card, isOverlap && styles.cardOverlap]}>
-                      {/* Card Header */}
-                      <View style={styles.cardHeader}>
-                        {isOverlap && (
-                          <View style={styles.overlapBadge}>
-                            <Ionicons name="link" size={12} color="#FFF" />
-                            <Text style={styles.overlapBadgeText}>Overlap</Text>
+            {/* Long Weekends Tab */}
+            {activeTab === 'longweekends' && (
+              <View style={styles.cardsContainer}>
+                {comparisonResult.longWeekends && comparisonResult.longWeekends.length > 0 ? (
+                  comparisonResult.longWeekends.map((lw, index) => {
+                    const isOverlap = lw.countries.length > 1;
+                    const dayRange = getDayRange(lw.startDate, lw.endDate);
+                    const bridgeSuggestion = getBridgeDaySuggestion(lw);
+                    
+                    return (
+                      <View key={`${lw.startDate}-${index}`} style={[styles.card, isOverlap && styles.cardOverlap]}>
+                        {/* Card Header */}
+                        <View style={styles.cardHeader}>
+                          {isOverlap && (
+                            <View style={styles.overlapBadge}>
+                              <Ionicons name="link" size={12} color="#FFF" />
+                              <Text style={styles.overlapBadgeText}>Overlap</Text>
                           </View>
                         )}
                         <View style={{ flex: 1 }} />

@@ -107,6 +107,10 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
     sorted_dates = sorted(holidays_by_date.keys())
     processed_dates = set()
     
+    # Helper to add date to holiday info
+    def add_date_to_holidays(holidays: list, date_str: str) -> list:
+        return [{**h, "date": date_str} for h in holidays]
+    
     for date_str in sorted_dates:
         if date_str in processed_dates:
             continue
@@ -114,7 +118,7 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
         date = datetime.strptime(date_str, "%Y-%m-%d").date()
         day_of_week = date.weekday()  # 0=Monday, 6=Sunday
         
-        holidays_info = holidays_by_date[date_str]
+        holidays_info = add_date_to_holidays(holidays_by_date[date_str], date_str)
         countries_on_date = list(set(h["countryCode"] for h in holidays_info))
         
         # Check for Friday holiday (creates 3-day weekend: Fri + Sat + Sun)
@@ -127,7 +131,7 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
             
             if monday_str in holidays_by_date:
                 # Friday + Weekend + Monday = 4-day weekend
-                monday_holidays = holidays_by_date[monday_str]
+                monday_holidays = add_date_to_holidays(holidays_by_date[monday_str], monday_str)
                 all_holidays = holidays_info + monday_holidays
                 all_countries = list(set(countries_on_date + [h["countryCode"] for h in monday_holidays]))
                 

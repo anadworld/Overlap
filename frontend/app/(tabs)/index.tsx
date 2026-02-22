@@ -41,6 +41,7 @@ interface HolidayDetail {
   name: string;
   localName: string;
   types: string[];
+  date?: string;
 }
 
 interface HolidayWithCountries {

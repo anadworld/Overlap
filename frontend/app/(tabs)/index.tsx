@@ -849,7 +849,7 @@ const styles = StyleSheet.create({
   },
   statsRowFixed: {
     flexDirection: 'row',
-    gap: 6,
+    gap: Platform.OS === 'ios' ? 6 : 4,
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: '#F8FAFC',
@@ -860,10 +860,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F1F5F9',
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-    borderRadius: 20,
-    gap: 4,
+    paddingVertical: Platform.OS === 'ios' ? 8 : 6,
+    paddingHorizontal: Platform.OS === 'ios' ? 8 : 4,
+    borderRadius: 16,
+    gap: 3,
   },
   statBadgeActive: {
     backgroundColor: '#7C9CBF',

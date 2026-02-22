@@ -1032,15 +1032,16 @@ const styles = StyleSheet.create({
   },
   calendarDays: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 6,
     marginBottom: 14,
   },
   calendarDay: {
+    flex: 1,
     alignItems: 'center',
     paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 6,
     borderRadius: 8,
-    minWidth: 50,
+    minWidth: 44,
   },
   calendarDayHoliday: {
     backgroundColor: '#FEF3C7',

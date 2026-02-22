@@ -850,7 +850,7 @@ const styles = StyleSheet.create({
   statsRowFixed: {
     flexDirection: 'row',
     gap: Platform.OS === 'ios' ? 6 : 4,
-    paddingHorizontal: 16,
+    paddingHorizontal: Platform.OS === 'ios' ? 16 : 12,
     paddingVertical: 12,
     backgroundColor: '#F8FAFC',
   },

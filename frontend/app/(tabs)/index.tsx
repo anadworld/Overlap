@@ -136,6 +136,7 @@ export default function HomeScreen() {
       if (!response.ok) throw new Error('Failed to compare holidays');
       const data = await response.json();
       setComparisonResult(data);
+      setActiveTab('holidays'); // Reset to holidays tab on new search
     } catch (err) {
       setError('Failed to compare holidays. Please try again.');
       console.error('Error comparing holidays:', err);

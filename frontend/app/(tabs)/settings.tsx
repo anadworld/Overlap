@@ -428,7 +428,7 @@ export default function SettingsScreen() {
       {renderModal(showLicensesModal, () => setShowLicensesModal(false), 'Open Source Licenses', (
         <View>
           <Text style={styles.modalParagraph}>
-            Holiday Compare uses the following open source software:
+            Overlap – Holiday Calendar uses the following open source software:
           </Text>
           
           <Text style={styles.licenseTitle}>React Native</Text>

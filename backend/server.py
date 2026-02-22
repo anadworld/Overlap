@@ -73,6 +73,7 @@ class LongWeekendOpportunity(BaseModel):
     description: str
     holidays: List[Dict[str, Any]]
     countries: List[str]
+    isOverlap: bool = False  # True only when ALL selected countries have holidays on ALL dates
 
 class CompareResponse(BaseModel):
     year: int

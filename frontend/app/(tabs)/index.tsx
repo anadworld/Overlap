@@ -319,46 +319,34 @@ export default function HomeScreen() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7C9CBF" />
           }
         >
-          {/* Tab Switcher - Single Line Pills */}
-          <View style={styles.tabRow}>
-            <TouchableOpacity
-              style={[styles.tabPill, activeTab === 'holidays' && styles.tabPillActive]}
-              onPress={() => setActiveTab('holidays')}
-              data-testid="holidays-tab"
-            >
-              <Ionicons name="calendar-outline" size={16} color={activeTab === 'holidays' ? '#FFF' : '#7C9CBF'} />
-              <Text style={[styles.tabPillText, activeTab === 'holidays' && styles.tabPillTextActive]}>
-                Holidays ({totalHolidays})
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.tabPill, activeTab === 'longweekends' && styles.tabPillActiveOrange]}
-              onPress={() => setActiveTab('longweekends')}
-              data-testid="longweekends-tab"
-            >
-              <Ionicons name="sunny-outline" size={16} color={activeTab === 'longweekends' ? '#FFF' : '#D97706'} />
-              <Text style={[styles.tabPillText, styles.tabPillTextOrange, activeTab === 'longweekends' && styles.tabPillTextActive]}>
-                Long Weekends ({totalLongWeekends})
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Stats Row - Single Line */}
+          {/* Clickable Stats Row - Navigation */}
           <View style={styles.statsRow}>
-            <View style={styles.statBadge}>
-              <Text style={styles.statBadgeValue}>{totalHolidays}</Text>
-              <Text style={styles.statBadgeLabel}>holidays</Text>
-            </View>
+            <TouchableOpacity 
+              style={[styles.statBadge, activeTab === 'holidays' && styles.statBadgeActive]}
+              onPress={() => setActiveTab('holidays')}
+              data-testid="holidays-stat"
+            >
+              <Text style={[styles.statBadgeValue, activeTab === 'holidays' && styles.statBadgeValueActive]}>{totalHolidays}</Text>
+              <Text style={[styles.statBadgeLabel, activeTab === 'holidays' && styles.statBadgeLabelActive]}>holidays</Text>
+            </TouchableOpacity>
             {selectedCountries.length > 1 && (
-              <View style={[styles.statBadge, styles.statBadgeGreen]}>
-                <Text style={[styles.statBadgeValue, { color: '#059669' }]}>{totalOverlaps}</Text>
-                <Text style={[styles.statBadgeLabel, { color: '#059669' }]}>overlaps</Text>
-              </View>
+              <TouchableOpacity 
+                style={[styles.statBadge, styles.statBadgeGreen, activeTab === 'overlaps' && styles.statBadgeGreenActive]}
+                onPress={() => setActiveTab('overlaps')}
+                data-testid="overlaps-stat"
+              >
+                <Text style={[styles.statBadgeValue, { color: '#059669' }, activeTab === 'overlaps' && styles.statBadgeValueActiveGreen]}>{totalOverlaps}</Text>
+                <Text style={[styles.statBadgeLabel, { color: '#059669' }, activeTab === 'overlaps' && styles.statBadgeLabelActiveGreen]}>overlaps</Text>
+              </TouchableOpacity>
             )}
-            <View style={[styles.statBadge, styles.statBadgeOrange]}>
-              <Text style={[styles.statBadgeValue, { color: '#D97706' }]}>{totalLongWeekends}</Text>
-              <Text style={[styles.statBadgeLabel, { color: '#D97706' }]}>long weekends</Text>
-            </View>
+            <TouchableOpacity 
+              style={[styles.statBadge, styles.statBadgeOrange, activeTab === 'longweekends' && styles.statBadgeOrangeActive]}
+              onPress={() => setActiveTab('longweekends')}
+              data-testid="longweekends-stat"
+            >
+              <Text style={[styles.statBadgeValue, { color: '#D97706' }, activeTab === 'longweekends' && styles.statBadgeValueActiveOrange]}>{totalLongWeekends}</Text>
+              <Text style={[styles.statBadgeLabel, { color: '#D97706' }, activeTab === 'longweekends' && styles.statBadgeLabelActiveOrange]}>long weekends</Text>
+            </TouchableOpacity>
           </View>
 
           {/* Country Legend */}

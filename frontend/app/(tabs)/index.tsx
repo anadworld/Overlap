@@ -234,6 +234,63 @@ export default function HomeScreen() {
     return null;
   };
 
+  // Get per-country days breakdown
+  const getCountryDaysBreakdown = (lw: LongWeekendOpportunity): { country: string; flag: string; days: number }[] => {
+    // Group holidays by country
+    const holidaysByCountry: Record<string, Set<string>> = {};
+    
+    for (const h of lw.holidays) {
+      if (!holidaysByCountry[h.countryCode]) {
+        holidaysByCountry[h.countryCode] = new Set();
+      }
+      if (h.date) {
+        holidaysByCountry[h.countryCode].add(h.date);
+      }
+    }
+    
+    // Calculate days for each country (holidays + weekend days)
+    const breakdown: { country: string; flag: string; days: number }[] = [];
+    
+    for (const [countryCode, holidayDates] of Object.entries(holidaysByCountry)) {
+      // Find the actual span for this country
+      const dates = Array.from(holidayDates).sort();
+      if (dates.length === 0) continue;
+      
+      const firstHoliday = new Date(dates[0] + 'T00:00:00');
+      const lastHoliday = new Date(dates[dates.length - 1] + 'T00:00:00');
+      
+      // Extend to weekend
+      let startDate = new Date(firstHoliday);
+      let endDate = new Date(lastHoliday);
+      
+      // If last holiday is Friday, extend to Sunday
+      if (lastHoliday.getDay() === 5) {
+        endDate.setDate(endDate.getDate() + 2);
+      }
+      // If first holiday is Monday, extend back to Saturday  
+      if (firstHoliday.getDay() === 1) {
+        startDate.setDate(startDate.getDate() - 2);
+      }
+      
+      const totalDays = Math.round((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      
+      breakdown.push({
+        country: countryNameMap[countryCode] || countryCode,
+        flag: getCountryFlag(countryCode),
+        days: totalDays
+      });
+    }
+    
+    return breakdown.sort((a, b) => b.days - a.days);
+  };
+
+  // Check if countries have different days
+  const hasVariedDays = (lw: LongWeekendOpportunity): boolean => {
+    const breakdown = getCountryDaysBreakdown(lw);
+    if (breakdown.length < 2) return false;
+    return breakdown.some(b => b.days !== breakdown[0].days);
+  };
+
   // Share function
   const shareLongWeekend = async (lw: LongWeekendOpportunity) => {
     const countryFlags = [...new Set(lw.holidays.map(h => getCountryFlag(h.countryCode)))].join(' ');

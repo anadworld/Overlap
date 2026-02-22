@@ -382,7 +382,7 @@ export default function HomeScreen() {
               data-testid="holidays-stat"
             >
               <Text style={[styles.statBadgeValue, activeTab === 'holidays' && styles.statBadgeValueActive]}>{totalHolidays}</Text>
-              <Text style={[styles.statBadgeLabel, activeTab === 'holidays' && styles.statBadgeLabelActive]}>holidays</Text>
+              <Text style={[styles.statBadgeLabel, activeTab === 'holidays' && styles.statBadgeLabelActive]}>Holidays</Text>
             </TouchableOpacity>
             {selectedCountries.length > 1 && (
               <TouchableOpacity 
@@ -391,7 +391,7 @@ export default function HomeScreen() {
                 data-testid="overlaps-stat"
               >
                 <Text style={[styles.statBadgeValue, { color: '#059669' }, activeTab === 'overlaps' && styles.statBadgeValueActiveGreen]}>{totalOverlaps}</Text>
-                <Text style={[styles.statBadgeLabel, { color: '#059669' }, activeTab === 'overlaps' && styles.statBadgeLabelActiveGreen]}>overlaps</Text>
+                <Text style={[styles.statBadgeLabel, { color: '#059669' }, activeTab === 'overlaps' && styles.statBadgeLabelActiveGreen]}>Overlaps</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity 
@@ -400,7 +400,7 @@ export default function HomeScreen() {
               data-testid="longweekends-stat"
             >
               <Text style={[styles.statBadgeValue, { color: '#D97706' }, activeTab === 'longweekends' && styles.statBadgeValueActiveOrange]}>{totalLongWeekends}</Text>
-              <Text style={[styles.statBadgeLabel, { color: '#D97706' }, activeTab === 'longweekends' && styles.statBadgeLabelActiveOrange]}>long weekends</Text>
+              <Text style={[styles.statBadgeLabel, { color: '#D97706' }, activeTab === 'longweekends' && styles.statBadgeLabelActiveOrange]}>Long Weekends</Text>
             </TouchableOpacity>
           </View>
 

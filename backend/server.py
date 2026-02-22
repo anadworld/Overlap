@@ -405,14 +405,20 @@ async def compare_holidays(request: CompareRequest):
     holidays_by_date = defaultdict(list)
     
     for country_code, holidays in all_holidays.items():
+        # Track seen holidays per country to avoid duplicates
+        seen_holidays = set()
         for holiday in holidays:
             date = holiday["date"]
-            holidays_by_date[date].append({
-                "countryCode": country_code,
-                "name": holiday["name"],
-                "localName": holiday["localName"],
-                "types": holiday.get("types", [])
-            })
+            # Create a unique key for deduplication (country + date + name)
+            holiday_key = (country_code, date, holiday["name"])
+            if holiday_key not in seen_holidays:
+                seen_holidays.add(holiday_key)
+                holidays_by_date[date].append({
+                    "countryCode": country_code,
+                    "name": holiday["name"],
+                    "localName": holiday["localName"],
+                    "types": holiday.get("types", [])
+                })
     
     # Build response with overlap detection
     result_holidays = []

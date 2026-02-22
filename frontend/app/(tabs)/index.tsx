@@ -72,7 +72,6 @@ interface CompareResponse {
 
 // Color palette
 const COUNTRY_COLORS = ['#7C9CBF', '#8FBC8F', '#DDA0DD', '#F4A460', '#87CEEB'];
-const COUNTRY_BG_COLORS = ['#E8F0F8', '#E8F5E8', '#F5E8F5', '#FDF5E6', '#E8F8F8'];
 
 export default function HomeScreen() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -81,7 +80,7 @@ export default function HomeScreen() {
   const [comparisonResult, setComparisonResult] = useState<CompareResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCountries, setIsLoadingCountries] = useState(true);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -188,7 +187,7 @@ export default function HomeScreen() {
     return `${startMonth} ${startDay} - ${endMonth} ${endDay}`;
   };
 
-  const getDayRange = (startDate: string, endDate: string): { day: string; date: number; isHoliday: boolean; isWeekend: boolean }[] => {
+  const getDayRange = (startDate: string, endDate: string): { day: string; date: number; isWeekend: boolean }[] => {
     const days = [];
     const start = new Date(startDate + 'T00:00:00');
     const end = new Date(endDate + 'T00:00:00');
@@ -200,7 +199,6 @@ export default function HomeScreen() {
       days.push({
         day: dayNames[dayOfWeek],
         date: current.getDate(),
-        isHoliday: dayOfWeek !== 0 && dayOfWeek !== 6, // Simplified - mark weekdays as potential holidays
         isWeekend: dayOfWeek === 0 || dayOfWeek === 6,
       });
       current.setDate(current.getDate() + 1);
@@ -233,7 +231,7 @@ export default function HomeScreen() {
     return null;
   };
 
-  // Share functions
+  // Share function
   const shareLongWeekend = async (lw: LongWeekendOpportunity) => {
     const countryFlags = [...new Set(lw.holidays.map(h => getCountryFlag(h.countryCode)))].join(' ');
     const holidayNames = lw.holidays.map(h => `• ${h.name} (${getCountryFlag(h.countryCode)})`).join('\n');
@@ -252,9 +250,9 @@ export default function HomeScreen() {
     }
   };
 
-  // Year options
+  // Year options - extended range
   const currentYear = new Date().getFullYear();
-  const yearOptions = Array.from({ length: 6 }, (_, i) => currentYear - 2 + i);
+  const yearOptions = Array.from({ length: 12 }, (_, i) => currentYear - 2 + i);
 
   // Stats
   const totalHolidays = comparisonResult?.holidays.length || 0;
@@ -271,8 +269,13 @@ export default function HomeScreen() {
         <Text style={styles.headerSubtitle}>Find holidays & long weekends across countries</Text>
       </View>
 
-      {/* Selection Bar */}
-      <View style={styles.selectionBar}>
+      {/* Selection Bar - Tap to open country picker */}
+      <TouchableOpacity 
+        style={styles.selectionBar}
+        onPress={() => setShowCountryPicker(true)}
+        activeOpacity={0.7}
+        data-testid="selection-bar"
+      >
         <View style={styles.selectionInfo}>
           {selectedCountries.length > 0 ? (
             <View style={styles.selectedFlags}>
@@ -283,19 +286,22 @@ export default function HomeScreen() {
               ))}
             </View>
           ) : (
-            <Text style={styles.placeholderText}>Select countries</Text>
+            <Text style={styles.placeholderText}>Tap to select countries</Text>
           )}
-          <Text style={styles.yearText}>{selectedYear}</Text>
         </View>
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={() => setShowEditModal(true)}
-          data-testid="edit-selection-btn"
+        {/* Year Dropdown */}
+        <TouchableOpacity 
+          style={styles.yearDropdown}
+          onPress={(e) => {
+            e.stopPropagation();
+            setShowYearPicker(true);
+          }}
+          data-testid="year-dropdown"
         >
-          <Ionicons name="pencil" size={16} color="#7C9CBF" />
-          <Text style={styles.editButtonText}>Edit</Text>
+          <Text style={styles.yearText}>{selectedYear}</Text>
+          <Ionicons name="chevron-down" size={18} color="#7C9CBF" />
         </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
 
       {/* Error Message */}
       {error && (
@@ -313,45 +319,45 @@ export default function HomeScreen() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7C9CBF" />
           }
         >
-          {/* Tab Switcher */}
-          <View style={styles.tabContainer}>
+          {/* Tab Switcher - Single Line Pills */}
+          <View style={styles.tabRow}>
             <TouchableOpacity
-              style={[styles.tab, activeTab === 'holidays' && styles.tabActive]}
+              style={[styles.tabPill, activeTab === 'holidays' && styles.tabPillActive]}
               onPress={() => setActiveTab('holidays')}
               data-testid="holidays-tab"
             >
-              <Ionicons name="calendar-outline" size={18} color={activeTab === 'holidays' ? '#7C9CBF' : '#9CA3AF'} />
-              <Text style={[styles.tabText, activeTab === 'holidays' && styles.tabTextActive]}>
+              <Ionicons name="calendar-outline" size={16} color={activeTab === 'holidays' ? '#FFF' : '#7C9CBF'} />
+              <Text style={[styles.tabPillText, activeTab === 'holidays' && styles.tabPillTextActive]}>
                 Holidays ({totalHolidays})
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.tab, activeTab === 'longweekends' && styles.tabActive]}
+              style={[styles.tabPill, activeTab === 'longweekends' && styles.tabPillActiveOrange]}
               onPress={() => setActiveTab('longweekends')}
               data-testid="longweekends-tab"
             >
-              <Ionicons name="sunny-outline" size={18} color={activeTab === 'longweekends' ? '#D97706' : '#9CA3AF'} />
-              <Text style={[styles.tabText, activeTab === 'longweekends' && styles.tabTextActive]}>
+              <Ionicons name="sunny-outline" size={16} color={activeTab === 'longweekends' ? '#FFF' : '#D97706'} />
+              <Text style={[styles.tabPillText, styles.tabPillTextOrange, activeTab === 'longweekends' && styles.tabPillTextActive]}>
                 Long Weekends ({totalLongWeekends})
               </Text>
             </TouchableOpacity>
           </View>
 
-          {/* Stats Pills */}
-          <View style={styles.statsPills}>
-            <View style={styles.statPill}>
-              <Text style={styles.statPillValue}>{totalHolidays}</Text>
-              <Text style={styles.statPillLabel}>holidays</Text>
+          {/* Stats Row - Single Line */}
+          <View style={styles.statsRow}>
+            <View style={styles.statBadge}>
+              <Text style={styles.statBadgeValue}>{totalHolidays}</Text>
+              <Text style={styles.statBadgeLabel}>holidays</Text>
             </View>
             {selectedCountries.length > 1 && (
-              <View style={[styles.statPill, styles.statPillGreen]}>
-                <Text style={[styles.statPillValue, { color: '#059669' }]}>{totalOverlaps}</Text>
-                <Text style={[styles.statPillLabel, { color: '#059669' }]}>overlaps</Text>
+              <View style={[styles.statBadge, styles.statBadgeGreen]}>
+                <Text style={[styles.statBadgeValue, { color: '#059669' }]}>{totalOverlaps}</Text>
+                <Text style={[styles.statBadgeLabel, { color: '#059669' }]}>overlaps</Text>
               </View>
             )}
-            <View style={[styles.statPill, styles.statPillOrange]}>
-              <Text style={[styles.statPillValue, { color: '#D97706' }]}>{totalLongWeekends}</Text>
-              <Text style={[styles.statPillLabel, { color: '#D97706' }]}>long weekends</Text>
+            <View style={[styles.statBadge, styles.statBadgeOrange]}>
+              <Text style={[styles.statBadgeValue, { color: '#D97706' }]}>{totalLongWeekends}</Text>
+              <Text style={[styles.statBadgeLabel, { color: '#D97706' }]}>long weekends</Text>
             </View>
           </View>
 
@@ -379,14 +385,13 @@ export default function HomeScreen() {
                     <View key={`${lw.startDate}-${index}`} style={[styles.card, isOverlap && styles.cardOverlap]}>
                       {/* Card Header */}
                       <View style={styles.cardHeader}>
-                        <View style={styles.cardBadges}>
-                          {isOverlap && (
-                            <View style={styles.overlapBadge}>
-                              <Ionicons name="link" size={12} color="#FFF" />
-                              <Text style={styles.overlapBadgeText}>Overlap</Text>
-                            </View>
-                          )}
-                        </View>
+                        {isOverlap && (
+                          <View style={styles.overlapBadge}>
+                            <Ionicons name="link" size={12} color="#FFF" />
+                            <Text style={styles.overlapBadgeText}>Overlap</Text>
+                          </View>
+                        )}
+                        <View style={{ flex: 1 }} />
                         <View style={styles.cardTypeBadge}>
                           {lw.type === 'bridge' && (
                             <>
@@ -490,7 +495,7 @@ export default function HomeScreen() {
           {/* Holidays Tab */}
           {activeTab === 'holidays' && (
             <View style={styles.cardsContainer}>
-              {comparisonResult.holidays.map((holiday, index) => {
+              {comparisonResult.holidays.map((holiday) => {
                 const isOverlap = holiday.isOverlap;
                 return (
                   <View key={holiday.date} style={[styles.card, isOverlap && styles.cardOverlap]}>
@@ -524,7 +529,7 @@ export default function HomeScreen() {
           <View style={styles.bottomPadding} />
         </ScrollView>
       ) : (
-        /* Empty State - No Results Yet */
+        /* Empty State */
         <View style={styles.emptyStateContainer}>
           {isLoading ? (
             <ActivityIndicator size="large" color="#7C9CBF" />
@@ -533,11 +538,11 @@ export default function HomeScreen() {
               <Ionicons name="calendar" size={64} color="#CBD5E0" />
               <Text style={styles.emptyStateTitle}>Discover Holidays</Text>
               <Text style={styles.emptyStateText}>
-                Select 1-5 countries and tap Edit to find holidays and long weekend opportunities.
+                Tap above to select 1-5 countries and find holidays and long weekend opportunities.
               </Text>
               <TouchableOpacity
                 style={styles.getStartedButton}
-                onPress={() => setShowEditModal(true)}
+                onPress={() => setShowCountryPicker(true)}
                 data-testid="get-started-btn"
               >
                 <Text style={styles.getStartedButtonText}>Get Started</Text>
@@ -547,35 +552,16 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {/* Edit Modal */}
-      <Modal visible={showEditModal} animationType="slide" presentationStyle="pageSheet">
+      {/* Country Picker Modal */}
+      <Modal visible={showCountryPicker} animationType="slide" presentationStyle="pageSheet">
         <SafeAreaView style={styles.modalContainer} edges={['top', 'left', 'right']}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Select Countries & Year</Text>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setShowEditModal(false)}>
+            <Text style={styles.modalTitle}>Select Countries</Text>
+            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setShowCountryPicker(false)}>
               <Ionicons name="close" size={24} color="#4A5568" />
             </TouchableOpacity>
           </View>
 
-          {/* Year Selector in Modal */}
-          <View style={styles.yearSelector}>
-            <Text style={styles.yearSelectorLabel}>Year</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.yearOptions}>
-              {yearOptions.map((year) => (
-                <TouchableOpacity
-                  key={year}
-                  style={[styles.yearOption, year === selectedYear && styles.yearOptionSelected]}
-                  onPress={() => setSelectedYear(year)}
-                >
-                  <Text style={[styles.yearOptionText, year === selectedYear && styles.yearOptionTextSelected]}>
-                    {year}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-
-          {/* Country Selection */}
           <View style={styles.modalSubheader}>
             <Text style={styles.modalSubtitle}>{selectedCountries.length}/5 countries selected</Text>
             {selectedCountries.length > 0 && (
@@ -631,7 +617,7 @@ export default function HomeScreen() {
             <TouchableOpacity
               style={[styles.findButton, selectedCountries.length < 1 && styles.findButtonDisabled]}
               onPress={() => {
-                setShowEditModal(false);
+                setShowCountryPicker(false);
                 compareHolidays();
               }}
               disabled={selectedCountries.length < 1}
@@ -644,6 +630,39 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         </SafeAreaView>
+      </Modal>
+
+      {/* Year Picker Modal - Dropdown Style */}
+      <Modal visible={showYearPicker} animationType="fade" transparent>
+        <TouchableOpacity 
+          style={styles.yearPickerOverlay} 
+          activeOpacity={1} 
+          onPress={() => setShowYearPicker(false)}
+        >
+          <View style={styles.yearPickerContainer}>
+            <Text style={styles.yearPickerTitle}>Select Year</Text>
+            <ScrollView style={styles.yearPickerScroll} showsVerticalScrollIndicator={false}>
+              {yearOptions.map((year) => (
+                <TouchableOpacity
+                  key={year}
+                  style={[styles.yearOption, year === selectedYear && styles.yearOptionSelected]}
+                  onPress={() => {
+                    setSelectedYear(year);
+                    setShowYearPicker(false);
+                    if (selectedCountries.length > 0) {
+                      setTimeout(() => compareHolidays(), 100);
+                    }
+                  }}
+                >
+                  <Text style={[styles.yearOptionText, year === selectedYear && styles.yearOptionTextSelected]}>
+                    {year}
+                  </Text>
+                  {year === selectedYear && <Ionicons name="checkmark" size={20} color="#7C9CBF" />}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </TouchableOpacity>
       </Modal>
     </SafeAreaView>
   );
@@ -684,7 +703,7 @@ const styles = StyleSheet.create({
   selectionInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    flex: 1,
   },
   selectedFlags: {
     flexDirection: 'row',
@@ -697,12 +716,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#A0AEC0',
   },
-  yearText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2D3748',
-  },
-  editButton: {
+  yearDropdown: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F0F9FF',
@@ -711,8 +725,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     gap: 6,
   },
-  editButtonText: {
-    fontSize: 14,
+  yearText: {
+    fontSize: 16,
     fontWeight: '600',
     color: '#7C9CBF',
   },
@@ -735,41 +749,43 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
   },
-  tabContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  tab: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    borderRadius: 8,
-    gap: 6,
-  },
-  tabActive: {
-    backgroundColor: '#F0F9FF',
-  },
-  tabText: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#9CA3AF',
-  },
-  tabTextActive: {
-    color: '#4A5568',
-  },
-  statsPills: {
+  tabRow: {
     flexDirection: 'row',
     gap: 10,
     marginBottom: 12,
   },
-  statPill: {
+  tabPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E8F0F8',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 24,
+    gap: 6,
+  },
+  tabPillActive: {
+    backgroundColor: '#7C9CBF',
+  },
+  tabPillActiveOrange: {
+    backgroundColor: '#D97706',
+  },
+  tabPillText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#7C9CBF',
+  },
+  tabPillTextOrange: {
+    color: '#D97706',
+  },
+  tabPillTextActive: {
+    color: '#FFFFFF',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 12,
+  },
+  statBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F1F5F9',
@@ -778,18 +794,18 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     gap: 6,
   },
-  statPillGreen: {
+  statBadgeGreen: {
     backgroundColor: '#D1FAE5',
   },
-  statPillOrange: {
+  statBadgeOrange: {
     backgroundColor: '#FEF3C7',
   },
-  statPillValue: {
+  statBadgeValue: {
     fontSize: 15,
     fontWeight: '700',
     color: '#7C9CBF',
   },
-  statPillLabel: {
+  statBadgeLabel: {
     fontSize: 13,
     color: '#7C9CBF',
   },
@@ -840,13 +856,8 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
-  },
-  cardBadges: {
-    flexDirection: 'row',
-    gap: 8,
   },
   overlapBadge: {
     flexDirection: 'row',
@@ -1029,6 +1040,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#9CA3AF',
     marginTop: 12,
+    textAlign: 'center',
   },
   emptyStateContainer: {
     flex: 1,
@@ -1078,39 +1090,6 @@ const styles = StyleSheet.create({
   },
   modalCloseButton: {
     padding: 4,
-  },
-  yearSelector: {
-    padding: 16,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  yearSelectorLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#718096',
-    marginBottom: 10,
-  },
-  yearOptions: {
-    flexDirection: 'row',
-  },
-  yearOption: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginRight: 10,
-    backgroundColor: '#F1F5F9',
-  },
-  yearOptionSelected: {
-    backgroundColor: '#7C9CBF',
-  },
-  yearOptionText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#4A5568',
-  },
-  yearOptionTextSelected: {
-    color: '#FFFFFF',
   },
   modalSubheader: {
     flexDirection: 'row',
@@ -1198,5 +1177,49 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFF',
+  },
+  // Year Picker styles
+  yearPickerOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  yearPickerContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 20,
+    width: width * 0.8,
+    maxWidth: 300,
+    maxHeight: 400,
+  },
+  yearPickerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#2D3748',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  yearPickerScroll: {
+    maxHeight: 300,
+  },
+  yearOption: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  yearOptionSelected: {
+    backgroundColor: '#F0F9FF',
+  },
+  yearOptionText: {
+    fontSize: 16,
+    color: '#718096',
+  },
+  yearOptionTextSelected: {
+    color: '#7C9CBF',
+    fontWeight: '600',
   },
 });

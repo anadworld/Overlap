@@ -238,7 +238,7 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
             
         date = datetime.strptime(date_str, "%Y-%m-%d").date()
         consecutive_dates = [date_str]
-        consecutive_holidays = list(holidays_by_date[date_str])
+        consecutive_holidays = add_date_to_holidays(holidays_by_date[date_str], date_str)
         
         # Look ahead for consecutive days
         current_date = date
@@ -247,7 +247,7 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
             next_str = next_date.strftime("%Y-%m-%d")
             if next_str in holidays_by_date and next_str not in processed_dates:
                 consecutive_dates.append(next_str)
-                consecutive_holidays.extend(holidays_by_date[next_str])
+                consecutive_holidays.extend(add_date_to_holidays(holidays_by_date[next_str], next_str))
                 current_date = next_date
             else:
                 break

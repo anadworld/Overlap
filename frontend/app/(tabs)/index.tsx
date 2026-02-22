@@ -554,6 +554,7 @@ export default function HomeScreen() {
 
           <View style={styles.bottomPadding} />
         </ScrollView>
+        </>
       ) : (
         /* Empty State */
         <View style={styles.emptyStateContainer}>

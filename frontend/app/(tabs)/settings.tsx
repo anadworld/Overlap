@@ -9,6 +9,8 @@ import {
   Modal,
   Linking,
   Platform,
+  Share,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +18,10 @@ import Constants from 'expo-constants';
 
 const APP_VERSION = Constants.expoConfig?.version || '1.0.0';
 const BUILD_NUMBER = Constants.expoConfig?.ios?.buildNumber || Constants.expoConfig?.android?.versionCode || '1';
+
+// Store URLs - Update these with your actual App Store and Play Store IDs
+const APP_STORE_ID = '6740092498'; // Your Apple App Store ID
+const PLAY_STORE_PACKAGE = 'com.anadworld.overlap';
 
 interface SettingsItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -26,7 +32,7 @@ interface SettingsItemProps {
 }
 
 const SettingsItem: React.FC<SettingsItemProps> = ({ icon, title, subtitle, onPress, showArrow = true }) => (
-  <TouchableOpacity style={styles.settingsItem} onPress={onPress}>
+  <TouchableOpacity style={styles.settingsItem} onPress={onPress} data-testid={`settings-${title.toLowerCase().replace(/\s+/g, '-')}`}>
     <View style={styles.settingsItemIcon}>
       <Ionicons name={icon} size={22} color="#7C9CBF" />
     </View>
@@ -45,29 +51,50 @@ export default function SettingsScreen() {
   const [showLicensesModal, setShowLicensesModal] = useState(false);
 
   const handleRateApp = async () => {
-    const iosUrl = 'https://apps.apple.com/app/idXXXXXXXXX'; // Replace with actual App Store ID
-    const androidUrl = 'https://play.google.com/store/apps/details?id=com.holidaycompare'; // Replace with actual package name
+    let url: string;
+    
+    if (Platform.OS === 'ios') {
+      // iOS App Store URL
+      url = `itms-apps://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`;
+    } else {
+      // Google Play Store URL
+      url = `market://details?id=${PLAY_STORE_PACKAGE}`;
+    }
     
     try {
-      const url = Platform.OS === 'ios' ? iosUrl : androidUrl;
       const supported = await Linking.canOpenURL(url);
       if (supported) {
         await Linking.openURL(url);
+      } else {
+        // Fallback to web URLs
+        const webUrl = Platform.OS === 'ios' 
+          ? `https://apps.apple.com/app/id${APP_STORE_ID}`
+          : `https://play.google.com/store/apps/details?id=${PLAY_STORE_PACKAGE}`;
+        await Linking.openURL(webUrl);
       }
     } catch (error) {
       console.error('Error opening store:', error);
+      Alert.alert('Error', 'Unable to open the app store. Please try again later.');
     }
   };
 
   const handleContactSupport = () => {
-    Linking.openURL('mailto:overlap@anadworld.com?subject=Overlap Holiday Calendar Support');
+    Linking.openURL('mailto:overlap@anadworld.com?subject=Overlap – Holiday Calendar Support');
   };
 
   const handleShareApp = async () => {
-    // This would typically use expo-sharing or react-native-share
-    const message = 'Check out Overlap – Holiday Calendar - Compare public holidays across countries! https://overlap.anadworld.com';
+    const appStoreUrl = `https://apps.apple.com/app/id${APP_STORE_ID}`;
+    const playStoreUrl = `https://play.google.com/store/apps/details?id=${PLAY_STORE_PACKAGE}`;
+    
+    const message = Platform.OS === 'ios'
+      ? `Check out Overlap – Holiday Calendar! Find holidays & long weekends across countries.\n\n${appStoreUrl}`
+      : `Check out Overlap – Holiday Calendar! Find holidays & long weekends across countries.\n\n${playStoreUrl}`;
+    
     try {
-      await Linking.openURL(`sms:&body=${encodeURIComponent(message)}`);
+      await Share.share({
+        message,
+        title: 'Overlap – Holiday Calendar',
+      });
     } catch (error) {
       console.error('Error sharing:', error);
     }

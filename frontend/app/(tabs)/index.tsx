@@ -849,63 +849,62 @@ const styles = StyleSheet.create({
   },
   statsRowFixed: {
     flexDirection: 'row',
-    gap: Platform.OS === 'ios' ? 6 : 4,
-    paddingHorizontal: Platform.OS === 'ios' ? 16 : 12,
+    gap: 10,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: '#F8FAFC',
   },
-  statBadge: {
+  statCard: {
     flex: 1,
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F1F5F9',
-    paddingVertical: Platform.OS === 'ios' ? 8 : 6,
-    paddingHorizontal: Platform.OS === 'ios' ? 8 : 4,
+    paddingVertical: 16,
+    paddingHorizontal: 8,
     borderRadius: 16,
-    gap: 3,
   },
-  statBadgeActive: {
-    backgroundColor: '#7C9CBF',
+  statCardBlue: {
+    backgroundColor: '#E8F0F8',
   },
-  statBadgeGreen: {
+  statCardGreen: {
     backgroundColor: '#D1FAE5',
   },
-  statBadgeGreenActive: {
-    backgroundColor: '#059669',
-  },
-  statBadgeOrange: {
+  statCardOrange: {
     backgroundColor: '#FEF3C7',
   },
-  statBadgeOrangeActive: {
-    backgroundColor: '#D97706',
+  statCardActive: {
+    borderWidth: 2,
+    borderColor: '#4A5568',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  statBadgeValue: {
-    fontSize: Platform.OS === 'ios' ? 14 : 13,
-    fontWeight: '700',
+  statCardValue: {
+    fontSize: 32,
+    fontWeight: '300',
+  },
+  statCardValueBlue: {
     color: '#7C9CBF',
   },
-  statBadgeValueActive: {
-    color: '#FFFFFF',
+  statCardValueGreen: {
+    color: '#059669',
   },
-  statBadgeValueActiveGreen: {
-    color: '#FFFFFF',
+  statCardValueOrange: {
+    color: '#D97706',
   },
-  statBadgeValueActiveOrange: {
-    color: '#FFFFFF',
+  statCardLabel: {
+    fontSize: 13,
+    marginTop: 4,
   },
-  statBadgeLabel: {
-    fontSize: Platform.OS === 'ios' ? 11 : 9,
+  statCardLabelBlue: {
     color: '#7C9CBF',
   },
-  statBadgeLabelActive: {
-    color: '#FFFFFF',
+  statCardLabelGreen: {
+    color: '#059669',
   },
-  statBadgeLabelActiveGreen: {
-    color: '#FFFFFF',
-  },
-  statBadgeLabelActiveOrange: {
-    color: '#FFFFFF',
+  statCardLabelOrange: {
+    color: '#D97706',
   },
   legendContainer: {
     flexDirection: 'row',

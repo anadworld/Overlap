@@ -453,7 +453,7 @@ async def compare_holidays(request: CompareRequest):
         ))
     
     # Detect long weekend opportunities
-    long_weekends = detect_long_weekends(holidays_by_date, countries_map)
+    long_weekends = detect_long_weekends(holidays_by_date, countries_map, request.countryCodes)
     
     return CompareResponse(
         year=request.year,

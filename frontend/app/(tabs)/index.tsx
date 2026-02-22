@@ -776,10 +776,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
   },
-  statsRow: {
+  statsRowFixed: {
     flexDirection: 'row',
     gap: 10,
-    marginBottom: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#F8FAFC',
   },
   statBadge: {
     flexDirection: 'row',

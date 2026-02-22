@@ -258,6 +258,56 @@ export default function HomeScreen() {
     }
   };
 
+  // Share long weekend opportunity
+  const shareLongWeekend = async (lw: LongWeekendOpportunity) => {
+    const countryFlags = [...new Set(lw.holidays.map(h => getCountryFlag(h.countryCode)))].join(' ');
+    const holidayNames = lw.holidays.map(h => `• ${h.name} (${getCountryFlag(h.countryCode)})`).join('\n');
+    
+    const message = `🗓️ ${lw.totalDays}-Day Break Alert!\n\n` +
+      `📅 ${formatDateRange(lw.startDate, lw.endDate)}\n` +
+      `✨ ${lw.description}\n\n` +
+      `Holidays:\n${holidayNames}\n\n` +
+      `${countryFlags} Plan your getaway!\n\n` +
+      `Found with Overlap – Holiday Calendar`;
+
+    try {
+      await Share.share({
+        message,
+        title: `${lw.totalDays}-Day Long Weekend`,
+      });
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
+
+  // Share all long weekends summary
+  const shareAllLongWeekends = async () => {
+    if (!comparisonResult?.longWeekends?.length) return;
+    
+    const countryNames = comparisonResult.countries.map(c => 
+      `${getCountryFlag(c.countryCode)} ${c.name}`
+    ).join(', ');
+    
+    const weekendSummary = comparisonResult.longWeekends.slice(0, 5).map(lw => 
+      `• ${formatDateRange(lw.startDate, lw.endDate)} (${lw.totalDays} days)`
+    ).join('\n');
+    
+    const message = `🌴 Long Weekend Opportunities for ${selectedYear}!\n\n` +
+      `Countries: ${countryNames}\n\n` +
+      `Top opportunities:\n${weekendSummary}\n` +
+      `${comparisonResult.longWeekends.length > 5 ? `\n...and ${comparisonResult.longWeekends.length - 5} more!\n` : ''}\n` +
+      `Found with Overlap – Holiday Calendar`;
+
+    try {
+      await Share.share({
+        message,
+        title: `Long Weekends ${selectedYear}`,
+      });
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
+
   // Group holidays by month
   const groupedHolidays = comparisonResult?.holidays.reduce((acc, holiday) => {
     const month = getMonthName(holiday.date);

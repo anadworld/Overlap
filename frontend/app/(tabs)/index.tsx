@@ -881,7 +881,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D97706',
   },
   statBadgeValue: {
-    fontSize: 14,
+    fontSize: Platform.OS === 'ios' ? 14 : 13,
     fontWeight: '700',
     color: '#7C9CBF',
   },
@@ -895,7 +895,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   statBadgeLabel: {
-    fontSize: 11,
+    fontSize: Platform.OS === 'ios' ? 11 : 9,
     color: '#7C9CBF',
   },
   statBadgeLabelActive: {

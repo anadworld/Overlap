@@ -858,7 +858,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingVertical: Platform.OS === 'ios' ? 8 : 10,
     paddingHorizontal: 6,
     borderRadius: 12,
   },
@@ -881,7 +881,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   statCardValue: {
-    fontSize: 16,
+    fontSize: Platform.OS === 'ios' ? 14 : 16,
     fontWeight: '600',
   },
   statCardValueBlue: {
@@ -894,7 +894,7 @@ const styles = StyleSheet.create({
     color: '#D97706',
   },
   statCardLabel: {
-    fontSize: 11,
+    fontSize: Platform.OS === 'ios' ? 10 : 11,
     marginTop: 2,
   },
   statCardLabelBlue: {

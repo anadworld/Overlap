@@ -205,7 +205,7 @@ export default function SettingsScreen() {
         <View style={styles.versionContainer}>
           <Text style={styles.versionText}>Overlap – Holiday Calendar</Text>
           <Text style={styles.versionNumber}>Version {APP_VERSION} ({BUILD_NUMBER})</Text>
-          <Text style={styles.copyrightText}> 2026 Overlap – Holiday Calendar. All rights reserved.</Text>
+          <Text style={styles.copyrightText}>© 2026 Overlap – Holiday Calendar. All rights reserved.</Text>
         </View>
 
         <View style={styles.bottomPadding} />

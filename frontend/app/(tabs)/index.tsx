@@ -368,7 +368,7 @@ export default function HomeScreen() {
               <View style={styles.cardsContainer}>
                 {comparisonResult.longWeekends && comparisonResult.longWeekends.length > 0 ? (
                   comparisonResult.longWeekends.map((lw, index) => {
-                    const isOverlap = lw.countries.length > 1;
+                    const isOverlap = lw.isOverlap;
                     const dayRange = getDayRange(lw.startDate, lw.endDate);
                     const bridgeSuggestion = getBridgeDaySuggestion(lw);
                     

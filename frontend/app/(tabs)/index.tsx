@@ -85,7 +85,7 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'holidays' | 'overlaps' | 'longweekends'>('longweekends');
+  const [activeTab, setActiveTab] = useState<'holidays' | 'overlaps' | 'longweekends'>('holidays');
 
   // Country name map
   const countryNameMap = comparisonResult?.countries.reduce((acc, c) => {

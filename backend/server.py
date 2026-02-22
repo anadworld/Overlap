@@ -99,7 +99,7 @@ async def fetch_from_nager(endpoint: str) -> Any:
             raise HTTPException(status_code=response.status_code, detail="Error fetching data from holiday API")
 
 # Helper function to detect long weekend opportunities
-def detect_long_weekends(holidays_by_date: dict, countries_map: dict) -> List[LongWeekendOpportunity]:
+def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_countries: List[str]) -> List[LongWeekendOpportunity]:
     from datetime import timedelta
     
     opportunities = []
@@ -116,7 +116,7 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict) -> List[Lo
         holidays_info = holidays_by_date[date_str]
         countries_on_date = list(set(h["countryCode"] for h in holidays_info))
         
-        # Check for Friday holiday (long weekend: Sat, Sun included)
+        # Check for Friday holiday (creates 3-day weekend: Fri + Sat + Sun)
         if day_of_week == 4:  # Friday
             end_date = date + timedelta(days=2)  # Sunday
             
@@ -130,21 +130,26 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict) -> List[Lo
                 all_holidays = holidays_info + monday_holidays
                 all_countries = list(set(countries_on_date + [h["countryCode"] for h in monday_holidays]))
                 
+                # Check if it's a true overlap (all selected countries have holidays on both days)
+                is_overlap = check_true_overlap([date_str, monday_str], holidays_by_date, selected_countries)
+                
                 opportunities.append(LongWeekendOpportunity(
                     startDate=date_str,
                     endDate=monday_str,
                     totalDays=4,
                     holidayDays=2,
                     weekendDays=2,
-                    type="bridge",
+                    type="consecutive",
                     description=f"4-day weekend! Friday & Monday holidays",
                     holidays=all_holidays,
-                    countries=all_countries
+                    countries=all_countries if is_overlap else countries_on_date
                 ))
                 processed_dates.add(date_str)
                 processed_dates.add(monday_str)
             else:
                 # Just Friday holiday = 3-day weekend
+                is_overlap = check_true_overlap([date_str], holidays_by_date, selected_countries)
+                
                 opportunities.append(LongWeekendOpportunity(
                     startDate=date_str,
                     endDate=end_date.strftime("%Y-%m-%d"),
@@ -154,14 +159,16 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict) -> List[Lo
                     type="long_weekend",
                     description=f"3-day weekend! Friday holiday",
                     holidays=holidays_info,
-                    countries=countries_on_date
+                    countries=countries_on_date if is_overlap else countries_on_date
                 ))
                 processed_dates.add(date_str)
         
-        # Check for Monday holiday (long weekend: Sat, Sun before)
+        # Check for Monday holiday (creates 3-day weekend: Sat + Sun + Mon)
         elif day_of_week == 0:  # Monday
             if date_str not in processed_dates:
                 start_date = date - timedelta(days=2)  # Saturday
+                is_overlap = check_true_overlap([date_str], holidays_by_date, selected_countries)
+                
                 opportunities.append(LongWeekendOpportunity(
                     startDate=start_date.strftime("%Y-%m-%d"),
                     endDate=date_str,
@@ -175,17 +182,19 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict) -> List[Lo
                 ))
                 processed_dates.add(date_str)
         
-        # Check for Thursday holiday (potential bridge day on Friday)
+        # Check for Thursday holiday - ONLY a long weekend if Friday is ALSO a holiday
         elif day_of_week == 3:  # Thursday
             friday = date + timedelta(days=1)
             friday_str = friday.strftime("%Y-%m-%d")
             
             if friday_str in holidays_by_date:
-                # Thursday + Friday holidays + weekend = 4-day
+                # Thursday + Friday holidays + weekend = 4-day (no bridge needed!)
                 friday_holidays = holidays_by_date[friday_str]
                 all_holidays = holidays_info + friday_holidays
                 all_countries = list(set(countries_on_date + [h["countryCode"] for h in friday_holidays]))
                 end_date = date + timedelta(days=3)  # Sunday
+                
+                is_overlap = check_true_overlap([date_str, friday_str], holidays_by_date, selected_countries)
                 
                 opportunities.append(LongWeekendOpportunity(
                     startDate=date_str,
@@ -196,52 +205,28 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict) -> List[Lo
                     type="consecutive",
                     description=f"4-day weekend! Thursday & Friday holidays",
                     holidays=all_holidays,
-                    countries=all_countries
+                    countries=all_countries if is_overlap else all_countries
                 ))
                 processed_dates.add(date_str)
                 processed_dates.add(friday_str)
-            else:
-                # Thursday holiday with potential Friday bridge
-                end_date = date + timedelta(days=3)  # Sunday
-                opportunities.append(LongWeekendOpportunity(
-                    startDate=date_str,
-                    endDate=end_date.strftime("%Y-%m-%d"),
-                    totalDays=4,
-                    holidayDays=1,
-                    weekendDays=2,
-                    type="bridge",
-                    description=f"Take Friday off for 4-day weekend!",
-                    holidays=holidays_info,
-                    countries=countries_on_date
-                ))
-                processed_dates.add(date_str)
+            # If Thursday is a holiday but Friday is NOT, it's NOT a long weekend
+            # (user would need to take Friday off - that's NOT an automatic long weekend)
         
-        # Check for Tuesday holiday (potential Monday bridge)
+        # Check for Tuesday holiday - ONLY a long weekend if Monday is ALSO a holiday
         elif day_of_week == 1:  # Tuesday
             monday = date - timedelta(days=1)
             monday_str = monday.strftime("%Y-%m-%d")
             
             if monday_str in holidays_by_date:
-                # Already processed as part of Monday check
+                # Already processed as part of Monday check or will be
                 continue
-            else:
-                # Tuesday holiday with potential Monday bridge
-                start_date = date - timedelta(days=3)  # Saturday
-                opportunities.append(LongWeekendOpportunity(
-                    startDate=start_date.strftime("%Y-%m-%d"),
-                    endDate=date_str,
-                    totalDays=4,
-                    holidayDays=1,
-                    weekendDays=2,
-                    type="bridge",
-                    description=f"Take Monday off for 4-day weekend!",
-                    holidays=holidays_info,
-                    countries=countries_on_date
-                ))
-                processed_dates.add(date_str)
+            # If Tuesday is a holiday but Monday is NOT, it's NOT a long weekend
     
     # Check for consecutive holidays (3+ days in a row)
     for i, date_str in enumerate(sorted_dates):
+        if date_str in processed_dates:
+            continue
+            
         date = datetime.strptime(date_str, "%Y-%m-%d").date()
         consecutive_dates = [date_str]
         consecutive_holidays = list(holidays_by_date[date_str])
@@ -251,7 +236,7 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict) -> List[Lo
         while True:
             next_date = current_date + timedelta(days=1)
             next_str = next_date.strftime("%Y-%m-%d")
-            if next_str in holidays_by_date:
+            if next_str in holidays_by_date and next_str not in processed_dates:
                 consecutive_dates.append(next_str)
                 consecutive_holidays.extend(holidays_by_date[next_str])
                 current_date = next_date
@@ -259,54 +244,82 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict) -> List[Lo
                 break
         
         if len(consecutive_dates) >= 2:
-            # Check if this consecutive run wasn't already captured
-            all_processed = all(d in processed_dates for d in consecutive_dates)
-            if not all_processed:
-                all_countries = list(set(h["countryCode"] for h in consecutive_holidays))
-                first_date = datetime.strptime(consecutive_dates[0], "%Y-%m-%d").date()
-                last_date = datetime.strptime(consecutive_dates[-1], "%Y-%m-%d").date()
-                
-                # Check for adjacent weekends
-                first_day = first_date.weekday()
-                last_day = last_date.weekday()
-                
-                # Extend to include weekend before if starts on Monday
-                if first_day == 0:
-                    first_date = first_date - timedelta(days=2)
-                
-                # Extend to include weekend after if ends on Friday
-                if last_day == 4:
-                    last_date = last_date + timedelta(days=2)
-                
-                total_days = (last_date - first_date).days + 1
-                weekend_days = sum(1 for d in range(total_days) if (first_date + timedelta(days=d)).weekday() >= 5)
-                
-                opportunities.append(LongWeekendOpportunity(
-                    startDate=first_date.strftime("%Y-%m-%d"),
-                    endDate=last_date.strftime("%Y-%m-%d"),
-                    totalDays=total_days,
-                    holidayDays=len(consecutive_dates),
-                    weekendDays=weekend_days,
-                    type="consecutive",
-                    description=f"{len(consecutive_dates)} consecutive holiday days!",
-                    holidays=consecutive_holidays,
-                    countries=all_countries
-                ))
-                for d in consecutive_dates:
-                    processed_dates.add(d)
+            all_countries = list(set(h["countryCode"] for h in consecutive_holidays))
+            first_date = datetime.strptime(consecutive_dates[0], "%Y-%m-%d").date()
+            last_date = datetime.strptime(consecutive_dates[-1], "%Y-%m-%d").date()
+            
+            # Check for adjacent weekends
+            first_day = first_date.weekday()
+            last_day = last_date.weekday()
+            
+            # Extend to include weekend before if starts on Monday
+            if first_day == 0:
+                first_date = first_date - timedelta(days=2)
+            
+            # Extend to include weekend after if ends on Friday
+            if last_day == 4:
+                last_date = last_date + timedelta(days=2)
+            
+            total_days = (last_date - first_date).days + 1
+            weekend_days = sum(1 for d in range(total_days) if (first_date + timedelta(days=d)).weekday() >= 5)
+            
+            is_overlap = check_true_overlap(consecutive_dates, holidays_by_date, selected_countries)
+            
+            opportunities.append(LongWeekendOpportunity(
+                startDate=first_date.strftime("%Y-%m-%d"),
+                endDate=last_date.strftime("%Y-%m-%d"),
+                totalDays=total_days,
+                holidayDays=len(consecutive_dates),
+                weekendDays=weekend_days,
+                type="consecutive",
+                description=f"{len(consecutive_dates)} consecutive holiday days!",
+                holidays=consecutive_holidays,
+                countries=all_countries
+            ))
+            for d in consecutive_dates:
+                processed_dates.add(d)
     
     # Sort by total days descending, then by start date
     opportunities.sort(key=lambda x: (-x.totalDays, x.startDate))
     
-    # Remove duplicates based on start date
-    seen_starts = set()
+    # Remove duplicates based on overlapping date ranges
     unique_opportunities = []
+    covered_dates = set()
+    
     for opp in opportunities:
-        if opp.startDate not in seen_starts:
+        start = datetime.strptime(opp.startDate, "%Y-%m-%d").date()
+        end = datetime.strptime(opp.endDate, "%Y-%m-%d").date()
+        opp_dates = set()
+        current = start
+        while current <= end:
+            opp_dates.add(current.strftime("%Y-%m-%d"))
+            current += timedelta(days=1)
+        
+        # Check if this opportunity is already covered by a longer one
+        if not opp_dates.issubset(covered_dates):
             unique_opportunities.append(opp)
-            seen_starts.add(opp.startDate)
+            covered_dates.update(opp_dates)
     
     return unique_opportunities
+
+
+# Helper function to check if it's a TRUE overlap (all selected countries have holidays on ALL dates)
+def check_true_overlap(holiday_dates: List[str], holidays_by_date: dict, selected_countries: List[str]) -> bool:
+    if len(selected_countries) < 2:
+        return False
+    
+    # For each date, check which countries have holidays
+    for date_str in holiday_dates:
+        if date_str not in holidays_by_date:
+            return False
+        
+        countries_on_this_date = set(h["countryCode"] for h in holidays_by_date[date_str])
+        
+        # All selected countries must have a holiday on this date
+        if not all(c in countries_on_this_date for c in selected_countries):
+            return False
+    
+    return True
 
 # API Endpoints
 @api_router.get("/")

@@ -849,19 +849,21 @@ const styles = StyleSheet.create({
   },
   statsRowFixed: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 6,
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: '#F8FAFC',
   },
   statBadge: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#F1F5F9',
     paddingVertical: 8,
-    paddingHorizontal: 14,
+    paddingHorizontal: 8,
     borderRadius: 20,
-    gap: 6,
+    gap: 4,
   },
   statBadgeActive: {
     backgroundColor: '#7C9CBF',
@@ -879,7 +881,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D97706',
   },
   statBadgeValue: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
     color: '#7C9CBF',
   },
@@ -893,7 +895,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   statBadgeLabel: {
-    fontSize: 13,
+    fontSize: 11,
     color: '#7C9CBF',
   },
   statBadgeLabelActive: {

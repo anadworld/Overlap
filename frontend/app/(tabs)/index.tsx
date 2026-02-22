@@ -813,25 +813,52 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F1F5F9',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
     borderRadius: 20,
     gap: 6,
+  },
+  statBadgeActive: {
+    backgroundColor: '#7C9CBF',
   },
   statBadgeGreen: {
     backgroundColor: '#D1FAE5',
   },
+  statBadgeGreenActive: {
+    backgroundColor: '#059669',
+  },
   statBadgeOrange: {
     backgroundColor: '#FEF3C7',
+  },
+  statBadgeOrangeActive: {
+    backgroundColor: '#D97706',
   },
   statBadgeValue: {
     fontSize: 15,
     fontWeight: '700',
     color: '#7C9CBF',
   },
+  statBadgeValueActive: {
+    color: '#FFFFFF',
+  },
+  statBadgeValueActiveGreen: {
+    color: '#FFFFFF',
+  },
+  statBadgeValueActiveOrange: {
+    color: '#FFFFFF',
+  },
   statBadgeLabel: {
     fontSize: 13,
     color: '#7C9CBF',
+  },
+  statBadgeLabelActive: {
+    color: '#FFFFFF',
+  },
+  statBadgeLabelActiveGreen: {
+    color: '#FFFFFF',
+  },
+  statBadgeLabelActiveOrange: {
+    color: '#FFFFFF',
   },
   legendContainer: {
     flexDirection: 'row',

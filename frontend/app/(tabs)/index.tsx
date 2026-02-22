@@ -374,33 +374,33 @@ export default function HomeScreen() {
       {/* Results */}
       {comparisonResult ? (
         <>
-          {/* Fixed Stats Row - Navigation */}
+          {/* Fixed Stats Cards - Navigation */}
           <View style={styles.statsRowFixed}>
             <TouchableOpacity 
-              style={[styles.statBadge, activeTab === 'holidays' && styles.statBadgeActive]}
+              style={[styles.statCard, styles.statCardBlue, activeTab === 'holidays' && styles.statCardActive]}
               onPress={() => setActiveTab('holidays')}
               data-testid="holidays-stat"
             >
-              <Text style={[styles.statBadgeValue, activeTab === 'holidays' && styles.statBadgeValueActive]}>{totalHolidays}</Text>
-              <Text style={[styles.statBadgeLabel, activeTab === 'holidays' && styles.statBadgeLabelActive]}>Holidays</Text>
+              <Text style={[styles.statCardValue, styles.statCardValueBlue]}>{totalHolidays}</Text>
+              <Text style={[styles.statCardLabel, styles.statCardLabelBlue]}>holidays</Text>
             </TouchableOpacity>
             {selectedCountries.length > 1 && (
               <TouchableOpacity 
-                style={[styles.statBadge, styles.statBadgeGreen, activeTab === 'overlaps' && styles.statBadgeGreenActive]}
+                style={[styles.statCard, styles.statCardGreen, activeTab === 'overlaps' && styles.statCardActive]}
                 onPress={() => setActiveTab('overlaps')}
                 data-testid="overlaps-stat"
               >
-                <Text style={[styles.statBadgeValue, { color: '#059669' }, activeTab === 'overlaps' && styles.statBadgeValueActiveGreen]}>{totalOverlaps}</Text>
-                <Text style={[styles.statBadgeLabel, { color: '#059669' }, activeTab === 'overlaps' && styles.statBadgeLabelActiveGreen]}>Overlaps</Text>
+                <Text style={[styles.statCardValue, styles.statCardValueGreen]}>{totalOverlaps}</Text>
+                <Text style={[styles.statCardLabel, styles.statCardLabelGreen]}>overlaps</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity 
-              style={[styles.statBadge, styles.statBadgeOrange, activeTab === 'longweekends' && styles.statBadgeOrangeActive]}
+              style={[styles.statCard, styles.statCardOrange, activeTab === 'longweekends' && styles.statCardActive]}
               onPress={() => setActiveTab('longweekends')}
               data-testid="longweekends-stat"
             >
-              <Text style={[styles.statBadgeValue, { color: '#D97706' }, activeTab === 'longweekends' && styles.statBadgeValueActiveOrange]}>{totalLongWeekends}</Text>
-              <Text style={[styles.statBadgeLabel, { color: '#D97706' }, activeTab === 'longweekends' && styles.statBadgeLabelActiveOrange]}>Long Weekends</Text>
+              <Text style={[styles.statCardValue, styles.statCardValueOrange]}>{totalLongWeekends}</Text>
+              <Text style={[styles.statCardLabel, styles.statCardLabelOrange]}>long weekends</Text>
             </TouchableOpacity>
           </View>
 

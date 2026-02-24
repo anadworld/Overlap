@@ -15,91 +15,80 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
 - Backend: Python + FastAPI
 - External API: Nager.Date (no key required)
 - Database: MongoDB (caching + app config)
+- Notifications: expo-notifications (local scheduling)
 
 ## Architecture
 ```
 /app
 ├── backend/
-│   ├── .env
-│   ├── requirements.txt
 │   ├── server.py
 │   └── tests/
 └── frontend/
-    ├── .env
-    ├── app.json           ← newArchEnabled: true
-    ├── babel.config.js    ← babel-preset-expo + reanimated plugin
+    ├── app.json
+    ├── babel.config.js
     ├── eas.json
-    ├── credentials.json   ← Android keystore config
-    ├── overlap-release.keystore
-    ├── package.json
     ├── src/
-    │   ├── types.ts
-    │   ├── utils.ts
     │   ├── hooks/
     │   │   ├── useHolidayData.ts
     │   │   ├── useBookmarks.ts
-    │   │   └── useUpdateCheck.ts    ← NEW
-    │   ├── store/
-    │   │   └── pendingRestore.ts
-    │   └── components/
-    │       ├── UpdatePrompt.tsx      ← NEW
-    │       └── holiday/
-    │           ├── StatsBar.tsx
-    │           ├── CountryLegend.tsx
-    │           ├── HolidayCard.tsx
-    │           ├── LongWeekendCard.tsx
-    │           ├── SavedCard.tsx
-    │           ├── CountryPickerModal.tsx
-    │           └── YearPickerModal.tsx
+    │   │   ├── useUpdateCheck.ts
+    │   │   └── useNotifications.ts    ← NEW
+    │   ├── components/
+    │   │   ├── UpdatePrompt.tsx
+    │   │   └── holiday/
+    │   │       ├── StatsBar.tsx, CountryLegend.tsx
+    │   │       ├── HolidayCard.tsx, LongWeekendCard.tsx
+    │   │       ├── SavedCard.tsx
+    │   │       ├── CountryPickerModal.tsx
+    │   │       └── YearPickerModal.tsx
+    │   ├── store/pendingRestore.ts
+    │   ├── types.ts
+    │   └── utils.ts
     └── app/
-        ├── _layout.tsx    ← Integrates UpdatePrompt
+        ├── _layout.tsx
         └── (tabs)/
             ├── _layout.tsx
-            ├── index.tsx
-            ├── saved.tsx
-            └── settings.tsx
+            ├── index.tsx    ← schedules notifications on bookmark
+            ├── saved.tsx    ← cancels notifications on delete
+            └── settings.tsx ← notification preferences UI
 ```
 
 ## Key API Endpoints
 - `GET /api/countries` → list of available countries
-- `POST /api/compare` → `{ countryCodes, year }` → holidays, overlaps, long weekends
-- `GET /api/app-version` → latest version info for update checks
+- `POST /api/compare` → holidays, overlaps, long weekends
+- `GET /api/app-version` → latest version info
 - `PUT /api/app-version` → update latest version (admin)
 
 ## What's Been Implemented
-- Complex long weekend / bridge day / overlap detection
-- Per-country day breakdown on long weekend cards
-- Home screen with sticky filter cards (Holidays / Overlaps / Long Weekends)
-- Settings screen with About, Help & FAQ modals, legal info, version number
+- Holiday comparison with overlap/long weekend/bridge day detection
+- Home screen with filter cards, country/year pickers
+- Settings with About, FAQ, legal modals, version
 - Saved/Bookmark tab using AsyncStorage
-- Share functionality with platform-specific iOS fix
-- **Android production build (.aab) completed successfully**
-- **App update notification system** — checks backend for newer versions on launch, shows modal with "Update Now" / "Maybe Later"
+- Share functionality with iOS fix
+- App update notification system
+- **Holiday reminder notifications** — local push notifications for saved long weekends with configurable timing (1 day / 3 days / 1 week before)
+- Android production build (.aab) completed
 
 ## Changelog
 | Date | Change |
 |------|--------|
-| Feb 2026 | Set `newArchEnabled: true` in app.json |
-| Feb 2026 | Tab bar: replaced hardcoded Platform padding with `useSafeAreaInsets` |
-| Feb 2026 | Refactored index.tsx into 8 modular files |
-| Feb 2026 | Added Saved/Bookmark tab with AsyncStorage |
-| Feb 2026 | Created babel.config.js with babel-preset-expo + reanimated plugin |
-| Feb 2026 | Fixed Android build: added `babel-preset-expo` to devDependencies |
-| Feb 2026 | Fixed expo doctor: removed `minSdkVersion` from app.json, removed package-lock.json |
-| Feb 2026 | **Android production build SUCCEEDED** — .aab ready |
-| Feb 2026 | **App update notification system** — backend endpoint + frontend modal |
+| Feb 2026 | Initial app with holiday comparison, settings, bookmarks |
+| Feb 2026 | Android build fixes (babel-preset-expo, minSdkVersion, package-lock) |
+| Feb 2026 | **Android production build SUCCEEDED** |
+| Feb 2026 | App update notification system (version check + modal) |
+| Feb 2026 | **Holiday reminder notifications** — expo-notifications with Settings UI |
 
 ## Prioritised Backlog
-### P0 — Done
-- [x] Fix Android build (newArchEnabled, babel-preset-expo, minSdkVersion)
-- [x] Android production build (.aab) complete
+### Done
+- [x] Android production build
 - [x] App update notification system
+- [x] Holiday reminder notifications with Settings preferences
 
 ### P1 — Pending
-- [ ] iOS production build — requires Apple Developer credentials setup on Expo
+- [ ] iOS production build — requires Apple Developer credentials on Expo
 
 ### P2 — Pending User Verification
-- [ ] Share fix (iOS WhatsApp) — needs testing on physical device
+- [ ] Share fix (iOS WhatsApp) — needs physical device testing
 
-### Backlog / Future
+### Backlog
 - [ ] MongoDB cache indexes for backend performance

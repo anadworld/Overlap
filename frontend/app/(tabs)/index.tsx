@@ -16,6 +16,7 @@ import { useFocusEffect } from 'expo-router';
 
 import { useHolidayData } from '../../src/hooks/useHolidayData';
 import { useBookmarks } from '../../src/hooks/useBookmarks';
+import { useNotifications } from '../../src/hooks/useNotifications';
 import { CountryPickerModal } from '../../src/components/holiday/CountryPickerModal';
 import { YearPickerModal } from '../../src/components/holiday/YearPickerModal';
 import { StatsBar } from '../../src/components/holiday/StatsBar';

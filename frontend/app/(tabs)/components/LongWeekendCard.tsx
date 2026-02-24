@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     color: '#7C9CBF',
     fontWeight: '500',
   },
-  shareBtn: {
+  iconBtn: {
     padding: 8,
     backgroundColor: '#F0F9FF',
     borderRadius: 8,

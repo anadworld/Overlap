@@ -47,3 +47,7 @@ function TabLayoutContent() {
     </Tabs>
   );
 }
+
+export default function TabLayout() {
+  return <TabLayoutContent />;
+}

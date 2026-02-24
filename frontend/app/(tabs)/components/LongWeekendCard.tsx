@@ -121,7 +121,14 @@ export function LongWeekendCard({ lw, index, countryNameMap, getCountryColor, is
             </View>
           )}
         </View>
-        <TouchableOpacity style={styles.shareBtn} onPress={handleShare} data-testid={`share-lw-${index}`}>
+        <TouchableOpacity style={styles.iconBtn} onPress={onToggleBookmark} testID={`bookmark-lw-${index}`}>
+          <Ionicons
+            name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
+            size={20}
+            color={isBookmarked ? '#F59E0B' : '#7C9CBF'}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconBtn} onPress={handleShare} testID={`share-lw-${index}`}>
           <Ionicons name="share-outline" size={20} color="#7C9CBF" />
         </TouchableOpacity>
       </View>

@@ -225,30 +225,52 @@ export default function SettingsScreen() {
               />
             </View>
             {prefs.enabled && (
-              <View style={styles.timingContainer} testID="reminder-timing-section">
+              <View style={styles.timingRow} testID="reminder-timing-section">
                 <Text style={styles.timingLabel}>Remind me</Text>
-                <View style={styles.timingOptions}>
-                  {timingOptions.map((opt) => (
-                    <TouchableOpacity
-                      key={opt.value}
+                <TouchableOpacity
+                  style={styles.timingDropdown}
+                  onPress={() => setShowTimingDropdown(!showTimingDropdown)}
+                  testID="timing-dropdown-trigger"
+                >
+                  <Text style={styles.timingDropdownText}>
+                    {timingOptions.find((o) => o.value === prefs.timing)?.label}
+                  </Text>
+                  <Ionicons
+                    name={showTimingDropdown ? 'chevron-up' : 'chevron-down'}
+                    size={16}
+                    color="#7C9CBF"
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+            {prefs.enabled && showTimingDropdown && (
+              <View style={styles.timingMenu} testID="timing-dropdown-menu">
+                {timingOptions.map((opt) => (
+                  <TouchableOpacity
+                    key={opt.value}
+                    style={[
+                      styles.timingMenuItem,
+                      prefs.timing === opt.value && styles.timingMenuItemActive,
+                    ]}
+                    onPress={() => {
+                      handleTimingChange(opt.value);
+                      setShowTimingDropdown(false);
+                    }}
+                    testID={`timing-${opt.value}`}
+                  >
+                    <Text
                       style={[
-                        styles.timingChip,
-                        prefs.timing === opt.value && styles.timingChipActive,
+                        styles.timingMenuItemText,
+                        prefs.timing === opt.value && styles.timingMenuItemTextActive,
                       ]}
-                      onPress={() => handleTimingChange(opt.value)}
-                      testID={`timing-${opt.value}`}
                     >
-                      <Text
-                        style={[
-                          styles.timingChipText,
-                          prefs.timing === opt.value && styles.timingChipTextActive,
-                        ]}
-                      >
-                        {opt.label}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+                      {opt.label}
+                    </Text>
+                    {prefs.timing === opt.value && (
+                      <Ionicons name="checkmark" size={18} color="#7C9CBF" />
+                    )}
+                  </TouchableOpacity>
+                ))}
               </View>
             )}
           </View>

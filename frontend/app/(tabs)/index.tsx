@@ -1,328 +1,66 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  TextInput,
-  Modal,
   ActivityIndicator,
   StatusBar,
   RefreshControl,
   Platform,
-  Dimensions,
-  FlatList,
-  Share,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || '';
-const { width } = Dimensions.get('window');
-
-// Country flag emoji helper
-const getCountryFlag = (countryCode: string): string => {
-  const codePoints = countryCode
-    .toUpperCase()
-    .split('')
-    .map((char) => 127397 + char.charCodeAt(0));
-  return String.fromCodePoint(...codePoints);
-};
-
-// Types
-interface Country {
-  countryCode: string;
-  name: string;
-}
-
-interface HolidayDetail {
-  countryCode: string;
-  name: string;
-  localName: string;
-  types: string[];
-  date?: string;
-}
-
-interface HolidayWithCountries {
-  date: string;
-  holidays: HolidayDetail[];
-  isOverlap: boolean;
-  countries: string[];
-}
-
-interface LongWeekendOpportunity {
-  startDate: string;
-  endDate: string;
-  totalDays: number;
-  holidayDays: number;
-  weekendDays: number;
-  type: string;
-  description: string;
-  holidays: HolidayDetail[];
-  countries: string[];
-  isOverlap: boolean;
-}
-
-interface CompareResponse {
-  year: number;
-  countries: Country[];
-  holidays: HolidayWithCountries[];
-  totalOverlaps: number;
-  longWeekends: LongWeekendOpportunity[];
-}
-
-// Color palette
-const COUNTRY_COLORS = ['#7C9CBF', '#8FBC8F', '#DDA0DD', '#F4A460', '#87CEEB'];
+import { useHolidayData } from './hooks/useHolidayData';
+import { CountryPickerModal } from './components/CountryPickerModal';
+import { YearPickerModal } from './components/YearPickerModal';
+import { StatsBar } from './components/StatsBar';
+import { CountryLegend } from './components/CountryLegend';
+import { HolidayCard } from './components/HolidayCard';
+import { LongWeekendCard } from './components/LongWeekendCard';
+import { getCountryFlag, COUNTRY_COLORS } from './utils';
 
 export default function HomeScreen() {
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [selectedCountries, setSelectedCountries] = useState<Country[]>([]);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [comparisonResult, setComparisonResult] = useState<CompareResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingCountries, setIsLoadingCountries] = useState(true);
+  const {
+    countries,
+    selectedCountries,
+    setSelectedCountries,
+    selectedYear,
+    setSelectedYear,
+    comparisonResult,
+    isLoading,
+    error,
+    refreshing,
+    activeTab,
+    setActiveTab,
+    compareHolidays,
+    toggleCountry,
+    onRefresh,
+  } = useHolidayData();
+
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'holidays' | 'overlaps' | 'longweekends'>('holidays');
 
-  // Country name map
-  const countryNameMap = comparisonResult?.countries.reduce((acc, c) => {
-    acc[c.countryCode] = c.name;
-    return acc;
-  }, {} as Record<string, string>) || {};
-
-  // Fetch countries
-  const fetchCountries = useCallback(async () => {
-    try {
-      setIsLoadingCountries(true);
-      setError(null);
-      const response = await fetch(`${BACKEND_URL}/api/countries`);
-      if (!response.ok) throw new Error('Failed to fetch countries');
-      const data = await response.json();
-      setCountries(data);
-    } catch (err) {
-      setError('Failed to load countries. Please try again.');
-      console.error('Error fetching countries:', err);
-    } finally {
-      setIsLoadingCountries(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchCountries();
-  }, [fetchCountries]);
-
-  // Compare holidays
-  const compareHolidays = async () => {
-    if (selectedCountries.length < 1) {
-      setError('Please select at least 1 country');
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await fetch(`${BACKEND_URL}/api/compare`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          countryCodes: selectedCountries.map((c) => c.countryCode),
-          year: selectedYear,
-        }),
-      });
-
-      if (!response.ok) throw new Error('Failed to compare holidays');
-      const data = await response.json();
-      setComparisonResult(data);
-      setActiveTab('holidays'); // Reset to holidays tab on new search
-    } catch (err) {
-      setError('Failed to compare holidays. Please try again.');
-      console.error('Error comparing holidays:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    if (selectedCountries.length >= 1) {
-      await compareHolidays();
-    }
-    setRefreshing(false);
-  };
-
-  const toggleCountry = (country: Country) => {
-    const isSelected = selectedCountries.find((c) => c.countryCode === country.countryCode);
-    if (isSelected) {
-      setSelectedCountries(selectedCountries.filter((c) => c.countryCode !== country.countryCode));
-    } else if (selectedCountries.length < 5) {
-      setSelectedCountries([...selectedCountries, country]);
-    }
-  };
-
-  const filteredCountries = countries.filter(
-    (c) =>
-      c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.countryCode.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const getCountryColor = (countryCode: string): string => {
-    const index = comparisonResult?.countries.findIndex((c) => c.countryCode === countryCode) || 0;
-    return COUNTRY_COLORS[index % COUNTRY_COLORS.length];
-  };
-
-  // Format date helpers
-  const formatDateRange = (startDate: string, endDate: string): string => {
-    const start = new Date(startDate + 'T00:00:00');
-    const end = new Date(endDate + 'T00:00:00');
-    const startMonth = start.toLocaleDateString('en-US', { month: 'short' });
-    const endMonth = end.toLocaleDateString('en-US', { month: 'short' });
-    const startDay = start.getDate();
-    const endDay = end.getDate();
-    
-    if (startMonth === endMonth) {
-      return `${startMonth} ${startDay}-${endDay}`;
-    }
-    return `${startMonth} ${startDay} - ${endMonth} ${endDay}`;
-  };
-
-  const getDayRange = (startDate: string, endDate: string): { day: string; date: number; isWeekend: boolean }[] => {
-    const days = [];
-    const start = new Date(startDate + 'T00:00:00');
-    const end = new Date(endDate + 'T00:00:00');
-    const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-    
-    let current = new Date(start);
-    while (current <= end) {
-      const dayOfWeek = current.getDay();
-      days.push({
-        day: dayNames[dayOfWeek],
-        date: current.getDate(),
-        isWeekend: dayOfWeek === 0 || dayOfWeek === 6,
-      });
-      current.setDate(current.getDate() + 1);
-    }
-    return days;
-  };
-
-  const getWeekdayRange = (startDate: string, endDate: string): string => {
-    const start = new Date(startDate + 'T00:00:00');
-    const end = new Date(endDate + 'T00:00:00');
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    return `${dayNames[start.getDay()]} to ${dayNames[end.getDay()]}`;
-  };
-
-  const formatHolidayDate = (dateStr: string): string => {
-    const date = new Date(dateStr + 'T00:00:00');
-    return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-  };
-
-  // Get bridge day suggestion
-  const getBridgeDaySuggestion = (lw: LongWeekendOpportunity): string | null => {
-    if (lw.type === 'bridge') {
-      if (lw.description.includes('Friday')) {
-        return `Take Friday off for ${lw.totalDays}-day weekend!`;
-      } else if (lw.description.includes('Monday')) {
-        return `Take Monday off for ${lw.totalDays}-day weekend!`;
-      }
-      return lw.description;
-    }
-    return null;
-  };
-
-  // Get per-country days breakdown
-  const getCountryDaysBreakdown = (lw: LongWeekendOpportunity): { country: string; flag: string; days: number }[] => {
-    // Group holidays by country
-    const holidaysByCountry: Record<string, Set<string>> = {};
-    
-    for (const h of lw.holidays) {
-      if (!holidaysByCountry[h.countryCode]) {
-        holidaysByCountry[h.countryCode] = new Set();
-      }
-      if (h.date) {
-        holidaysByCountry[h.countryCode].add(h.date);
-      }
-    }
-    
-    // Calculate days for each country (holidays + weekend days)
-    const breakdown: { country: string; flag: string; days: number }[] = [];
-    
-    for (const [countryCode, holidayDates] of Object.entries(holidaysByCountry)) {
-      // Find the actual span for this country
-      const dates = Array.from(holidayDates).sort();
-      if (dates.length === 0) continue;
-      
-      const firstHoliday = new Date(dates[0] + 'T00:00:00');
-      const lastHoliday = new Date(dates[dates.length - 1] + 'T00:00:00');
-      
-      // Extend to weekend
-      let startDate = new Date(firstHoliday);
-      let endDate = new Date(lastHoliday);
-      
-      // If last holiday is Friday, extend to Sunday
-      if (lastHoliday.getDay() === 5) {
-        endDate.setDate(endDate.getDate() + 2);
-      }
-      // If first holiday is Monday, extend back to Saturday  
-      if (firstHoliday.getDay() === 1) {
-        startDate.setDate(startDate.getDate() - 2);
-      }
-      
-      const totalDays = Math.round((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      
-      breakdown.push({
-        country: countryNameMap[countryCode] || countryCode,
-        flag: getCountryFlag(countryCode),
-        days: totalDays
-      });
-    }
-    
-    return breakdown.sort((a, b) => b.days - a.days);
-  };
-
-  // Check if countries have different days
-  const hasVariedDays = (lw: LongWeekendOpportunity): boolean => {
-    const breakdown = getCountryDaysBreakdown(lw);
-    if (breakdown.length < 2) return false;
-    return breakdown.some(b => b.days !== breakdown[0].days);
-  };
-
-  // Share function
-  const shareLongWeekend = async (lw: LongWeekendOpportunity) => {
-    const countryNames = [...new Set(lw.holidays.map(h => countryNameMap[h.countryCode] || h.countryCode))].join(', ');
-    const holidayLines = lw.holidays.map(h => `- ${h.name} (${countryNameMap[h.countryCode] || h.countryCode})`).join('\n');
-    const bridgeLine = lw.type === 'bridge' ? `\nTip: ${lw.description}` : '';
-
-    const shareText =
-      `${lw.totalDays}-Day Weekend: ${formatDateRange(lw.startDate, lw.endDate)}\n` +
-      `${getWeekdayRange(lw.startDate, lw.endDate)}\n\n` +
-      `Countries: ${countryNames}\n\n` +
-      `Holidays:\n${holidayLines}` +
-      bridgeLine +
-      `\n\nFound with Overlap - Holiday Calendar`;
-
-    try {
-      await Share.share({
-        message: shareText,
-        title: 'Overlap - Holiday Calendar',
-      });
-    } catch (error) {
-      console.error('Error sharing:', error);
-    }
-  };
-
-  // Year options - extended range
   const currentYear = new Date().getFullYear();
   const yearOptions = Array.from({ length: 12 }, (_, i) => currentYear - 2 + i);
 
-  // Stats
+  const countryNameMap =
+    comparisonResult?.countries.reduce((acc, c) => {
+      acc[c.countryCode] = c.name;
+      return acc;
+    }, {} as Record<string, string>) || {};
+
+  const getCountryColor = (code: string) => {
+    const index = comparisonResult?.countries.findIndex((c) => c.countryCode === code) ?? 0;
+    return COUNTRY_COLORS[Math.max(index, 0) % COUNTRY_COLORS.length];
+  };
+
   const totalHolidays = comparisonResult?.holidays.length || 0;
   const totalOverlaps = comparisonResult?.totalOverlaps || 0;
   const totalLongWeekends = comparisonResult?.longWeekends?.length || 0;
+  const overlappingHolidays = comparisonResult?.holidays.filter((h) => h.isOverlap) || [];
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
@@ -334,8 +72,8 @@ export default function HomeScreen() {
         <Text style={styles.headerSubtitle}>Find holidays & long weekends across countries</Text>
       </View>
 
-      {/* Selection Bar - Tap to open country picker */}
-      <TouchableOpacity 
+      {/* Selection Bar */}
+      <TouchableOpacity
         style={styles.selectionBar}
         onPress={() => setShowCountryPicker(true)}
         activeOpacity={0.7}
@@ -354,8 +92,7 @@ export default function HomeScreen() {
             <Text style={styles.placeholderText}>Tap to select countries</Text>
           )}
         </View>
-        {/* Year Dropdown */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.yearDropdown}
           onPress={(e) => {
             e.stopPropagation();
@@ -368,7 +105,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </TouchableOpacity>
 
-      {/* Error Message */}
+      {/* Error */}
       {error && (
         <View style={styles.errorContainer}>
           <Ionicons name="alert-circle" size={20} color="#E57373" />
@@ -379,35 +116,14 @@ export default function HomeScreen() {
       {/* Results */}
       {comparisonResult ? (
         <>
-          {/* Fixed Stats Cards - Navigation */}
-          <View style={styles.statsRowFixed}>
-            <TouchableOpacity 
-              style={[styles.statCard, styles.statCardBlue, activeTab === 'holidays' && styles.statCardActive]}
-              onPress={() => setActiveTab('holidays')}
-              data-testid="holidays-stat"
-            >
-              <Text style={[styles.statCardValue, styles.statCardValueBlue]}>{totalHolidays}</Text>
-              <Text style={[styles.statCardLabel, styles.statCardLabelBlue]}>holidays</Text>
-            </TouchableOpacity>
-            {selectedCountries.length > 1 && (
-              <TouchableOpacity 
-                style={[styles.statCard, styles.statCardGreen, activeTab === 'overlaps' && styles.statCardActive]}
-                onPress={() => setActiveTab('overlaps')}
-                data-testid="overlaps-stat"
-              >
-                <Text style={[styles.statCardValue, styles.statCardValueGreen]}>{totalOverlaps}</Text>
-                <Text style={[styles.statCardLabel, styles.statCardLabelGreen]}>overlaps</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity 
-              style={[styles.statCard, styles.statCardOrange, activeTab === 'longweekends' && styles.statCardActive]}
-              onPress={() => setActiveTab('longweekends')}
-              data-testid="longweekends-stat"
-            >
-              <Text style={[styles.statCardValue, styles.statCardValueOrange]}>{totalLongWeekends}</Text>
-              <Text style={[styles.statCardLabel, styles.statCardLabelOrange]}>long weekends</Text>
-            </TouchableOpacity>
-          </View>
+          <StatsBar
+            totalHolidays={totalHolidays}
+            totalOverlaps={totalOverlaps}
+            totalLongWeekends={totalLongWeekends}
+            activeTab={activeTab}
+            selectedCountries={selectedCountries}
+            onTabChange={setActiveTab}
+          />
 
           <ScrollView
             style={styles.resultsContainer}
@@ -415,224 +131,66 @@ export default function HomeScreen() {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7C9CBF" />
             }
           >
-            {/* Country Legend */}
-            <View style={styles.legendContainer}>
-              {comparisonResult.countries.map((country, index) => (
-                <View key={country.countryCode} style={styles.legendItem}>
-                  <View style={[styles.legendDot, { backgroundColor: COUNTRY_COLORS[index % COUNTRY_COLORS.length] }]} />
-                  <Text style={styles.legendFlag}>{getCountryFlag(country.countryCode)}</Text>
-                  <Text style={styles.legendText}>{country.name}</Text>
-                </View>
-              ))}
-            </View>
+            <CountryLegend countries={comparisonResult.countries} />
 
-            {/* Long Weekends Tab */}
             {activeTab === 'longweekends' && (
               <View style={styles.cardsContainer}>
-                {comparisonResult.longWeekends && comparisonResult.longWeekends.length > 0 ? (
-                  comparisonResult.longWeekends.map((lw, index) => {
-                    const isOverlap = lw.isOverlap;
-                    const dayRange = getDayRange(lw.startDate, lw.endDate);
-                    const bridgeSuggestion = getBridgeDaySuggestion(lw);
-                    const countryBreakdown = getCountryDaysBreakdown(lw);
-                    const showBreakdown = hasVariedDays(lw);
-                    
-                    return (
-                      <View key={`${lw.startDate}-${index}`} style={[styles.card, isOverlap && styles.cardOverlap]}>
-                        {/* Card Header */}
-                        <View style={styles.cardHeader}>
-                          {isOverlap && (
-                            <View style={styles.overlapBadge}>
-                              <Ionicons name="link" size={12} color="#FFF" />
-                              <Text style={styles.overlapBadgeText}>Overlap</Text>
-                          </View>
-                        )}
-                        <View style={{ flex: 1 }} />
-                        <View style={styles.cardTypeBadge}>
-                          {lw.type === 'bridge' && (
-                            <>
-                              <Ionicons name="flash" size={12} color="#D97706" />
-                              <Text style={styles.cardTypeBadgeText}>Bridge Day</Text>
-                            </>
-                          )}
-                          {lw.type === 'consecutive' && (
-                            <>
-                              <Ionicons name="calendar" size={12} color="#2563EB" />
-                              <Text style={[styles.cardTypeBadgeText, { color: '#2563EB' }]}>Consecutive</Text>
-                            </>
-                          )}
-                          {lw.type === 'long_weekend' && (
-                            <>
-                              <Ionicons name="sunny" size={12} color="#059669" />
-                              <Text style={[styles.cardTypeBadgeText, { color: '#059669' }]}>Long Weekend</Text>
-                            </>
-                          )}
-                        </View>
-                      </View>
-
-                      {/* Days Count and Date Range */}
-                      <View style={styles.cardDateSection}>
-                        <View style={styles.daysBox}>
-                          <Text style={styles.daysNumber}>{lw.totalDays}</Text>
-                          <Text style={styles.daysLabel}>DAYS</Text>
-                        </View>
-                        <View style={styles.dateInfo}>
-                          <Text style={styles.dateRange}>{formatDateRange(lw.startDate, lw.endDate)}</Text>
-                          <Text style={styles.weekdayRange}>{getWeekdayRange(lw.startDate, lw.endDate)}</Text>
-                          {/* Per-country breakdown when days vary */}
-                          {showBreakdown && (
-                            <View style={styles.countryDaysBreakdown}>
-                              {countryBreakdown.map((cb, i) => (
-                                <Text key={i} style={styles.countryDaysText}>
-                                  {cb.flag} {cb.days}d
-                                </Text>
-                              ))}
-                            </View>
-                          )}
-                        </View>
-                        <TouchableOpacity 
-                          style={styles.shareBtn}
-                          onPress={() => shareLongWeekend(lw)}
-                          data-testid={`share-lw-${index}`}
-                        >
-                          <Ionicons name="share-outline" size={20} color="#7C9CBF" />
-                        </TouchableOpacity>
-                      </View>
-
-                      {/* Calendar Days */}
-                      <View style={styles.calendarDays}>
-                        {dayRange.map((d, i) => (
-                          <View 
-                            key={i} 
-                            style={[
-                              styles.calendarDay,
-                              d.isWeekend ? styles.calendarDayWeekend : styles.calendarDayHoliday
-                            ]}
-                          >
-                            <Text style={[
-                              styles.calendarDayName,
-                              d.isWeekend ? styles.calendarDayNameWeekend : styles.calendarDayNameHoliday
-                            ]}>{d.day}</Text>
-                            <Text style={[
-                              styles.calendarDayNumber,
-                              d.isWeekend ? styles.calendarDayNumberWeekend : styles.calendarDayNumberHoliday
-                            ]}>{d.date}</Text>
-                          </View>
-                        ))}
-                      </View>
-
-                      {/* Holidays Included */}
-                      <View style={styles.holidaysIncluded}>
-                        <Text style={styles.holidaysIncludedTitle}>HOLIDAYS INCLUDED:</Text>
-                        {lw.holidays.map((h, hIndex) => (
-                          <View key={`${h.countryCode}-${hIndex}`} style={styles.holidayRow}>
-                            <View style={[styles.holidayDot, { backgroundColor: getCountryColor(h.countryCode) }]} />
-                            <Text style={styles.holidayFlag}>{getCountryFlag(h.countryCode)}</Text>
-                            <View style={styles.holidayDetails}>
-                              <Text style={styles.holidayCountry}>{countryNameMap[h.countryCode] || h.countryCode}</Text>
-                              <Text style={styles.holidayName}>{h.name}</Text>
-                            </View>
-                            <Text style={styles.holidayDate}>
-                              {formatHolidayDate(h.date || lw.startDate)}
-                            </Text>
-                          </View>
-                        ))}
-                      </View>
-
-                      {/* Bridge Day Suggestion */}
-                      {bridgeSuggestion && (
-                        <View style={styles.bridgeSuggestion}>
-                          <Ionicons name="bulb-outline" size={16} color="#D97706" />
-                          <Text style={styles.bridgeSuggestionText}>{bridgeSuggestion}</Text>
-                        </View>
-                      )}
-                    </View>
-                  );
-                })
-              ) : (
-                <View style={styles.emptyState}>
-                  <Ionicons name="sunny-outline" size={48} color="#CBD5E0" />
-                  <Text style={styles.emptyStateText}>No long weekend opportunities found</Text>
-                </View>
-              )}
-            </View>
-          )}
-
-          {/* Holidays Tab - All holidays */}
-          {activeTab === 'holidays' && (
-            <View style={styles.cardsContainer}>
-              {comparisonResult.holidays.map((holiday) => {
-                const isOverlap = holiday.isOverlap;
-                return (
-                  <View key={holiday.date} style={[styles.card, isOverlap && styles.cardOverlap]}>
-                    <View style={styles.cardHeader}>
-                      {isOverlap && (
-                        <View style={styles.overlapBadge}>
-                          <Ionicons name="link" size={12} color="#FFF" />
-                          <Text style={styles.overlapBadgeText}>Overlap</Text>
-                        </View>
-                      )}
-                    </View>
-                    <Text style={styles.holidayCardDate}>
-                      {formatHolidayDate(holiday.date)}
-                    </Text>
-                    {holiday.holidays.map((h, hIndex) => (
-                      <View key={`${h.countryCode}-${hIndex}`} style={styles.holidayRow}>
-                        <View style={[styles.holidayDot, { backgroundColor: getCountryColor(h.countryCode) }]} />
-                        <Text style={styles.holidayFlag}>{getCountryFlag(h.countryCode)}</Text>
-                        <View style={styles.holidayDetails}>
-                          <Text style={styles.holidayCountry}>{countryNameMap[h.countryCode] || h.countryCode}</Text>
-                          <Text style={styles.holidayName}>{h.name}</Text>
-                        </View>
-                      </View>
-                    ))}
+                {comparisonResult.longWeekends?.length > 0 ? (
+                  comparisonResult.longWeekends.map((lw, i) => (
+                    <LongWeekendCard
+                      key={`${lw.startDate}-${i}`}
+                      lw={lw}
+                      index={i}
+                      countryNameMap={countryNameMap}
+                      getCountryColor={getCountryColor}
+                    />
+                  ))
+                ) : (
+                  <View style={styles.emptyState}>
+                    <Ionicons name="sunny-outline" size={48} color="#CBD5E0" />
+                    <Text style={styles.emptyStateText}>No long weekend opportunities found</Text>
                   </View>
-                );
-              })}
-            </View>
-          )}
+                )}
+              </View>
+            )}
 
-          {/* Overlaps Tab - Only overlapping holidays */}
-          {activeTab === 'overlaps' && (
-            <View style={styles.cardsContainer}>
-              {comparisonResult.holidays.filter(h => h.isOverlap).length > 0 ? (
-                comparisonResult.holidays.filter(h => h.isOverlap).map((holiday) => (
-                  <View key={holiday.date} style={[styles.card, styles.cardOverlap]}>
-                    <View style={styles.cardHeader}>
-                      <View style={styles.overlapBadge}>
-                        <Ionicons name="link" size={12} color="#FFF" />
-                        <Text style={styles.overlapBadgeText}>Overlap</Text>
-                      </View>
-                    </View>
-                    <Text style={styles.holidayCardDate}>
-                      {formatHolidayDate(holiday.date)}
-                    </Text>
-                    {holiday.holidays.map((h, hIndex) => (
-                      <View key={`${h.countryCode}-${hIndex}`} style={styles.holidayRow}>
-                        <View style={[styles.holidayDot, { backgroundColor: getCountryColor(h.countryCode) }]} />
-                        <Text style={styles.holidayFlag}>{getCountryFlag(h.countryCode)}</Text>
-                        <View style={styles.holidayDetails}>
-                          <Text style={styles.holidayCountry}>{countryNameMap[h.countryCode] || h.countryCode}</Text>
-                          <Text style={styles.holidayName}>{h.name}</Text>
-                        </View>
-                      </View>
-                    ))}
+            {activeTab === 'holidays' && (
+              <View style={styles.cardsContainer}>
+                {comparisonResult.holidays.map((holiday) => (
+                  <HolidayCard
+                    key={holiday.date}
+                    holiday={holiday}
+                    countryNameMap={countryNameMap}
+                    getCountryColor={getCountryColor}
+                  />
+                ))}
+              </View>
+            )}
+
+            {activeTab === 'overlaps' && (
+              <View style={styles.cardsContainer}>
+                {overlappingHolidays.length > 0 ? (
+                  overlappingHolidays.map((holiday) => (
+                    <HolidayCard
+                      key={holiday.date}
+                      holiday={holiday}
+                      countryNameMap={countryNameMap}
+                      getCountryColor={getCountryColor}
+                    />
+                  ))
+                ) : (
+                  <View style={styles.emptyState}>
+                    <Ionicons name="link-outline" size={48} color="#CBD5E0" />
+                    <Text style={styles.emptyStateText}>No overlapping holidays found</Text>
                   </View>
-                ))
-              ) : (
-                <View style={styles.emptyState}>
-                  <Ionicons name="link-outline" size={48} color="#CBD5E0" />
-                  <Text style={styles.emptyStateText}>No overlapping holidays found</Text>
-                </View>
-              )}
-            </View>
-          )}
+                )}
+              </View>
+            )}
 
-          <View style={styles.bottomPadding} />
-        </ScrollView>
+            <View style={styles.bottomPadding} />
+          </ScrollView>
         </>
       ) : (
-        /* Empty State */
         <View style={styles.emptyStateContainer}>
           {isLoading ? (
             <ActivityIndicator size="large" color="#7C9CBF" />
@@ -655,118 +213,28 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {/* Country Picker Modal */}
-      <Modal visible={showCountryPicker} animationType="slide" presentationStyle="pageSheet">
-        <SafeAreaView style={styles.modalContainer} edges={['top', 'left', 'right']}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Select Countries</Text>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setShowCountryPicker(false)}>
-              <Ionicons name="close" size={24} color="#4A5568" />
-            </TouchableOpacity>
-          </View>
+      <CountryPickerModal
+        visible={showCountryPicker}
+        countries={countries}
+        selectedCountries={selectedCountries}
+        isLoading={isLoading}
+        onClose={() => setShowCountryPicker(false)}
+        onToggleCountry={toggleCountry}
+        onClearAll={() => setSelectedCountries([])}
+        onFind={compareHolidays}
+      />
 
-          <View style={styles.modalSubheader}>
-            <Text style={styles.modalSubtitle}>{selectedCountries.length}/5 countries selected</Text>
-            {selectedCountries.length > 0 && (
-              <TouchableOpacity onPress={() => setSelectedCountries([])}>
-                <Text style={styles.clearButton}>Clear all</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Search */}
-          <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color="#9CA3AF" />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search countries..."
-              placeholderTextColor="#9CA3AF"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              autoCorrect={false}
-            />
-            {searchQuery.length > 0 && (
-              <TouchableOpacity onPress={() => setSearchQuery('')}>
-                <Ionicons name="close-circle" size={20} color="#9CA3AF" />
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Country List */}
-          <FlatList
-            data={filteredCountries}
-            keyExtractor={(item) => item.countryCode}
-            renderItem={({ item }) => {
-              const isSelected = selectedCountries.find((c) => c.countryCode === item.countryCode);
-              return (
-                <TouchableOpacity
-                  style={[styles.countryItem, isSelected && styles.countryItemSelected]}
-                  onPress={() => toggleCountry(item)}
-                >
-                  <Text style={styles.countryItemFlag}>{getCountryFlag(item.countryCode)}</Text>
-                  <View style={styles.countryItemInfo}>
-                    <Text style={styles.countryItemName}>{item.name}</Text>
-                    <Text style={styles.countryItemCode}>{item.countryCode}</Text>
-                  </View>
-                  {isSelected && <Ionicons name="checkmark-circle" size={24} color="#7C9CBF" />}
-                </TouchableOpacity>
-              );
-            }}
-            style={styles.countryList}
-          />
-
-          {/* Find Holidays Button */}
-          <View style={styles.modalFooter}>
-            <TouchableOpacity
-              style={[styles.findButton, selectedCountries.length < 1 && styles.findButtonDisabled]}
-              onPress={() => {
-                setShowCountryPicker(false);
-                compareHolidays();
-              }}
-              disabled={selectedCountries.length < 1}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="#FFF" />
-              ) : (
-                <Text style={styles.findButtonText}>Find Overlapping Dates</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </Modal>
-
-      {/* Year Picker Modal - Dropdown Style */}
-      <Modal visible={showYearPicker} animationType="fade" transparent>
-        <TouchableOpacity 
-          style={styles.yearPickerOverlay} 
-          activeOpacity={1} 
-          onPress={() => setShowYearPicker(false)}
-        >
-          <View style={styles.yearPickerContainer}>
-            <Text style={styles.yearPickerTitle}>Select Year</Text>
-            <ScrollView style={styles.yearPickerScroll} showsVerticalScrollIndicator={false}>
-              {yearOptions.map((year) => (
-                <TouchableOpacity
-                  key={year}
-                  style={[styles.yearOption, year === selectedYear && styles.yearOptionSelected]}
-                  onPress={() => {
-                    setSelectedYear(year);
-                    setShowYearPicker(false);
-                    if (selectedCountries.length > 0) {
-                      setTimeout(() => compareHolidays(), 100);
-                    }
-                  }}
-                >
-                  <Text style={[styles.yearOptionText, year === selectedYear && styles.yearOptionTextSelected]}>
-                    {year}
-                  </Text>
-                  {year === selectedYear && <Ionicons name="checkmark" size={20} color="#7C9CBF" />}
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </TouchableOpacity>
-      </Modal>
+      <YearPickerModal
+        visible={showYearPicker}
+        selectedYear={selectedYear}
+        yearOptions={yearOptions}
+        onClose={() => setShowYearPicker(false)}
+        onSelect={(year) => {
+          setSelectedYear(year);
+          setShowYearPicker(false);
+          if (selectedCountries.length > 0) compareHolidays(year);
+        }}
+      />
     </SafeAreaView>
   );
 }
@@ -812,9 +280,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 4,
   },
-  flagEmoji: {
-    fontSize: 24,
-  },
+  flagEmoji: { fontSize: 24 },
   placeholderText: {
     fontSize: 16,
     color: '#A0AEC0',
@@ -852,299 +318,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
   },
-  statsRowFixed: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#F8FAFC',
-  },
-  statCard: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: Platform.OS === 'ios' ? 8 : 10,
-    paddingHorizontal: 6,
-    borderRadius: 12,
-  },
-  statCardBlue: {
-    backgroundColor: '#E8F0F8',
-  },
-  statCardGreen: {
-    backgroundColor: '#D1FAE5',
-  },
-  statCardOrange: {
-    backgroundColor: '#FEF3C7',
-  },
-  statCardActive: {
-    borderWidth: 2,
-    borderColor: '#4A5568',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  statCardValue: {
-    fontSize: Platform.OS === 'ios' ? 14 : 16,
-    fontWeight: '600',
-  },
-  statCardValueBlue: {
-    color: '#7C9CBF',
-  },
-  statCardValueGreen: {
-    color: '#059669',
-  },
-  statCardValueOrange: {
-    color: '#D97706',
-  },
-  statCardLabel: {
-    fontSize: Platform.OS === 'ios' ? 10 : 11,
-    marginTop: 2,
-  },
-  statCardLabelBlue: {
-    color: '#7C9CBF',
-  },
-  statCardLabelGreen: {
-    color: '#059669',
-  },
-  statCardLabelOrange: {
-    color: '#D97706',
-  },
-  legendContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 16,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    gap: 6,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  legendDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  legendFlag: {
-    fontSize: 16,
-  },
-  legendText: {
-    fontSize: 13,
-    color: '#4A5568',
-    fontWeight: '500',
-  },
-  cardsContainer: {
-    gap: 12,
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  cardOverlap: {
-    borderWidth: 2,
-    borderColor: '#8FBC8F',
-    borderLeftWidth: 4,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  overlapBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#8FBC8F',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 12,
-    gap: 4,
-  },
-  overlapBadgeText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#FFF',
-  },
-  cardTypeBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  cardTypeBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#D97706',
-  },
-  cardDateSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  daysBox: {
-    backgroundColor: '#FEF3C7',
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    alignItems: 'center',
-    marginRight: 14,
-  },
-  daysNumber: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#D97706',
-  },
-  daysLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#D97706',
-  },
-  dateInfo: {
-    flex: 1,
-  },
-  dateRange: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2D3748',
-  },
-  weekdayRange: {
-    fontSize: 13,
-    color: '#718096',
-    marginTop: 2,
-  },
-  countryDaysBreakdown: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 4,
-  },
-  countryDaysText: {
-    fontSize: 12,
-    color: '#7C9CBF',
-    fontWeight: '500',
-  },
-  shareBtn: {
-    padding: 8,
-    backgroundColor: '#F0F9FF',
-    borderRadius: 8,
-  },
-  calendarDays: {
-    flexDirection: 'row',
-    gap: 6,
-    marginBottom: 14,
-  },
-  calendarDay: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 6,
-    borderRadius: 8,
-    minWidth: 44,
-  },
-  calendarDayHoliday: {
-    backgroundColor: '#FEF3C7',
-    borderWidth: 1,
-    borderColor: '#FCD34D',
-  },
-  calendarDayWeekend: {
-    backgroundColor: '#F1F5F9',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  calendarDayName: {
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  calendarDayNameHoliday: {
-    color: '#D97706',
-  },
-  calendarDayNameWeekend: {
-    color: '#718096',
-  },
-  calendarDayNumber: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 2,
-  },
-  calendarDayNumberHoliday: {
-    color: '#D97706',
-  },
-  calendarDayNumberWeekend: {
-    color: '#4A5568',
-  },
-  holidaysIncluded: {
-    backgroundColor: '#F8FAFC',
-    borderRadius: 10,
-    padding: 12,
-    gap: 8,
-  },
-  holidaysIncludedTitle: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#9CA3AF',
-    letterSpacing: 0.5,
-    marginBottom: 4,
-  },
-  holidayRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  holidayDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-  },
-  holidayFlag: {
-    fontSize: 18,
-  },
-  holidayDetails: {
-    flex: 1,
-  },
-  holidayCountry: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#7C9CBF',
-    textTransform: 'uppercase',
-  },
-  holidayName: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#2D3748',
-  },
-  holidayDate: {
-    fontSize: 12,
-    color: '#718096',
-  },
-  bridgeSuggestion: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFBEB',
-    padding: 12,
-    borderRadius: 10,
-    marginTop: 10,
-    gap: 8,
-  },
-  bridgeSuggestionText: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#D97706',
-    flex: 1,
-  },
-  holidayCardDate: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2D3748',
-    marginBottom: 12,
-  },
+  cardsContainer: { gap: 12 },
+  bottomPadding: { height: 40 },
   emptyState: {
     alignItems: 'center',
     paddingVertical: 40,
@@ -1178,161 +353,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFF',
-  },
-  bottomPadding: {
-    height: 40,
-  },
-  // Modal styles
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-    backgroundColor: '#FFFFFF',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#2D3748',
-  },
-  modalCloseButton: {
-    padding: 4,
-  },
-  modalSubheader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
-  },
-  modalSubtitle: {
-    fontSize: 14,
-    color: '#718096',
-  },
-  clearButton: {
-    fontSize: 14,
-    color: '#7C9CBF',
-    fontWeight: '500',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: 16,
-    marginVertical: 12,
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    gap: 8,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  searchInput: {
-    flex: 1,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#2D3748',
-  },
-  countryList: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  countryItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-    backgroundColor: '#FFFFFF',
-  },
-  countryItemSelected: {
-    backgroundColor: '#F0F9FF',
-  },
-  countryItemFlag: {
-    fontSize: 28,
-    marginRight: 12,
-  },
-  countryItemInfo: {
-    flex: 1,
-  },
-  countryItemName: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#2D3748',
-  },
-  countryItemCode: {
-    fontSize: 12,
-    color: '#A0AEC0',
-    marginTop: 2,
-  },
-  modalFooter: {
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    backgroundColor: '#FFFFFF',
-  },
-  findButton: {
-    backgroundColor: '#7C9CBF',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  findButtonDisabled: {
-    backgroundColor: '#CBD5E0',
-  },
-  findButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFF',
-  },
-  // Year Picker styles
-  yearPickerOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  yearPickerContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 20,
-    width: width * 0.8,
-    maxWidth: 300,
-    maxHeight: 400,
-  },
-  yearPickerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2D3748',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  yearPickerScroll: {
-    maxHeight: 300,
-  },
-  yearOption: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-  },
-  yearOptionSelected: {
-    backgroundColor: '#F0F9FF',
-  },
-  yearOptionText: {
-    fontSize: 16,
-    color: '#718096',
-  },
-  yearOptionTextSelected: {
-    color: '#7C9CBF',
-    fontWeight: '600',
   },
 });

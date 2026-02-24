@@ -157,34 +157,62 @@ export default function HomeScreen() {
             {activeTab === 'longweekends' && (
               <View style={styles.cardsContainer}>
                 {comparisonResult.longWeekends?.length > 0 ? (
-                  comparisonResult.longWeekends.map((lw, i) => (
-                    <LongWeekendCard
-                      key={`${lw.startDate}-${i}`}
-                      lw={lw}
-                      index={i}
-                      countryNameMap={countryNameMap}
-                      getCountryColor={getCountryColor}
-                      isBookmarked={isBookmarked(lw, selectedYear, selectedCountries)}
-                      onToggleBookmark={async () => {
-                        const wasBookmarked = isBookmarked(lw, selectedYear, selectedCountries);
-                        await toggleBookmark(lw, selectedYear, selectedCountries, countryNameMap);
-                        if (!wasBookmarked) {
-                          // Just added — schedule notification
-                          const newBookmark = {
-                            id: '', // will be set by toggleBookmark
-                            savedAt: new Date().toISOString(),
-                            year: selectedYear,
-                            countries: selectedCountries,
-                            lw,
-                            countryNameMap,
-                          };
-                          scheduleForBookmark(newBookmark);
-                        }
-                        // If it was bookmarked, the bookmark was removed — notification cleanup
-                        // happens via the cancelForBookmark in the Saved tab's delete
-                      }}
-                    />
-                  ))
+                  (() => {
+                    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                    const grouped: Record<number, typeof comparisonResult.longWeekends> = {};
+                    for (const lw of comparisonResult.longWeekends) {
+                      const m = new Date(lw.startDate + 'T00:00:00').getMonth();
+                      if (!grouped[m]) grouped[m] = [];
+                      grouped[m].push(lw);
+                    }
+                    const monthKeys = Object.keys(grouped).map(Number).sort((a, b) => a - b);
+                    const maxCount = Math.max(...monthKeys.map(m => grouped[m].length));
+                    const bestMonths = monthKeys.filter(m => grouped[m].length === maxCount);
+
+                    return monthKeys.map((m) => (
+                      <View key={m}>
+                        <View style={styles.monthHeader}>
+                          <View style={styles.monthTitleRow}>
+                            <Text style={styles.monthTitle}>{MONTHS[m]}</Text>
+                            {bestMonths.includes(m) && (
+                              <View style={styles.bestMonthBadge} testID={`best-month-badge-${m}`}>
+                                <Ionicons name="star" size={12} color="#D97706" />
+                                <Text style={styles.bestMonthText}>Best Month</Text>
+                              </View>
+                            )}
+                          </View>
+                          <Text style={styles.monthCount}>
+                            {grouped[m].length} {grouped[m].length === 1 ? 'opportunity' : 'opportunities'}
+                          </Text>
+                        </View>
+                        {grouped[m].map((lw, i) => (
+                          <LongWeekendCard
+                            key={`${lw.startDate}-${i}`}
+                            lw={lw}
+                            index={i}
+                            countryNameMap={countryNameMap}
+                            getCountryColor={getCountryColor}
+                            isBookmarked={isBookmarked(lw, selectedYear, selectedCountries)}
+                            onToggleBookmark={async () => {
+                              const wasBookmarked = isBookmarked(lw, selectedYear, selectedCountries);
+                              await toggleBookmark(lw, selectedYear, selectedCountries, countryNameMap);
+                              if (!wasBookmarked) {
+                                const newBookmark = {
+                                  id: '',
+                                  savedAt: new Date().toISOString(),
+                                  year: selectedYear,
+                                  countries: selectedCountries,
+                                  lw,
+                                  countryNameMap,
+                                };
+                                scheduleForBookmark(newBookmark);
+                              }
+                            }}
+                          />
+                        ))}
+                      </View>
+                    ));
+                  })()
                 ) : (
                   <View style={styles.emptyState}>
                     <Ionicons name="sunny-outline" size={48} color="#CBD5E0" />

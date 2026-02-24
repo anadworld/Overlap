@@ -88,6 +88,20 @@ class SavedComparison(BaseModel):
     year: int
     createdAt: datetime = Field(default_factory=datetime.utcnow)
 
+class AppVersionInfo(BaseModel):
+    latestVersion: str
+    minVersion: str
+    releaseNotes: str = ""
+    forceUpdate: bool = False
+    iosStoreUrl: str = "https://apps.apple.com/app/id6740092498"
+    androidStoreUrl: str = "https://play.google.com/store/apps/details?id=com.anadworld.overlap"
+
+class UpdateAppVersionRequest(BaseModel):
+    latestVersion: str
+    minVersion: Optional[str] = None
+    releaseNotes: Optional[str] = None
+    forceUpdate: Optional[bool] = None
+
 # Helper function to fetch data from Nager API
 async def fetch_from_nager(endpoint: str) -> Any:
     async with httpx.AsyncClient(timeout=30.0) as client:

@@ -17,8 +17,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#7C9CBF"
       },
-      "package": "com.anadworld.overlap",
-      "minSdkVersion": 21
+      "package": "com.anadworld.overlap"
     },
     "web": {
       "bundler": "metro",

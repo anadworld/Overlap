@@ -36,9 +36,9 @@ export function useHolidayData() {
 
   useEffect(() => { fetchCountries(); }, [fetchCountries]);
 
-  // Accepts optional year override so year-change callers don't hit stale closure
-  const compareHolidays = useCallback(async (overrideYear?: number) => {
-    const currentCountries = selectedCountriesRef.current;
+  // Accepts optional overrides so bookmark restores bypass stale closures
+  const compareHolidays = useCallback(async (overrideYear?: number, overrideCountries?: Country[]) => {
+    const currentCountries = overrideCountries ?? selectedCountriesRef.current;
     const year = overrideYear ?? selectedYearRef.current;
     if (currentCountries.length < 1) {
       setError('Please select at least 1 country');

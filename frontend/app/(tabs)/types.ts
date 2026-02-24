@@ -38,3 +38,12 @@ export interface CompareResponse {
   totalOverlaps: number;
   longWeekends: LongWeekendOpportunity[];
 }
+
+export interface Bookmark {
+  id: string;
+  savedAt: string;
+  year: number;
+  countries: Country[];
+  lw: LongWeekendOpportunity;
+  countryNameMap: Record<string, string>;
+}

@@ -172,15 +172,7 @@ export default function HomeScreen() {
                     return monthKeys.map((m) => (
                       <View key={m}>
                         <View style={styles.monthHeader}>
-                          <View style={styles.monthTitleRow}>
-                            <Text style={styles.monthTitle}>{MONTHS[m]}</Text>
-                            {bestMonth === m && (
-                              <View style={styles.bestMonthBadge} testID={`best-month-badge-${m}`}>
-                                <Ionicons name="star" size={12} color="#D97706" />
-                                <Text style={styles.bestMonthText}>Best Month</Text>
-                              </View>
-                            )}
-                          </View>
+                          <Text style={styles.monthTitle}>{MONTHS[m]}</Text>
                           <Text style={styles.monthCount}>
                             {grouped[m].length} {grouped[m].length === 1 ? 'opportunity' : 'opportunities'}
                           </Text>

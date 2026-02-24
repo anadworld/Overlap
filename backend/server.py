@@ -213,34 +213,60 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
                 ))
                 processed_dates.add(date_str)
         
-        # Check for Thursday holiday - ONLY a long weekend if Friday is ALSO a holiday
+        # Check for Thursday holiday - check if Friday is ALSO a holiday for the SAME country
         elif day_of_week == 3:  # Thursday
             friday = date + timedelta(days=1)
             friday_str = friday.strftime("%Y-%m-%d")
             
             if friday_str in holidays_by_date:
-                # Thursday + Friday holidays + weekend = 4-day (no bridge needed!)
                 friday_holidays = add_date_to_holidays(holidays_by_date[friday_str], friday_str)
-                all_holidays = holidays_info + friday_holidays
-                all_countries = list(set(countries_on_date + [h["countryCode"] for h in friday_holidays]))
-                end_date = date + timedelta(days=3)  # Sunday
+                thursday_countries = set(h["countryCode"] for h in holidays_info)
+                friday_countries = set(h["countryCode"] for h in friday_holidays)
                 
-                is_overlap = check_true_overlap([date_str, friday_str], holidays_by_date, selected_countries)
+                # Check if at least ONE country has holidays on BOTH Thursday AND Friday
+                countries_with_both = thursday_countries & friday_countries
                 
-                opportunities.append(LongWeekendOpportunity(
-                    startDate=date_str,
-                    endDate=end_date.strftime("%Y-%m-%d"),
-                    totalDays=4,
-                    holidayDays=2,
-                    weekendDays=2,
-                    type="consecutive",
-                    description=f"4-day weekend! Thursday & Friday holidays",
-                    holidays=all_holidays,
-                    countries=all_countries,
-                    isOverlap=is_overlap
-                ))
-                processed_dates.add(date_str)
-                processed_dates.add(friday_str)
+                if countries_with_both:
+                    # At least one country has both days = true 4-day weekend
+                    all_holidays = holidays_info + friday_holidays
+                    all_countries = list(thursday_countries | friday_countries)
+                    end_date = date + timedelta(days=3)  # Sunday
+                    
+                    is_overlap = check_true_overlap([date_str, friday_str], holidays_by_date, selected_countries)
+                    
+                    opportunities.append(LongWeekendOpportunity(
+                        startDate=date_str,
+                        endDate=end_date.strftime("%Y-%m-%d"),
+                        totalDays=4,
+                        holidayDays=2,
+                        weekendDays=2,
+                        type="consecutive",
+                        description=f"4-day weekend! Thursday & Friday holidays",
+                        holidays=all_holidays,
+                        countries=all_countries,
+                        isOverlap=is_overlap
+                    ))
+                    processed_dates.add(date_str)
+                    processed_dates.add(friday_str)
+                else:
+                    # Different countries have Thursday vs Friday - Thursday is bridge day
+                    end_date = date + timedelta(days=3)  # Sunday
+                    is_overlap = check_true_overlap([date_str], holidays_by_date, selected_countries)
+                    
+                    opportunities.append(LongWeekendOpportunity(
+                        startDate=date_str,
+                        endDate=end_date.strftime("%Y-%m-%d"),
+                        totalDays=4,
+                        holidayDays=1,
+                        weekendDays=2,
+                        type="bridge",
+                        description=f"Take Friday off for a 4-day weekend!",
+                        holidays=holidays_info,
+                        countries=list(thursday_countries),
+                        isOverlap=is_overlap
+                    ))
+                    processed_dates.add(date_str)
+                    # Friday will be processed separately
             else:
                 # Thursday holiday only - suggest taking Friday off (Bridge Day)
                 end_date = date + timedelta(days=3)  # Sunday

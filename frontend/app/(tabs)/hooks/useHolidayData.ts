@@ -1,0 +1,99 @@
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { BACKEND_URL } from '../utils';
+import { Country, CompareResponse } from '../types';
+
+export function useHolidayData() {
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [selectedCountries, setSelectedCountries] = useState<Country[]>([]);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [comparisonResult, setComparisonResult] = useState<CompareResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingCountries, setIsLoadingCountries] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState<'holidays' | 'overlaps' | 'longweekends'>('holidays');
+
+  // Refs ensure callbacks always see latest values without stale closures
+  const selectedCountriesRef = useRef(selectedCountries);
+  const selectedYearRef = useRef(selectedYear);
+  useEffect(() => { selectedCountriesRef.current = selectedCountries; }, [selectedCountries]);
+  useEffect(() => { selectedYearRef.current = selectedYear; }, [selectedYear]);
+
+  const fetchCountries = useCallback(async () => {
+    try {
+      setIsLoadingCountries(true);
+      setError(null);
+      const response = await fetch(`${BACKEND_URL}/api/countries`);
+      if (!response.ok) throw new Error('Failed to fetch countries');
+      const data = await response.json();
+      setCountries(data);
+    } catch {
+      setError('Failed to load countries. Please try again.');
+    } finally {
+      setIsLoadingCountries(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchCountries(); }, [fetchCountries]);
+
+  // Accepts optional year override so year-change callers don't hit stale closure
+  const compareHolidays = useCallback(async (overrideYear?: number) => {
+    const currentCountries = selectedCountriesRef.current;
+    const year = overrideYear ?? selectedYearRef.current;
+    if (currentCountries.length < 1) {
+      setError('Please select at least 1 country');
+      return;
+    }
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await fetch(`${BACKEND_URL}/api/compare`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ countryCodes: currentCountries.map((c) => c.countryCode), year }),
+      });
+      if (!response.ok) throw new Error('Failed to compare holidays');
+      const data = await response.json();
+      setComparisonResult(data);
+      setActiveTab('holidays');
+    } catch {
+      setError('Failed to compare holidays. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const toggleCountry = useCallback((country: Country) => {
+    setSelectedCountries((prev) => {
+      const isSelected = prev.find((c) => c.countryCode === country.countryCode);
+      if (isSelected) return prev.filter((c) => c.countryCode !== country.countryCode);
+      if (prev.length < 5) return [...prev, country];
+      return prev;
+    });
+  }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    if (selectedCountriesRef.current.length >= 1) await compareHolidays();
+    setRefreshing(false);
+  }, [compareHolidays]);
+
+  return {
+    countries,
+    selectedCountries,
+    setSelectedCountries,
+    selectedYear,
+    setSelectedYear,
+    comparisonResult,
+    isLoading,
+    isLoadingCountries,
+    error,
+    setError,
+    refreshing,
+    activeTab,
+    setActiveTab,
+    compareHolidays,
+    toggleCountry,
+    onRefresh,
+  };
+}

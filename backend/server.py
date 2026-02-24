@@ -130,28 +130,51 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
             monday_str = monday.strftime("%Y-%m-%d")
             
             if monday_str in holidays_by_date:
-                # Friday + Weekend + Monday = 4-day weekend
                 monday_holidays = add_date_to_holidays(holidays_by_date[monday_str], monday_str)
-                all_holidays = holidays_info + monday_holidays
-                all_countries = list(set(countries_on_date + [h["countryCode"] for h in monday_holidays]))
+                friday_countries = set(h["countryCode"] for h in holidays_info)
+                monday_countries = set(h["countryCode"] for h in monday_holidays)
                 
-                # Check if it's a true overlap (all selected countries have holidays on both days)
-                is_overlap = check_true_overlap([date_str, monday_str], holidays_by_date, selected_countries)
+                # Check if at least ONE country has holidays on BOTH Friday AND Monday
+                countries_with_both = friday_countries & monday_countries
                 
-                opportunities.append(LongWeekendOpportunity(
-                    startDate=date_str,
-                    endDate=monday_str,
-                    totalDays=4,
-                    holidayDays=2,
-                    weekendDays=2,
-                    type="consecutive",
-                    description=f"4-day weekend! Friday & Monday holidays",
-                    holidays=all_holidays,
-                    countries=all_countries,
-                    isOverlap=is_overlap
-                ))
-                processed_dates.add(date_str)
-                processed_dates.add(monday_str)
+                if countries_with_both:
+                    # At least one country has both days = true 4-day weekend
+                    all_holidays = holidays_info + monday_holidays
+                    all_countries = list(friday_countries | monday_countries)
+                    is_overlap = check_true_overlap([date_str, monday_str], holidays_by_date, selected_countries)
+                    
+                    opportunities.append(LongWeekendOpportunity(
+                        startDate=date_str,
+                        endDate=monday_str,
+                        totalDays=4,
+                        holidayDays=2,
+                        weekendDays=2,
+                        type="consecutive",
+                        description=f"4-day weekend! Friday & Monday holidays",
+                        holidays=all_holidays,
+                        countries=all_countries,
+                        isOverlap=is_overlap
+                    ))
+                    processed_dates.add(date_str)
+                    processed_dates.add(monday_str)
+                else:
+                    # Different countries have Friday vs Monday - treat as separate 3-day weekends
+                    # Friday 3-day weekend
+                    is_overlap = check_true_overlap([date_str], holidays_by_date, selected_countries)
+                    opportunities.append(LongWeekendOpportunity(
+                        startDate=date_str,
+                        endDate=end_date.strftime("%Y-%m-%d"),
+                        totalDays=3,
+                        holidayDays=1,
+                        weekendDays=2,
+                        type="long_weekend",
+                        description=f"3-day weekend! Friday holiday",
+                        holidays=holidays_info,
+                        countries=list(friday_countries),
+                        isOverlap=is_overlap
+                    ))
+                    processed_dates.add(date_str)
+                    # Monday will be processed separately when we hit it
             else:
                 # Just Friday holiday = 3-day weekend
                 is_overlap = check_true_overlap([date_str], holidays_by_date, selected_countries)

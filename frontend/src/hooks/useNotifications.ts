@@ -105,12 +105,49 @@ export function useNotifications() {
   }, []);
 
   const enableNotifications = useCallback(async () => {
-    const granted = await requestPermissions();
-    setHasPermission(granted);
-    if (granted) {
+    if (Platform.OS === 'web' || !Notifications) {
       await updatePrefs({ enabled: true });
+      return true;
     }
-    return granted;
+
+    // Check if already granted
+    try {
+      const { status: existing } = await Notifications.getPermissionsAsync();
+      if (existing === 'granted') {
+        setHasPermission(true);
+        await updatePrefs({ enabled: true });
+        return true;
+      }
+    } catch {
+      await updatePrefs({ enabled: true });
+      return false;
+    }
+
+    // Show custom branded prompt before the system dialog
+    return new Promise<boolean>((resolve) => {
+      Alert.alert(
+        'Allow Overlap to send you push notifications',
+        'Get timely reminders about your upcoming saved holidays so you never miss a long weekend.',
+        [
+          {
+            text: 'Not Now',
+            style: 'cancel',
+            onPress: () => resolve(false),
+          },
+          {
+            text: 'Allow',
+            onPress: async () => {
+              const granted = await requestPermissions();
+              setHasPermission(granted);
+              if (granted) {
+                await updatePrefs({ enabled: true });
+              }
+              resolve(granted);
+            },
+          },
+        ],
+      );
+    });
   }, [updatePrefs]);
 
   const disableNotifications = useCallback(async () => {

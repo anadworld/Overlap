@@ -817,4 +817,42 @@ const styles = StyleSheet.create({
     backgroundColor: '#E2E8F0',
     marginVertical: 20,
   },
+  // Notification styles
+  timingContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  timingLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#718096',
+    marginBottom: 10,
+  },
+  timingOptions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  timingChip: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    backgroundColor: '#F1F5F9',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  timingChipActive: {
+    backgroundColor: '#EBF4FF',
+    borderColor: '#7C9CBF',
+  },
+  timingChipText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#718096',
+  },
+  timingChipTextActive: {
+    color: '#7C9CBF',
+    fontWeight: '600',
+  },
 });

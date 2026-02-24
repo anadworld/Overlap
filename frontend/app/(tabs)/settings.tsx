@@ -87,15 +87,16 @@ export default function SettingsScreen() {
     const appStoreUrl = `https://apps.apple.com/app/id${APP_STORE_ID}`;
     const playStoreUrl = `https://play.google.com/store/apps/details?id=${PLAY_STORE_PACKAGE}`;
     
-    const message = Platform.OS === 'ios'
-      ? `Check out Overlap – Holiday Calendar! Find holidays & long weekends across countries.\n\n${appStoreUrl}`
-      : `Check out Overlap – Holiday Calendar! Find holidays & long weekends across countries.\n\n${playStoreUrl}`;
+    const url = Platform.OS === 'ios' ? appStoreUrl : playStoreUrl;
+    const message = `Check out Overlap – Holiday Calendar! Find holidays & long weekends across countries.`;
     
     try {
-      await Share.share({
-        message,
-        title: 'Overlap – Holiday Calendar',
-      });
+      await Share.share(
+        Platform.OS === 'ios' 
+          ? { message: `${message}\n\n${url}`, url }
+          : { message: `${message}\n\n${url}` },
+        { dialogTitle: 'Share Overlap – Holiday Calendar' }
+      );
     } catch (error) {
       console.error('Error sharing:', error);
     }

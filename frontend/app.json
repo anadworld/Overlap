@@ -39,6 +39,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "69de7e22-bc9e-4b62-95c8-c6e8ebe847a6"
+      }
+    },
+    "owner": "anadworld"
   }
 }

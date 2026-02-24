@@ -578,6 +578,15 @@ export default function SettingsScreen() {
           <Text style={styles.licenseTitle}>react-native-safe-area-context</Text>
           <Text style={styles.licenseText}>MIT License - Safe area handling for React Native</Text>
           
+          <Text style={styles.licenseTitle}>@react-native-async-storage/async-storage</Text>
+          <Text style={styles.licenseText}>MIT License - Local data storage for React Native</Text>
+          
+          <Text style={styles.licenseTitle}>expo-notifications</Text>
+          <Text style={styles.licenseText}>MIT License - Local push notifications for Expo</Text>
+          
+          <Text style={styles.licenseTitle}>react-native-reanimated</Text>
+          <Text style={styles.licenseText}>MIT License - Animations library for React Native</Text>
+          
           <View style={styles.licenseDivider} />
           
           <Text style={styles.modalParagraph}>

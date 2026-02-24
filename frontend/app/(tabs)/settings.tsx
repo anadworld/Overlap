@@ -636,7 +636,27 @@ export default function SettingsScreen() {
           <Text style={styles.modalSubheading}>Can I share my findings?</Text>
           <Text style={styles.modalParagraph}>
             Yes! Tap the share icon on any long weekend card to share the dates and holiday 
-            details with friends, family, or colleagues.
+            details with friends, family, or colleagues via WhatsApp, Messages, email, or any sharing app.
+          </Text>
+          
+          <Text style={styles.modalSubheading}>How do I save a long weekend?</Text>
+          <Text style={styles.modalParagraph}>
+            Tap the bookmark icon on any long weekend card to save it. Your saved long weekends 
+            appear in the "Saved" tab for quick access. Tap the bookmark again to remove it.
+          </Text>
+          
+          <Text style={styles.modalSubheading}>How do holiday reminders work?</Text>
+          <Text style={styles.modalParagraph}>
+            When you save a long weekend, Overlap can send you a push notification before it starts. 
+            Go to Settings and toggle "Holiday Reminders" on. You can choose to be reminded 1 day, 
+            3 days, 1 week, 2 weeks, or 1 month before. Reminders are scheduled locally on your 
+            device and work even without an internet connection.
+          </Text>
+          
+          <Text style={styles.modalSubheading}>How do I change reminder timing?</Text>
+          <Text style={styles.modalParagraph}>
+            In Settings under "Notifications", tap the dropdown next to "Remind me" and choose 
+            your preferred timing. All existing reminders will be rescheduled automatically.
           </Text>
           
           <Text style={styles.modalSubheading}>Where does the holiday data come from?</Text>

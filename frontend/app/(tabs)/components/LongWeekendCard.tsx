@@ -39,7 +39,7 @@ function getCountryDaysBreakdown(
   return breakdown.sort((a, b) => b.days - a.days);
 }
 
-export function LongWeekendCard({ lw, index, countryNameMap, getCountryColor }: Props) {
+export function LongWeekendCard({ lw, index, countryNameMap, getCountryColor, isBookmarked, onToggleBookmark }: Props) {
   const dayRange = getDayRange(lw.startDate, lw.endDate);
   const countryBreakdown = getCountryDaysBreakdown(lw, countryNameMap);
   const showBreakdown = countryBreakdown.length >= 2 && countryBreakdown.some((b) => b.days !== countryBreakdown[0].days);

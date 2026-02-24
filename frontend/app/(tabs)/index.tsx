@@ -165,9 +165,24 @@ export default function HomeScreen() {
                       countryNameMap={countryNameMap}
                       getCountryColor={getCountryColor}
                       isBookmarked={isBookmarked(lw, selectedYear, selectedCountries)}
-                      onToggleBookmark={() =>
-                        toggleBookmark(lw, selectedYear, selectedCountries, countryNameMap)
-                      }
+                      onToggleBookmark={async () => {
+                        const wasBookmarked = isBookmarked(lw, selectedYear, selectedCountries);
+                        await toggleBookmark(lw, selectedYear, selectedCountries, countryNameMap);
+                        if (!wasBookmarked) {
+                          // Just added — schedule notification
+                          const newBookmark = {
+                            id: '', // will be set by toggleBookmark
+                            savedAt: new Date().toISOString(),
+                            year: selectedYear,
+                            countries: selectedCountries,
+                            lw,
+                            countryNameMap,
+                          };
+                          scheduleForBookmark(newBookmark);
+                        }
+                        // If it was bookmarked, the bookmark was removed — notification cleanup
+                        // happens via the cancelForBookmark in the Saved tab's delete
+                      }}
                     />
                   ))
                 ) : (

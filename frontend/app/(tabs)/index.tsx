@@ -296,15 +296,23 @@ export default function HomeScreen() {
     const countryFlags = [...new Set(lw.holidays.map(h => getCountryFlag(h.countryCode)))].join(' ');
     const holidayNames = lw.holidays.map(h => `• ${h.name} (${getCountryFlag(h.countryCode)})`).join('\n');
     
-    const message = `🗓️ ${lw.totalDays}-Day Break Alert!\n\n` +
-      `📅 ${formatDateRange(lw.startDate, lw.endDate)}\n` +
-      `✨ ${lw.description}\n\n` +
-      `Holidays:\n${holidayNames}\n\n` +
-      `${countryFlags} Plan your getaway!\n\n` +
-      `Found with Overlap – Holiday Calendar`;
+    const message = `🗓️ ${lw.totalDays}-Day Break Alert!
+
+📅 ${formatDateRange(lw.startDate, lw.endDate)}
+✨ ${lw.description}
+
+Holidays:
+${holidayNames}
+
+${countryFlags} Plan your getaway!
+
+Found with Overlap – Holiday Calendar`;
 
     try {
-      await Share.share({ message, title: `${lw.totalDays}-Day Long Weekend` });
+      await Share.share(
+        { message },
+        { dialogTitle: `Share ${lw.totalDays}-Day Long Weekend` }
+      );
     } catch (error) {
       console.error('Error sharing:', error);
     }

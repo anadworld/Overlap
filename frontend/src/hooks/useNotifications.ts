@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import { Bookmark } from '../types';
@@ -32,24 +31,36 @@ const TIMING_LABELS: Record<ReminderTiming, string> = {
   '1month': 'in a month',
 };
 
-// Configure how notifications are shown when app is in foreground
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
-
-async function requestPermissions(): Promise<boolean> {
-  if (Platform.OS === 'web') return false;
-  const { status: existing } = await Notifications.getPermissionsAsync();
-  if (existing === 'granted') return true;
-  const { status } = await Notifications.requestPermissionsAsync();
-  return status === 'granted';
+// Lazily load expo-notifications to avoid crashes in Expo Go / web
+let Notifications: typeof import('expo-notifications') | null = null;
+try {
+  Notifications = require('expo-notifications');
+  // Set handler only on native
+  if (Platform.OS !== 'web' && Notifications?.setNotificationHandler) {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+      }),
+    });
+  }
+} catch {
+  Notifications = null;
 }
 
-// Map of bookmarkId -> notificationId
+async function requestPermissions(): Promise<boolean> {
+  if (Platform.OS === 'web' || !Notifications) return false;
+  try {
+    const { status: existing } = await Notifications.getPermissionsAsync();
+    if (existing === 'granted') return true;
+    const { status } = await Notifications.requestPermissionsAsync();
+    return status === 'granted';
+  } catch {
+    return false;
+  }
+}
+
 type ScheduledMap = Record<string, string>;
 
 async function getScheduledMap(): Promise<ScheduledMap> {
@@ -69,7 +80,6 @@ export function useNotifications() {
   const [prefs, setPrefs] = useState<NotificationPrefs>(DEFAULT_PREFS);
   const [hasPermission, setHasPermission] = useState(false);
 
-  // Load prefs on mount
   useEffect(() => {
     (async () => {
       try {
@@ -77,9 +87,11 @@ export function useNotifications() {
         if (json) setPrefs(JSON.parse(json));
       } catch { /* use defaults */ }
 
-      if (Platform.OS !== 'web') {
-        const { status } = await Notifications.getPermissionsAsync();
-        setHasPermission(status === 'granted');
+      if (Platform.OS !== 'web' && Notifications) {
+        try {
+          const { status } = await Notifications.getPermissionsAsync();
+          setHasPermission(status === 'granted');
+        } catch { /* ignore */ }
       }
     })();
   }, []);
@@ -103,10 +115,11 @@ export function useNotifications() {
 
   const disableNotifications = useCallback(async () => {
     await updatePrefs({ enabled: false });
-    // Cancel all scheduled
-    if (Platform.OS !== 'web') {
-      await Notifications.cancelAllScheduledNotificationsAsync();
-      await saveScheduledMap({});
+    if (Platform.OS !== 'web' && Notifications) {
+      try {
+        await Notifications.cancelAllScheduledNotificationsAsync();
+        await saveScheduledMap({});
+      } catch { /* ignore */ }
     }
   }, [updatePrefs]);
 
@@ -115,63 +128,19 @@ export function useNotifications() {
   }, [updatePrefs]);
 
   const scheduleForBookmark = useCallback(async (bookmark: Bookmark) => {
-    if (Platform.OS === 'web' || !prefs.enabled) return;
+    if (Platform.OS === 'web' || !Notifications || !prefs.enabled) return;
 
     const granted = await requestPermissions();
     if (!granted) return;
 
-    const startDate = new Date(bookmark.lw.startDate + 'T09:00:00');
-    const triggerDate = new Date(startDate.getTime() - TIMING_MS[prefs.timing]);
-
-    // Don't schedule if the trigger date is in the past
-    if (triggerDate <= new Date()) return;
-
-    const countryNames = bookmark.countries.map(
-      (c) => bookmark.countryNameMap[c.countryCode] || c.countryCode
-    ).join(', ');
-
-    const notifId = await Notifications.scheduleNotificationAsync({
-      content: {
-        title: 'Long Weekend Coming Up!',
-        body: `Your saved ${bookmark.lw.totalDays}-day break (${countryNames}) starts ${TIMING_LABELS[prefs.timing]}!`,
-        data: { bookmarkId: bookmark.id },
-      },
-      trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: triggerDate },
-    });
-
-    const map = await getScheduledMap();
-    map[bookmark.id] = notifId;
-    await saveScheduledMap(map);
-  }, [prefs.enabled, prefs.timing]);
-
-  const cancelForBookmark = useCallback(async (bookmarkId: string) => {
-    if (Platform.OS === 'web') return;
-
-    const map = await getScheduledMap();
-    const notifId = map[bookmarkId];
-    if (notifId) {
-      await Notifications.cancelScheduledNotificationAsync(notifId);
-      delete map[bookmarkId];
-      await saveScheduledMap(map);
-    }
-  }, []);
-
-  const rescheduleAll = useCallback(async (bookmarks: Bookmark[]) => {
-    if (Platform.OS === 'web' || !prefs.enabled) return;
-
-    // Cancel all existing
-    await Notifications.cancelAllScheduledNotificationsAsync();
-    const newMap: ScheduledMap = {};
-
-    for (const bookmark of bookmarks) {
+    try {
       const startDate = new Date(bookmark.lw.startDate + 'T09:00:00');
       const triggerDate = new Date(startDate.getTime() - TIMING_MS[prefs.timing]);
+      if (triggerDate <= new Date()) return;
 
-      if (triggerDate <= new Date()) continue;
-
-      const countryNames = bookmark.countries.map(
-        (c) => bookmark.countryNameMap[c.countryCode] || c.countryCode
-      ).join(', ');
+      const countryNames = bookmark.countries
+        .map((c) => bookmark.countryNameMap[c.countryCode] || c.countryCode)
+        .join(', ');
 
       const notifId = await Notifications.scheduleNotificationAsync({
         content: {
@@ -182,10 +151,56 @@ export function useNotifications() {
         trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: triggerDate },
       });
 
-      newMap[bookmark.id] = notifId;
-    }
+      const map = await getScheduledMap();
+      map[bookmark.id] = notifId;
+      await saveScheduledMap(map);
+    } catch { /* ignore scheduling errors */ }
+  }, [prefs.enabled, prefs.timing]);
 
-    await saveScheduledMap(newMap);
+  const cancelForBookmark = useCallback(async (bookmarkId: string) => {
+    if (Platform.OS === 'web' || !Notifications) return;
+
+    try {
+      const map = await getScheduledMap();
+      const notifId = map[bookmarkId];
+      if (notifId) {
+        await Notifications.cancelScheduledNotificationAsync(notifId);
+        delete map[bookmarkId];
+        await saveScheduledMap(map);
+      }
+    } catch { /* ignore */ }
+  }, []);
+
+  const rescheduleAll = useCallback(async (bookmarks: Bookmark[]) => {
+    if (Platform.OS === 'web' || !Notifications || !prefs.enabled) return;
+
+    try {
+      await Notifications.cancelAllScheduledNotificationsAsync();
+      const newMap: ScheduledMap = {};
+
+      for (const bookmark of bookmarks) {
+        const startDate = new Date(bookmark.lw.startDate + 'T09:00:00');
+        const triggerDate = new Date(startDate.getTime() - TIMING_MS[prefs.timing]);
+        if (triggerDate <= new Date()) continue;
+
+        const countryNames = bookmark.countries
+          .map((c) => bookmark.countryNameMap[c.countryCode] || c.countryCode)
+          .join(', ');
+
+        const notifId = await Notifications.scheduleNotificationAsync({
+          content: {
+            title: 'Long Weekend Coming Up!',
+            body: `Your saved ${bookmark.lw.totalDays}-day break (${countryNames}) starts ${TIMING_LABELS[prefs.timing]}!`,
+            data: { bookmarkId: bookmark.id },
+          },
+          trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: triggerDate },
+        });
+
+        newMap[bookmark.id] = notifId;
+      }
+
+      await saveScheduledMap(newMap);
+    } catch { /* ignore */ }
   }, [prefs.enabled, prefs.timing]);
 
   return {

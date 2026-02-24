@@ -20,12 +20,16 @@ const TIMING_MS: Record<ReminderTiming, number> = {
   '1day': 1 * 24 * 60 * 60 * 1000,
   '3days': 3 * 24 * 60 * 60 * 1000,
   '1week': 7 * 24 * 60 * 60 * 1000,
+  '2weeks': 14 * 24 * 60 * 60 * 1000,
+  '1month': 30 * 24 * 60 * 60 * 1000,
 };
 
 const TIMING_LABELS: Record<ReminderTiming, string> = {
   '1day': 'tomorrow',
   '3days': 'in 3 days',
   '1week': 'in a week',
+  '2weeks': 'in 2 weeks',
+  '1month': 'in a month',
 };
 
 // Configure how notifications are shown when app is in foreground

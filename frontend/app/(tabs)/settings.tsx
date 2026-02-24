@@ -843,41 +843,62 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   // Notification styles
-  timingContainer: {
+  timingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 14,
     borderTopWidth: 1,
     borderTopColor: '#F1F5F9',
   },
   timingLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#718096',
-    marginBottom: 10,
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#4A5568',
   },
-  timingOptions: {
+  timingDropdown: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  timingChip: {
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#F1F5F9',
     paddingVertical: 8,
     paddingHorizontal: 14,
-    borderRadius: 20,
-    backgroundColor: '#F1F5F9',
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#E2E8F0',
   },
-  timingChipActive: {
-    backgroundColor: '#EBF4FF',
-    borderColor: '#7C9CBF',
-  },
-  timingChipText: {
-    fontSize: 13,
+  timingDropdownText: {
+    fontSize: 14,
     fontWeight: '500',
-    color: '#718096',
+    color: '#7C9CBF',
   },
-  timingChipTextActive: {
+  timingMenu: {
+    marginHorizontal: 20,
+    marginBottom: 8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    overflow: 'hidden',
+  },
+  timingMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  timingMenuItemActive: {
+    backgroundColor: '#F0F9FF',
+  },
+  timingMenuItemText: {
+    fontSize: 14,
+    color: '#4A5568',
+  },
+  timingMenuItemTextActive: {
     color: '#7C9CBF',
     fontWeight: '600',
   },

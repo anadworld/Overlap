@@ -19,6 +19,7 @@ import { Bookmark } from '../../src/types';
 
 export default function SavedScreen() {
   const { bookmarks, reload, removeBookmark } = useBookmarks();
+  const { cancelForBookmark } = useNotifications();
   const router = useRouter();
 
   // Reload bookmarks each time this tab is focused
@@ -27,6 +28,11 @@ export default function SavedScreen() {
       reload();
     }, [reload])
   );
+
+  const handleDelete = async (bookmarkId: string) => {
+    await cancelForBookmark(bookmarkId);
+    await removeBookmark(bookmarkId);
+  };
 
   const handleRestore = (bookmark: Bookmark) => {
     setPendingRestore(bookmark);

@@ -294,25 +294,28 @@ export default function HomeScreen() {
   // Share function
   const shareLongWeekend = async (lw: LongWeekendOpportunity) => {
     const countryFlags = [...new Set(lw.holidays.map(h => getCountryFlag(h.countryCode)))].join(' ');
-    const holidayNames = lw.holidays.map(h => `• ${h.name} (${getCountryFlag(h.countryCode)})`).join('\n');
+    const holidayNames = lw.holidays.map(h => `- ${h.name} (${getCountryFlag(h.countryCode)})`).join('\n');
     
-    const message = `🗓️ ${lw.totalDays}-Day Break Alert!
+    const shareText = `${lw.totalDays}-Day Break Alert!
 
-📅 ${formatDateRange(lw.startDate, lw.endDate)}
-✨ ${lw.description}
+${formatDateRange(lw.startDate, lw.endDate)}
+${lw.description}
 
 Holidays:
 ${holidayNames}
 
 ${countryFlags} Plan your getaway!
 
-Found with Overlap – Holiday Calendar`;
+Found with Overlap - Holiday Calendar`;
 
     try {
-      await Share.share(
-        { message },
-        { dialogTitle: `Share ${lw.totalDays}-Day Long Weekend` }
-      );
+      const result = await Share.share({
+        message: shareText,
+      });
+      
+      if (result.action === Share.sharedAction) {
+        console.log('Shared successfully');
+      }
     } catch (error) {
       console.error('Error sharing:', error);
     }

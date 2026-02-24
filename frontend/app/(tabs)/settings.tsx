@@ -834,6 +834,7 @@ const styles = StyleSheet.create({
   },
   timingOptions: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
   },
   timingChip: {

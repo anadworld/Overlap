@@ -9,7 +9,7 @@ import requests
 import json
 from collections import defaultdict
 
-BACKEND_URL = "https://holiday-overlap.preview.emergentagent.com/api"
+BACKEND_URL = "https://holiday-compare-1.preview.emergentagent.com/api"
 
 def test_good_friday_deduplication():
     """Test specifically for Good Friday deduplication fix"""

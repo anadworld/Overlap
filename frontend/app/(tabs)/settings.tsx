@@ -11,10 +11,13 @@ import {
   Platform,
   Share,
   Alert,
+  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
+import { useNotifications, ReminderTiming } from '../../src/hooks/useNotifications';
+import { useBookmarks } from '../../src/hooks/useBookmarks';
 
 const APP_VERSION = Constants.expoConfig?.version || '1.0.0';
 const BUILD_NUMBER = Constants.expoConfig?.ios?.buildNumber || Constants.expoConfig?.android?.versionCode || '1';

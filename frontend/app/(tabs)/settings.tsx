@@ -512,9 +512,11 @@ export default function SettingsScreen() {
           
           <Text style={styles.modalSubheading}>4. Data Storage and Security</Text>
           <Text style={styles.modalParagraph}>
-            Your country selections and preferences are stored locally on your device. Holiday data and 
-            long weekend calculations are processed in real-time and not stored. We implement appropriate 
-            security measures to protect against unauthorized access to or alteration of your data.
+            Your country selections, saved long weekends, and notification preferences are stored locally 
+            on your device using AsyncStorage. Holiday data is fetched in real-time from our servers. 
+            Notification reminders are scheduled locally on your device and are not sent through external 
+            servers. We implement appropriate security measures to protect against unauthorized access 
+            to or alteration of your data.
           </Text>
           
           <Text style={styles.modalSubheading}>5. Third-Party Services</Text>

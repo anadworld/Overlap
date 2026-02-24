@@ -460,6 +460,66 @@ export default function SettingsScreen() {
           </Text>
         </View>
       ))}
+
+      {/* FAQ Modal */}
+      {renderModal(showFaqModal, () => setShowFaqModal(false), 'Help & FAQ', (
+        <View>
+          <Text style={styles.modalSubheading}>How do I use the app?</Text>
+          <Text style={styles.modalParagraph}>
+            1. Tap the selection bar to choose 1-5 countries{"\n"}
+            2. Select a year from the dropdown{"\n"}
+            3. Browse holidays, overlaps, or long weekends using the colored cards
+          </Text>
+          
+          <Text style={styles.modalSubheading}>What are "Overlaps"?</Text>
+          <Text style={styles.modalParagraph}>
+            Overlaps are dates when ALL your selected countries have a public holiday on the same day. 
+            Perfect for planning trips or meetings when everyone has the day off!
+          </Text>
+          
+          <Text style={styles.modalSubheading}>What is a "Long Weekend"?</Text>
+          <Text style={styles.modalParagraph}>
+            A long weekend is when a public holiday falls near a weekend, giving you 3 or more 
+            consecutive days off. We detect Friday holidays (3 days), Monday holidays (3 days), 
+            and combinations that create 4+ day breaks.
+          </Text>
+          
+          <Text style={styles.modalSubheading}>What is a "Bridge Day"?</Text>
+          <Text style={styles.modalParagraph}>
+            A bridge day is when a holiday falls on Thursday or Tuesday. By taking just one day off 
+            (Friday or Monday), you can create a 4-day weekend! Look for the yellow suggestions.
+          </Text>
+          
+          <Text style={styles.modalSubheading}>How many countries can I compare?</Text>
+          <Text style={styles.modalParagraph}>
+            You can select between 1 and 5 countries at a time. With just 1 country, you'll see 
+            all holidays and long weekends. With 2-5 countries, you'll also see overlapping dates.
+          </Text>
+          
+          <Text style={styles.modalSubheading}>How far ahead can I plan?</Text>
+          <Text style={styles.modalParagraph}>
+            The app supports multiple years of holiday data. Use the year dropdown to explore 
+            past and future holidays for your vacation planning.
+          </Text>
+          
+          <Text style={styles.modalSubheading}>Can I share my findings?</Text>
+          <Text style={styles.modalParagraph}>
+            Yes! Tap the share icon on any long weekend card to share the dates and holiday 
+            details with friends, family, or colleagues.
+          </Text>
+          
+          <Text style={styles.modalSubheading}>Where does the holiday data come from?</Text>
+          <Text style={styles.modalParagraph}>
+            We use the Nager.Date API, a reliable source for public holiday information covering 
+            100+ countries worldwide. Data is updated regularly to reflect official changes.
+          </Text>
+          
+          <Text style={styles.modalSubheading}>Still have questions?</Text>
+          <Text style={styles.modalParagraph}>
+            Contact us at overlap@anadworld.com and we'll be happy to help!
+          </Text>
+        </View>
+      ))}
     </SafeAreaView>
   );
 }

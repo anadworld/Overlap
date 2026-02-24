@@ -14,7 +14,7 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
 - Frontend: React Native + Expo + Expo Router (TypeScript)
 - Backend: Python + FastAPI
 - External API: Nager.Date (no key required)
-- Database: MongoDB (caching)
+- Database: MongoDB (caching + app config)
 
 ## Architecture
 ```
@@ -22,7 +22,8 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
 ├── backend/
 │   ├── .env
 │   ├── requirements.txt
-│   └── server.py
+│   ├── server.py
+│   └── tests/
 └── frontend/
     ├── .env
     ├── app.json           ← newArchEnabled: true
@@ -32,23 +33,26 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
     ├── overlap-release.keystore
     ├── package.json
     ├── src/
-    │   ├── _types/
-    │   ├── _utils/
-    │   ├── _hooks/
+    │   ├── types.ts
+    │   ├── utils.ts
+    │   ├── hooks/
     │   │   ├── useHolidayData.ts
-    │   │   └── useBookmarks.ts
-    │   ├── _store/
+    │   │   ├── useBookmarks.ts
+    │   │   └── useUpdateCheck.ts    ← NEW
+    │   ├── store/
     │   │   └── pendingRestore.ts
-    │   └── _components/
-    │       ├── StatsBar.tsx
-    │       ├── CountryLegend.tsx
-    │       ├── HolidayCard.tsx
-    │       ├── LongWeekendCard.tsx
-    │       ├── SavedCard.tsx
-    │       ├── CountryPickerModal.tsx
-    │       └── YearPickerModal.tsx
+    │   └── components/
+    │       ├── UpdatePrompt.tsx      ← NEW
+    │       └── holiday/
+    │           ├── StatsBar.tsx
+    │           ├── CountryLegend.tsx
+    │           ├── HolidayCard.tsx
+    │           ├── LongWeekendCard.tsx
+    │           ├── SavedCard.tsx
+    │           ├── CountryPickerModal.tsx
+    │           └── YearPickerModal.tsx
     └── app/
-        ├── _layout.tsx
+        ├── _layout.tsx    ← Integrates UpdatePrompt
         └── (tabs)/
             ├── _layout.tsx
             ├── index.tsx
@@ -59,17 +63,18 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
 ## Key API Endpoints
 - `GET /api/countries` → list of available countries
 - `POST /api/compare` → `{ countryCodes, year }` → holidays, overlaps, long weekends
+- `GET /api/app-version` → latest version info for update checks
+- `PUT /api/app-version` → update latest version (admin)
 
 ## What's Been Implemented
-- Complex long weekend / bridge day / overlap detection in `backend/server.py`
+- Complex long weekend / bridge day / overlap detection
 - Per-country day breakdown on long weekend cards
 - Home screen with sticky filter cards (Holidays / Overlaps / Long Weekends)
 - Settings screen with About, Help & FAQ modals, legal info, version number
 - Saved/Bookmark tab using AsyncStorage
-- `newArchEnabled: true` in `app.json`
-- Tab bar safe area via `useSafeAreaInsets`
 - Share functionality with platform-specific iOS fix
 - **Android production build (.aab) completed successfully**
+- **App update notification system** — checks backend for newer versions on launch, shows modal with "Update Now" / "Maybe Later"
 
 ## Changelog
 | Date | Change |
@@ -81,14 +86,16 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
 | Feb 2026 | Created babel.config.js with babel-preset-expo + reanimated plugin |
 | Feb 2026 | Fixed Android build: added `babel-preset-expo` to devDependencies |
 | Feb 2026 | Fixed expo doctor: removed `minSdkVersion` from app.json, removed package-lock.json |
-| Feb 2026 | **Android production build SUCCEEDED** — .aab at https://expo.dev/artifacts/eas/ip4GwuKVSoeLz5cvVHjr6z.aab |
+| Feb 2026 | **Android production build SUCCEEDED** — .aab ready |
+| Feb 2026 | **App update notification system** — backend endpoint + frontend modal |
 
 ## Prioritised Backlog
 ### P0 — Done
 - [x] Fix Android build (newArchEnabled, babel-preset-expo, minSdkVersion)
 - [x] Android production build (.aab) complete
+- [x] App update notification system
 
-### P1 — In Progress
+### P1 — Pending
 - [ ] iOS production build — requires Apple Developer credentials setup on Expo
 
 ### P2 — Pending User Verification

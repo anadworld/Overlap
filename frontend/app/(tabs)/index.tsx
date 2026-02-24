@@ -43,8 +43,24 @@ export default function HomeScreen() {
     onRefresh,
   } = useHolidayData();
 
+  const { isBookmarked, toggleBookmark, reload: reloadBookmarks } = useBookmarks();
+
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
+
+  // On tab focus: reload bookmarks + apply any pending restore from Saved tab
+  useFocusEffect(
+    useCallback(() => {
+      reloadBookmarks();
+      const restore = getPendingRestore();
+      if (restore) {
+        clearPendingRestore();
+        setSelectedCountries(restore.countries);
+        setSelectedYear(restore.year);
+        compareHolidays(restore.year, restore.countries);
+      }
+    }, [reloadBookmarks, compareHolidays, setSelectedCountries, setSelectedYear])
+  );
 
   const currentYear = new Date().getFullYear();
   const yearOptions = Array.from({ length: 12 }, (_, i) => currentYear - 2 + i);

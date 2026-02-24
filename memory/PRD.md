@@ -22,17 +22,34 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
 ├── backend/
 │   ├── .env
 │   ├── requirements.txt
-│   └── server.py          ← holiday compare logic, /api/countries, /api/compare
+│   └── server.py
 └── frontend/
     ├── .env
-    ├── app.json           ← newArchEnabled: true (required for reanimated)
+    ├── app.json           ← newArchEnabled: true
     ├── package.json
+    ├── src/               ← all shared code (outside app/ to avoid Expo Router scanning)
+    │   ├── types.ts
+    │   ├── utils.ts
+    │   ├── hooks/
+    │   │   ├── useHolidayData.ts
+    │   │   └── useBookmarks.ts
+    │   ├── store/
+    │   │   └── pendingRestore.ts
+    │   └── components/holiday/
+    │       ├── StatsBar.tsx
+    │       ├── CountryLegend.tsx
+    │       ├── HolidayCard.tsx
+    │       ├── LongWeekendCard.tsx
+    │       ├── SavedCard.tsx
+    │       ├── CountryPickerModal.tsx
+    │       └── YearPickerModal.tsx
     └── app/
-        ├── _layout.tsx
+        ├── _layout.tsx    ← GestureHandlerRootView at root
         └── (tabs)/
-            ├── _layout.tsx   ← tab bar with useSafeAreaInsets
-            ├── index.tsx     ← home screen (~700 lines, needs refactor)
-            └── settings.tsx  ← settings + About + FAQ modals
+            ├── _layout.tsx   ← 3 tabs: Home/Saved/Settings, useSafeAreaInsets
+            ├── index.tsx     ← thin orchestrator (~160 lines)
+            ├── saved.tsx     ← bookmarks tab
+            └── settings.tsx
 ```
 
 ## Key API Endpoints

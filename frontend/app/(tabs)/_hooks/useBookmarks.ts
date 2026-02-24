@@ -75,15 +75,28 @@ export function useBookmarks() {
       countries: Country[],
       countryNameMap: Record<string, string>
     ) => {
-      const key = bookmarkKey(lw, year, countries);
-      const existing = bookmarks.find((b) => bookmarkKey(b.lw, b.year, b.countries) === key);
-      if (existing) {
-        await removeBookmark(existing.id);
-      } else {
-        await addBookmark(lw, year, countries, countryNameMap);
-      }
+      setBookmarks((prev) => {
+        const key = bookmarkKey(lw, year, countries);
+        const existing = prev.find((b) => bookmarkKey(b.lw, b.year, b.countries) === key);
+        let updated: Bookmark[];
+        if (existing) {
+          updated = prev.filter((b) => b.id !== existing.id);
+        } else {
+          const bookmark: Bookmark = {
+            id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+            savedAt: new Date().toISOString(),
+            year,
+            countries,
+            lw,
+            countryNameMap,
+          };
+          updated = [bookmark, ...prev];
+        }
+        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        return updated;
+      });
     },
-    [bookmarks, addBookmark, removeBookmark]
+    []
   );
 
   return { bookmarks, reload, isBookmarked, toggleBookmark, removeBookmark };

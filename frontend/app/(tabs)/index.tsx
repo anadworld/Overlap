@@ -167,7 +167,7 @@ export default function HomeScreen() {
                     }
                     const monthKeys = Object.keys(grouped).map(Number).sort((a, b) => a - b);
                     const maxCount = Math.max(...monthKeys.map(m => grouped[m].length));
-                    const bestMonths = monthKeys.filter(m => grouped[m].length === maxCount);
+                    const bestMonth = bestMonths.length === 1 ? bestMonths[0] : -1;
 
                     return monthKeys.map((m) => (
                       <View key={m}>

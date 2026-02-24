@@ -63,7 +63,13 @@ export function LongWeekendCard({ lw, index, countryNameMap, getCountryColor, is
       bridgeLine +
       `\n\nFound with Overlap - Holiday Calendar`;
     try {
-      await Share.share({ message: shareText, title: 'Overlap - Holiday Calendar' });
+      // On iOS: pass ONLY message — no title/subject, which was causing WhatsApp to
+      // show a compose-screen UI instead of the clean share sheet.
+      // On Android: title goes in options.dialogTitle (chooser heading, not content).
+      await Share.share(
+        { message: shareText },
+        Platform.OS === 'android' ? { dialogTitle: 'Share Long Weekend' } : {}
+      );
     } catch (e) {
       console.error('Share error:', e);
     }

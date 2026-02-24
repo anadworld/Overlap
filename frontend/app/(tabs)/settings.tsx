@@ -425,8 +425,9 @@ export default function SettingsScreen() {
           <Text style={styles.modalParagraph}>
             Overlap – Holiday Calendar provides information about public holidays in various countries. The App allows 
             users to view holidays for one or more countries, compare holidays across multiple countries, 
-            identify overlapping dates, and discover long weekend opportunities including bridge days and 
-            consecutive holiday streaks.
+            identify overlapping dates, discover long weekend opportunities including bridge days and 
+            consecutive holiday streaks, save favourite long weekends for quick access, receive push 
+            notification reminders before upcoming saved holidays, and share holiday details with others.
           </Text>
           
           <Text style={styles.modalSubheading}>3. Accuracy of Information</Text>

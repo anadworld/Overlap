@@ -162,6 +162,10 @@ export default function HomeScreen() {
                       index={i}
                       countryNameMap={countryNameMap}
                       getCountryColor={getCountryColor}
+                      isBookmarked={isBookmarked(lw, selectedYear, selectedCountries)}
+                      onToggleBookmark={() =>
+                        toggleBookmark(lw, selectedYear, selectedCountries, countryNameMap)
+                      }
                     />
                   ))
                 ) : (

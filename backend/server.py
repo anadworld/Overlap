@@ -386,7 +386,7 @@ def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_c
                 processed_dates.add(d)
     
     # Sort by total days descending, then by start date
-    opportunities.sort(key=lambda x: (-x.totalDays, x.startDate))
+    opportunities.sort(key=lambda x: x.startDate)
     
     # Remove duplicates based on overlapping date ranges
     unique_opportunities = []

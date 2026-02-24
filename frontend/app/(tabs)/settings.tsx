@@ -375,11 +375,19 @@ export default function SettingsScreen() {
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Plan ahead with multi-year support</Text>
+              <Text style={styles.featureText}>Save and bookmark your favourite long weekends</Text>
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Beautiful, intuitive interface</Text>
+              <Text style={styles.featureText}>Push notification reminders before saved holidays</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
+              <Text style={styles.featureText}>Share long weekends with friends and colleagues</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
+              <Text style={styles.featureText}>Plan ahead with multi-year support</Text>
             </View>
           </View>
           

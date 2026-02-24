@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
-import { Country } from '../types';
+import { Country } from '../_types';
 
 interface Props {
   totalHolidays: number;

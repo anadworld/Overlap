@@ -22,7 +22,7 @@ import { StatsBar } from './_components/StatsBar';
 import { CountryLegend } from './_components/CountryLegend';
 import { HolidayCard } from './_components/HolidayCard';
 import { LongWeekendCard } from './_components/LongWeekendCard';
-import { getCountryFlag, COUNTRY_COLORS } from './utils';
+import { getCountryFlag, COUNTRY_COLORS } from './_utils';
 import { getPendingRestore, clearPendingRestore } from './_store/pendingRestore';
 
 export default function HomeScreen() {

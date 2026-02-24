@@ -1,4 +1,4 @@
-import { Bookmark } from '../types';
+import { Bookmark } from '../_types';
 
 // Module-level singleton for passing a bookmark restore request between tabs
 let _pending: Bookmark | null = null;

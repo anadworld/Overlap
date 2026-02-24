@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { BACKEND_URL } from '../utils';
-import { Country, CompareResponse } from '../types';
+import { BACKEND_URL } from '../_utils';
+import { Country, CompareResponse } from '../_types';
 
 export function useHolidayData() {
   const [countries, setCountries] = useState<Country[]>([]);

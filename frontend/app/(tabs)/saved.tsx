@@ -14,7 +14,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useBookmarks } from './_hooks/useBookmarks';
 import { SavedCard } from './_components/SavedCard';
 import { setPendingRestore } from './_store/pendingRestore';
-import { Bookmark } from './types';
+import { Bookmark } from './_types';
 
 export default function SavedScreen() {
   const { bookmarks, reload, removeBookmark } = useBookmarks();

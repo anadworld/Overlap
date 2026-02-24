@@ -7,7 +7,7 @@ import { Bookmark } from '../types';
 const PREFS_KEY = 'overlap_notification_prefs';
 const SCHEDULED_KEY = 'overlap_scheduled_notifications';
 
-export type ReminderTiming = '1day' | '3days' | '1week';
+export type ReminderTiming = '1day' | '3days' | '1week' | '2weeks' | '1month';
 
 export interface NotificationPrefs {
   enabled: boolean;

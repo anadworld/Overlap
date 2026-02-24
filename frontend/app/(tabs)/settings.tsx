@@ -90,6 +90,8 @@ export default function SettingsScreen() {
     { value: '1day', label: '1 Day Before' },
     { value: '3days', label: '3 Days Before' },
     { value: '1week', label: '1 Week Before' },
+    { value: '2weeks', label: '2 Weeks Before' },
+    { value: '1month', label: '1 Month Before' },
   ];
 
   const handleRateApp = async () => {
@@ -211,7 +213,7 @@ export default function SettingsScreen() {
               </View>
               <View style={styles.settingsItemContent}>
                 <Text style={styles.settingsItemTitle}>Holiday Reminders</Text>
-                <Text style={styles.settingsItemSubtitle}>Get notified before saved long weekends</Text>
+                <Text style={styles.settingsItemSubtitle}>Get notified about your upcoming saved holiday.</Text>
               </View>
               <Switch
                 value={prefs.enabled}

@@ -44,7 +44,8 @@ export default function HomeScreen() {
     onRefresh,
   } = useHolidayData();
 
-  const { isBookmarked, toggleBookmark, reload: reloadBookmarks } = useBookmarks();
+  const { isBookmarked, toggleBookmark, reload: reloadBookmarks, bookmarks } = useBookmarks();
+  const { scheduleForBookmark, cancelForBookmark } = useNotifications();
 
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);

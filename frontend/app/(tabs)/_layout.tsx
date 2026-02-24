@@ -6,6 +6,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const HomeIcon = ({ color, size }: { color: string; size: number }) => (
   <Ionicons name="calendar" size={size} color={color} />
 );
+const SavedIcon = ({ color, size, focused }: { color: string; size: number; focused?: boolean }) => (
+  <Ionicons name={focused ? 'bookmark' : 'bookmark-outline'} size={size} color={color} />
+);
 const SettingsIcon = ({ color, size }: { color: string; size: number }) => (
   <Ionicons name="settings-outline" size={size} color={color} />
 );

@@ -41,17 +41,25 @@ export function useBookmarks() {
         lw,
         countryNameMap,
       };
-      const updated = [bookmark, ...bookmarks];
-      await persist(updated);
+      // Functional update to avoid stale-closure race condition
+      setBookmarks((prev) => {
+        const updated = [bookmark, ...prev];
+        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        return updated;
+      });
     },
-    [bookmarks, persist]
+    []
   );
 
   const removeBookmark = useCallback(
     async (id: string) => {
-      await persist(bookmarks.filter((b) => b.id !== id));
+      setBookmarks((prev) => {
+        const updated = prev.filter((b) => b.id !== id);
+        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        return updated;
+      });
     },
-    [bookmarks, persist]
+    []
   );
 
   const isBookmarked = useCallback(

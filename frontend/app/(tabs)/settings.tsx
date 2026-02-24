@@ -49,6 +49,7 @@ export default function SettingsScreen() {
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [showLicensesModal, setShowLicensesModal] = useState(false);
+  const [showFaqModal, setShowFaqModal] = useState(false);
 
   const handleRateApp = async () => {
     let url: string;

@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 
 import { useBookmarks } from '../../src/hooks/useBookmarks';
+import { useNotifications } from '../../src/hooks/useNotifications';
 import { SavedCard } from '../../src/components/holiday/SavedCard';
 import { setPendingRestore } from '../../src/store/pendingRestore';
 import { Bookmark } from '../../src/types';

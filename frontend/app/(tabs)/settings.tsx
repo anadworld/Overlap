@@ -201,6 +201,56 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {/* Notifications Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Notifications</Text>
+          <View style={styles.sectionContent}>
+            <View style={styles.settingsItem} testID="settings-notification-toggle">
+              <View style={styles.settingsItemIcon}>
+                <Ionicons name="notifications-outline" size={22} color="#7C9CBF" />
+              </View>
+              <View style={styles.settingsItemContent}>
+                <Text style={styles.settingsItemTitle}>Holiday Reminders</Text>
+                <Text style={styles.settingsItemSubtitle}>Get notified before saved long weekends</Text>
+              </View>
+              <Switch
+                value={prefs.enabled}
+                onValueChange={handleToggleNotifications}
+                trackColor={{ false: '#E2E8F0', true: '#B2CFEA' }}
+                thumbColor={prefs.enabled ? '#7C9CBF' : '#CBD5E0'}
+                testID="notification-switch"
+              />
+            </View>
+            {prefs.enabled && (
+              <View style={styles.timingContainer} testID="reminder-timing-section">
+                <Text style={styles.timingLabel}>Remind me</Text>
+                <View style={styles.timingOptions}>
+                  {timingOptions.map((opt) => (
+                    <TouchableOpacity
+                      key={opt.value}
+                      style={[
+                        styles.timingChip,
+                        prefs.timing === opt.value && styles.timingChipActive,
+                      ]}
+                      onPress={() => handleTimingChange(opt.value)}
+                      testID={`timing-${opt.value}`}
+                    >
+                      <Text
+                        style={[
+                          styles.timingChipText,
+                          prefs.timing === opt.value && styles.timingChipTextActive,
+                        ]}
+                      >
+                        {opt.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
+          </View>
+        </View>
+
         {/* Support Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Support</Text>

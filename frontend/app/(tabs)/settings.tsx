@@ -53,6 +53,7 @@ export default function SettingsScreen() {
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [showLicensesModal, setShowLicensesModal] = useState(false);
   const [showFaqModal, setShowFaqModal] = useState(false);
+  const [showTimingDropdown, setShowTimingDropdown] = useState(false);
 
   const {
     prefs,

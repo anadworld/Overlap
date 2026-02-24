@@ -640,6 +640,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def create_indexes():
+    await db.holidays_cache.create_index("cache_key", unique=True)
+    await db.countries_cache.create_index("type", unique=True)
+    await db.saved_comparisons.create_index("id", unique=True)
+    await db.saved_comparisons.create_index("createdAt")
+    await db.app_config.create_index("key", unique=True)
+    logger.info("MongoDB indexes created")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()

@@ -53,7 +53,7 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
 |------|--------|
 | Feb 2026 | Set `newArchEnabled: true` in app.json — fixes Android deployment build |
 | Feb 2026 | Tab bar: replaced hardcoded Platform padding with `useSafeAreaInsets` |
-| Feb 2026 | Share: plain-text message, added `title`, removed flag emoji from text |
+| Feb 2026 | Refactored index.tsx (1345 lines) into 8 files: types.ts, utils.ts, hooks/useHolidayData.ts, components/{StatsBar, CountryLegend, HolidayCard, LongWeekendCard, CountryPickerModal, YearPickerModal} — no visual/behaviour changes, all tests pass |
 
 ## Prioritised Backlog
 ### P0 — Done

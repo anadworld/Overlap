@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Country } from '../_types';
-import { getCountryFlag, COUNTRY_COLORS } from '../_utils';
+import { Country } from '../../types';
+import { getCountryFlag, COUNTRY_COLORS } from '../../utils';
 
 interface Props {
   countries: Country[];

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Bookmark, LongWeekendOpportunity, Country } from '../_types';
+import { Bookmark, LongWeekendOpportunity, Country } from '../types';
 
 const STORAGE_KEY = 'overlap_bookmarks';
 

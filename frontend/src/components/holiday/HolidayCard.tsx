@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { HolidayWithCountries } from '../_types';
-import { getCountryFlag, formatHolidayDate } from '../_utils';
+import { HolidayWithCountries } from '../../types';
+import { getCountryFlag, formatHolidayDate } from '../../utils';
 
 interface Props {
   holiday: HolidayWithCountries;

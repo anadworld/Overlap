@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Share } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LongWeekendOpportunity } from '../_types';
-import { getCountryFlag, formatDateRange, getDayRange, getWeekdayRange, formatHolidayDate } from '../_utils';
+import { LongWeekendOpportunity } from '../../types';
+import { getCountryFlag, formatDateRange, getDayRange, getWeekdayRange, formatHolidayDate } from '../../utils';
 
 interface Props {
   lw: LongWeekendOpportunity;

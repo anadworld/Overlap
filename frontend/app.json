@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "overlap",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anadworld.overlap"
@@ -17,7 +17,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#7C9CBF"
       },
-      "package": "com.anadworld.overlap"
+      "package": "com.anadworld.overlap",
+      "minSdkVersion": 21
     },
     "web": {
       "bundler": "metro",

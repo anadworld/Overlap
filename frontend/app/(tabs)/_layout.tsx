@@ -2,6 +2,14 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+// Extracted icon components to avoid unstable nested component warnings
+const HomeIcon = ({ color, size }: { color: string; size: number }) => (
+  <Ionicons name="calendar" size={size} color={color} />
+);
+const SettingsIcon = ({ color, size }: { color: string; size: number }) => (
+  <Ionicons name="settings-outline" size={size} color={color} />
+);
+
 function TabLayoutContent() {
   const insets = useSafeAreaInsets();
   const bottomInset = insets.bottom;
@@ -30,18 +38,14 @@ function TabLayoutContent() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" size={size} color={color} />
-          ),
+          tabBarIcon: HomeIcon,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings-outline" size={size} color={color} />
-          ),
+          tabBarIcon: SettingsIcon,
         }}
       />
     </Tabs>

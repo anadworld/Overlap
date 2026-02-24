@@ -24,7 +24,7 @@ export function StatsBar({
       <TouchableOpacity
         style={[styles.statCard, styles.statCardBlue, activeTab === 'holidays' && styles.statCardActive]}
         onPress={() => onTabChange('holidays')}
-        data-testid="holidays-stat"
+        testID="holidays-stat"
       >
         <Text style={[styles.statCardValue, styles.statCardValueBlue]}>{totalHolidays}</Text>
         <Text style={[styles.statCardLabel, styles.statCardLabelBlue]}>holidays</Text>
@@ -34,7 +34,7 @@ export function StatsBar({
         <TouchableOpacity
           style={[styles.statCard, styles.statCardGreen, activeTab === 'overlaps' && styles.statCardActive]}
           onPress={() => onTabChange('overlaps')}
-          data-testid="overlaps-stat"
+          testID="overlaps-stat"
         >
           <Text style={[styles.statCardValue, styles.statCardValueGreen]}>{totalOverlaps}</Text>
           <Text style={[styles.statCardLabel, styles.statCardLabelGreen]}>overlaps</Text>
@@ -44,7 +44,7 @@ export function StatsBar({
       <TouchableOpacity
         style={[styles.statCard, styles.statCardOrange, activeTab === 'longweekends' && styles.statCardActive]}
         onPress={() => onTabChange('longweekends')}
-        data-testid="longweekends-stat"
+        testID="longweekends-stat"
       >
         <Text style={[styles.statCardValue, styles.statCardValueOrange]}>{totalLongWeekends}</Text>
         <Text style={[styles.statCardLabel, styles.statCardLabelOrange]}>long weekends</Text>

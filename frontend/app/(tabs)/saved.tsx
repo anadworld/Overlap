@@ -71,7 +71,7 @@ export default function SavedScreen() {
             <SavedCard
               key={bookmark.id}
               bookmark={bookmark}
-              onDelete={() => removeBookmark(bookmark.id)}
+              onDelete={() => handleDelete(bookmark.id)}
               onRestore={() => handleRestore(bookmark)}
             />
           ))}

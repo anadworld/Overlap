@@ -13,7 +13,7 @@ import os
 from collections import defaultdict
 
 # Get backend URL from frontend/.env
-BACKEND_URL = "https://overlap-holidays.preview.emergentagent.com/api"
+BACKEND_URL = "https://holiday-overlap.preview.emergentagent.com/api"
 
 class TestResults:
     def __init__(self):

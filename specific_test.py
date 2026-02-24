@@ -1,7 +1,7 @@
 import asyncio
 import httpx
 
-BACKEND_URL = "https://overlap-holidays.preview.emergentagent.com/api"
+BACKEND_URL = "https://holiday-overlap.preview.emergentagent.com/api"
 
 async def test_specific_scenarios():
     print("🧪 Testing Specific Review Request Scenarios")

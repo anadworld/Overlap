@@ -96,7 +96,7 @@ export default function HomeScreen() {
         style={styles.selectionBar}
         onPress={() => setShowCountryPicker(true)}
         activeOpacity={0.7}
-        data-testid="selection-bar"
+        testID="selection-bar"
       >
         <View style={styles.selectionInfo}>
           {selectedCountries.length > 0 ? (
@@ -117,7 +117,7 @@ export default function HomeScreen() {
             e.stopPropagation();
             setShowYearPicker(true);
           }}
-          data-testid="year-dropdown"
+          testID="year-dropdown"
         >
           <Text style={styles.yearText}>{selectedYear}</Text>
           <Ionicons name="chevron-down" size={18} color="#7C9CBF" />
@@ -227,7 +227,7 @@ export default function HomeScreen() {
               <TouchableOpacity
                 style={styles.getStartedButton}
                 onPress={() => setShowCountryPicker(true)}
-                data-testid="get-started-btn"
+                testID="get-started-btn"
               >
                 <Text style={styles.getStartedButtonText}>Get Started</Text>
               </TouchableOpacity>

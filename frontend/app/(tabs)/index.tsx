@@ -166,8 +166,6 @@ export default function HomeScreen() {
                       grouped[m].push(lw);
                     }
                     const monthKeys = Object.keys(grouped).map(Number).sort((a, b) => a - b);
-                    const maxCount = Math.max(...monthKeys.map(m => grouped[m].length));
-                    const bestMonth = bestMonths.length === 1 ? bestMonths[0] : -1;
 
                     return monthKeys.map((m) => (
                       <View key={m}>
@@ -390,11 +388,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E2E8F0',
   },
-  monthTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
   monthTitle: {
     fontSize: 18,
     fontWeight: '700',
@@ -404,22 +397,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#718096',
     fontWeight: '500',
-  },
-  bestMonthBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#FFFBEB',
-    paddingVertical: 3,
-    paddingHorizontal: 8,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#FDE68A',
-  },
-  bestMonthText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#D97706',
   },
   bottomPadding: { height: 40 },
   emptyState: {

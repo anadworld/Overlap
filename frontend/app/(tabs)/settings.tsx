@@ -505,6 +505,8 @@ export default function SettingsScreen() {
             We use the information we collect to:
             {"\n"}• Provide and maintain the App
             {"\n"}• Display holiday data and long weekend opportunities
+            {"\n"}• Store your saved long weekends locally on your device
+            {"\n"}• Schedule local notification reminders for saved holidays
             {"\n"}• Improve user experience
             {"\n"}• Analyze usage patterns
             {"\n"}• Fix bugs and technical issues

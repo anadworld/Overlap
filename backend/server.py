@@ -594,6 +594,41 @@ async def delete_saved_comparison(comparison_id: str):
         raise HTTPException(status_code=404, detail="Comparison not found")
     return {"message": "Comparison deleted"}
 
+@api_router.get("/app-version")
+async def get_app_version():
+    """Get the latest app version info for update checks"""
+    doc = await db.app_config.find_one({"key": "version_info"}, {"_id": 0})
+    if not doc:
+        return {
+            "latestVersion": "1.0.0",
+            "minVersion": "1.0.0",
+            "releaseNotes": "",
+            "forceUpdate": False,
+            "iosStoreUrl": "https://apps.apple.com/app/id6740092498",
+            "androidStoreUrl": "https://play.google.com/store/apps/details?id=com.anadworld.overlap",
+        }
+    return {k: v for k, v in doc.items() if k != "key"}
+
+@api_router.put("/app-version")
+async def update_app_version(req: UpdateAppVersionRequest):
+    """Update the latest app version (admin endpoint)"""
+    update_data = {"latestVersion": req.latestVersion}
+    if req.minVersion is not None:
+        update_data["minVersion"] = req.minVersion
+    if req.releaseNotes is not None:
+        update_data["releaseNotes"] = req.releaseNotes
+    if req.forceUpdate is not None:
+        update_data["forceUpdate"] = req.forceUpdate
+    update_data["iosStoreUrl"] = "https://apps.apple.com/app/id6740092498"
+    update_data["androidStoreUrl"] = "https://play.google.com/store/apps/details?id=com.anadworld.overlap"
+
+    await db.app_config.update_one(
+        {"key": "version_info"},
+        {"$set": {**update_data, "key": "version_info"}},
+        upsert=True,
+    )
+    return {"message": "Version info updated", **update_data}
+
 # Include the router in the main app
 app.include_router(api_router)
 

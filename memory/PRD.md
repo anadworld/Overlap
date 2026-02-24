@@ -14,7 +14,7 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
 - Frontend: React Native + Expo + Expo Router (TypeScript)
 - Backend: Python + FastAPI
 - External API: Nager.Date (no key required)
-- No database
+- Database: MongoDB (caching)
 
 ## Architecture
 ```
@@ -26,16 +26,20 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
 └── frontend/
     ├── .env
     ├── app.json           ← newArchEnabled: true
+    ├── babel.config.js    ← babel-preset-expo + reanimated plugin
+    ├── eas.json
+    ├── credentials.json   ← Android keystore config
+    ├── overlap-release.keystore
     ├── package.json
-    ├── src/               ← all shared code (outside app/ to avoid Expo Router scanning)
-    │   ├── types.ts
-    │   ├── utils.ts
-    │   ├── hooks/
+    ├── src/
+    │   ├── _types/
+    │   ├── _utils/
+    │   ├── _hooks/
     │   │   ├── useHolidayData.ts
     │   │   └── useBookmarks.ts
-    │   ├── store/
+    │   ├── _store/
     │   │   └── pendingRestore.ts
-    │   └── components/holiday/
+    │   └── _components/
     │       ├── StatsBar.tsx
     │       ├── CountryLegend.tsx
     │       ├── HolidayCard.tsx
@@ -44,11 +48,11 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
     │       ├── CountryPickerModal.tsx
     │       └── YearPickerModal.tsx
     └── app/
-        ├── _layout.tsx    ← GestureHandlerRootView at root
+        ├── _layout.tsx
         └── (tabs)/
-            ├── _layout.tsx   ← 3 tabs: Home/Saved/Settings, useSafeAreaInsets
-            ├── index.tsx     ← thin orchestrator (~160 lines)
-            ├── saved.tsx     ← bookmarks tab
+            ├── _layout.tsx
+            ├── index.tsx
+            ├── saved.tsx
             └── settings.tsx
 ```
 
@@ -61,30 +65,34 @@ Build a mobile iOS/Android app that shows and compares public holidays between c
 - Per-country day breakdown on long weekend cards
 - Home screen with sticky filter cards (Holidays / Overlaps / Long Weekends)
 - Settings screen with About, Help & FAQ modals, legal info, version number
-- `newArchEnabled: true` in `app.json` (fixes Gradle build failure with react-native-reanimated)
-- Tab bar safe area via `useSafeAreaInsets` (fixes Android layout bug)
-- Share functionality cleaned up: plain-text message, no emoji, includes `title` field
+- Saved/Bookmark tab using AsyncStorage
+- `newArchEnabled: true` in `app.json`
+- Tab bar safe area via `useSafeAreaInsets`
+- Share functionality with platform-specific iOS fix
+- **Android production build (.aab) completed successfully**
 
 ## Changelog
 | Date | Change |
 |------|--------|
-| Feb 2026 | Set `newArchEnabled: true` in app.json — fixes Android deployment build |
+| Feb 2026 | Set `newArchEnabled: true` in app.json |
 | Feb 2026 | Tab bar: replaced hardcoded Platform padding with `useSafeAreaInsets` |
-| Feb 2026 | Refactored index.tsx (1345 lines) into 8 files: types.ts, utils.ts, hooks/useHolidayData.ts, components/{StatsBar, CountryLegend, HolidayCard, LongWeekendCard, CountryPickerModal, YearPickerModal} — no visual/behaviour changes, all tests pass |
+| Feb 2026 | Refactored index.tsx into 8 modular files |
+| Feb 2026 | Added Saved/Bookmark tab with AsyncStorage |
+| Feb 2026 | Created babel.config.js with babel-preset-expo + reanimated plugin |
+| Feb 2026 | Fixed Android build: added `babel-preset-expo` to devDependencies |
+| Feb 2026 | Fixed expo doctor: removed `minSdkVersion` from app.json, removed package-lock.json |
+| Feb 2026 | **Android production build SUCCEEDED** — .aab at https://expo.dev/artifacts/eas/ip4GwuKVSoeLz5cvVHjr6z.aab |
 
 ## Prioritised Backlog
 ### P0 — Done
-- [x] Fix Android build (newArchEnabled conflict)
+- [x] Fix Android build (newArchEnabled, babel-preset-expo, minSdkVersion)
+- [x] Android production build (.aab) complete
 
-### P1
-- [x] Share fix (emoji removed, title added) — needs user verification on device
+### P1 — In Progress
+- [ ] iOS production build — requires Apple Developer credentials setup on Expo
 
-### P2
-- [x] Android tab bar safe area fix (useSafeAreaInsets)
-
-### P3 — Pending User Verification
-- [ ] iPhone stat cards size — fix already applied, awaiting user confirmation
+### P2 — Pending User Verification
+- [ ] Share fix (iOS WhatsApp) — needs testing on physical device
 
 ### Backlog / Future
-- [ ] Refactor `index.tsx` (700+ lines) into smaller components (CountrySelector, StatsBar, ResultsList, HolidayCard)
-- [ ] Add custom tab bar to eliminate need for wrapper component pattern
+- [ ] MongoDB cache indexes for backend performance

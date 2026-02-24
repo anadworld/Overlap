@@ -14,16 +14,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 
-import { useHolidayData } from './hooks/useHolidayData';
-import { useBookmarks } from './hooks/useBookmarks';
-import { CountryPickerModal } from './components/CountryPickerModal';
-import { YearPickerModal } from './components/YearPickerModal';
-import { StatsBar } from './components/StatsBar';
-import { CountryLegend } from './components/CountryLegend';
-import { HolidayCard } from './components/HolidayCard';
-import { LongWeekendCard } from './components/LongWeekendCard';
+import { useHolidayData } from './_hooks/useHolidayData';
+import { useBookmarks } from './_hooks/useBookmarks';
+import { CountryPickerModal } from './_components/CountryPickerModal';
+import { YearPickerModal } from './_components/YearPickerModal';
+import { StatsBar } from './_components/StatsBar';
+import { CountryLegend } from './_components/CountryLegend';
+import { HolidayCard } from './_components/HolidayCard';
+import { LongWeekendCard } from './_components/LongWeekendCard';
 import { getCountryFlag, COUNTRY_COLORS } from './utils';
-import { getPendingRestore, clearPendingRestore } from './store/pendingRestore';
+import { getPendingRestore, clearPendingRestore } from './_store/pendingRestore';
 
 export default function HomeScreen() {
   const {

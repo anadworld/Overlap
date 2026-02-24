@@ -11,9 +11,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 
-import { useBookmarks } from './hooks/useBookmarks';
-import { SavedCard } from './components/SavedCard';
-import { setPendingRestore } from './store/pendingRestore';
+import { useBookmarks } from './_hooks/useBookmarks';
+import { SavedCard } from './_components/SavedCard';
+import { setPendingRestore } from './_store/pendingRestore';
 import { Bookmark } from './types';
 
 export default function SavedScreen() {

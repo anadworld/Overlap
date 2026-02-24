@@ -166,7 +166,7 @@ export default function SettingsScreen() {
               icon="help-circle-outline"
               title="Help & FAQ"
               subtitle="Get answers to common questions"
-              onPress={() => setShowAboutModal(true)}
+              onPress={() => setShowFaqModal(true)}
             />
             <SettingsItem
               icon="mail-outline"

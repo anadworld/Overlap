@@ -293,29 +293,23 @@ export default function HomeScreen() {
 
   // Share function
   const shareLongWeekend = async (lw: LongWeekendOpportunity) => {
-    const countryFlags = [...new Set(lw.holidays.map(h => getCountryFlag(h.countryCode)))].join(' ');
-    const holidayNames = lw.holidays.map(h => `- ${h.name} (${getCountryFlag(h.countryCode)})`).join('\n');
-    
-    const shareText = `${lw.totalDays}-Day Break Alert!
+    const countryNames = [...new Set(lw.holidays.map(h => countryNameMap[h.countryCode] || h.countryCode))].join(', ');
+    const holidayLines = lw.holidays.map(h => `- ${h.name} (${countryNameMap[h.countryCode] || h.countryCode})`).join('\n');
+    const bridgeLine = lw.type === 'bridge' ? `\nTip: ${lw.description}` : '';
 
-${formatDateRange(lw.startDate, lw.endDate)}
-${lw.description}
-
-Holidays:
-${holidayNames}
-
-${countryFlags} Plan your getaway!
-
-Found with Overlap - Holiday Calendar`;
+    const shareText =
+      `${lw.totalDays}-Day Weekend: ${formatDateRange(lw.startDate, lw.endDate)}\n` +
+      `${getWeekdayRange(lw.startDate, lw.endDate)}\n\n` +
+      `Countries: ${countryNames}\n\n` +
+      `Holidays:\n${holidayLines}` +
+      bridgeLine +
+      `\n\nFound with Overlap - Holiday Calendar`;
 
     try {
-      const result = await Share.share({
+      await Share.share({
         message: shareText,
+        title: 'Overlap - Holiday Calendar',
       });
-      
-      if (result.action === Share.sharedAction) {
-        console.log('Shared successfully');
-      }
     } catch (error) {
       console.error('Error sharing:', error);
     }

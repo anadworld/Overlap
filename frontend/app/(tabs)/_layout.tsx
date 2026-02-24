@@ -37,20 +37,9 @@ function TabLayoutContent() {
         },
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: HomeIcon,
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'Settings',
-          tabBarIcon: SettingsIcon,
-        }}
-      />
+      <Tabs.Screen name="index" options={{ title: 'Home', tabBarIcon: HomeIcon }} />
+      <Tabs.Screen name="saved" options={{ title: 'Saved', tabBarIcon: SavedIcon }} />
+      <Tabs.Screen name="settings" options={{ title: 'Settings', tabBarIcon: SettingsIcon }} />
     </Tabs>
   );
 }

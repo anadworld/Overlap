@@ -9,6 +9,8 @@ interface Props {
   index: number;
   countryNameMap: Record<string, string>;
   getCountryColor: (code: string) => string;
+  isBookmarked: boolean;
+  onToggleBookmark: () => void;
 }
 
 function getCountryDaysBreakdown(

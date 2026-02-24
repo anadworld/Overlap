@@ -54,6 +54,44 @@ export default function SettingsScreen() {
   const [showLicensesModal, setShowLicensesModal] = useState(false);
   const [showFaqModal, setShowFaqModal] = useState(false);
 
+  const {
+    prefs,
+    enableNotifications,
+    disableNotifications,
+    setTiming,
+    rescheduleAll,
+  } = useNotifications();
+  const { bookmarks } = useBookmarks();
+
+  const handleToggleNotifications = async (value: boolean) => {
+    if (value) {
+      const granted = await enableNotifications();
+      if (granted) {
+        await rescheduleAll(bookmarks);
+      } else {
+        Alert.alert(
+          'Permissions Required',
+          'Please enable notifications in your device settings to receive holiday reminders.',
+        );
+      }
+    } else {
+      await disableNotifications();
+    }
+  };
+
+  const handleTimingChange = async (timing: ReminderTiming) => {
+    await setTiming(timing);
+    if (prefs.enabled) {
+      await rescheduleAll(bookmarks);
+    }
+  };
+
+  const timingOptions: { value: ReminderTiming; label: string }[] = [
+    { value: '1day', label: '1 Day Before' },
+    { value: '3days', label: '3 Days Before' },
+    { value: '1week', label: '1 Week Before' },
+  ];
+
   const handleRateApp = async () => {
     let url: string;
     

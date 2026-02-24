@@ -11,10 +11,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 
-import { useBookmarks } from './_hooks/useBookmarks';
-import { SavedCard } from './_components/SavedCard';
-import { setPendingRestore } from './_store/pendingRestore';
-import { Bookmark } from './_types';
+import { useBookmarks } from '../../src/hooks/useBookmarks';
+import { SavedCard } from '../../src/components/holiday/SavedCard';
+import { setPendingRestore } from '../../src/store/pendingRestore';
+import { Bookmark } from '../../src/types';
 
 export default function SavedScreen() {
   const { bookmarks, reload, removeBookmark } = useBookmarks();

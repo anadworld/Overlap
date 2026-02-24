@@ -14,16 +14,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 
-import { useHolidayData } from './_hooks/useHolidayData';
-import { useBookmarks } from './_hooks/useBookmarks';
-import { CountryPickerModal } from './_components/CountryPickerModal';
-import { YearPickerModal } from './_components/YearPickerModal';
-import { StatsBar } from './_components/StatsBar';
-import { CountryLegend } from './_components/CountryLegend';
-import { HolidayCard } from './_components/HolidayCard';
-import { LongWeekendCard } from './_components/LongWeekendCard';
-import { getCountryFlag, COUNTRY_COLORS } from './_utils';
-import { getPendingRestore, clearPendingRestore } from './_store/pendingRestore';
+import { useHolidayData } from '../../src/hooks/useHolidayData';
+import { useBookmarks } from '../../src/hooks/useBookmarks';
+import { CountryPickerModal } from '../../src/components/holiday/CountryPickerModal';
+import { YearPickerModal } from '../../src/components/holiday/YearPickerModal';
+import { StatsBar } from '../../src/components/holiday/StatsBar';
+import { CountryLegend } from '../../src/components/holiday/CountryLegend';
+import { HolidayCard } from '../../src/components/holiday/HolidayCard';
+import { LongWeekendCard } from '../../src/components/holiday/LongWeekendCard';
+import { getCountryFlag, COUNTRY_COLORS } from '../../src/utils';
+import { getPendingRestore, clearPendingRestore } from '../../src/store/pendingRestore';
 
 export default function HomeScreen() {
   const {

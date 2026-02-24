@@ -31,22 +31,28 @@ const TIMING_LABELS: Record<ReminderTiming, string> = {
   '1month': 'in a month',
 };
 
-// Lazily load expo-notifications to avoid crashes in Expo Go / web
+import Constants from 'expo-constants';
+
+// Detect if running in Expo Go (where expo-notifications is broken on Android SDK 53+)
+const isExpoGo = Constants.appOwnership === 'expo';
+
+// Only load expo-notifications in standalone/dev builds, never in Expo Go
 let Notifications: typeof import('expo-notifications') | null = null;
-try {
-  Notifications = require('expo-notifications');
-  // Set handler only on native
-  if (Platform.OS !== 'web' && Notifications?.setNotificationHandler) {
-    Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: false,
-      }),
-    });
+if (!isExpoGo && Platform.OS !== 'web') {
+  try {
+    Notifications = require('expo-notifications');
+    if (Notifications?.setNotificationHandler) {
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: false,
+        }),
+      });
+    }
+  } catch {
+    Notifications = null;
   }
-} catch {
-  Notifications = null;
 }
 
 async function requestPermissions(): Promise<boolean> {

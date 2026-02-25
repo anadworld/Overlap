@@ -435,7 +435,8 @@ export default function SettingsScreen() {
             users to view holidays for one or more countries, compare holidays across multiple countries, 
             identify overlapping dates, discover long weekend opportunities including bridge days and 
             consecutive holiday streaks, save favourite long weekends for quick access, receive push 
-            notification reminders before upcoming saved holidays, and share holiday details with others.
+            notification reminders before upcoming saved holidays, add holidays to your personal calendar,
+            view monthly calendar previews with highlighted opportunities, and share holiday details with others.
           </Text>
           
           <Text style={styles.modalSubheading}>3. Accuracy of Information</Text>

@@ -651,7 +651,8 @@ export default function SettingsScreen() {
           <Text style={styles.modalSubheading}>How do I save a long weekend?</Text>
           <Text style={styles.modalParagraph}>
             Tap the bookmark icon on any long weekend card to save it. Your saved long weekends 
-            appear in the "Saved" tab for quick access. Tap the bookmark again to remove it.
+            appear in the "Saved" tab for quick access. Tap the bookmark again to remove it, or 
+            swipe left on a saved long weekend in the "Saved" tab to delete it.
           </Text>
           
           <Text style={styles.modalSubheading}>How do holiday reminders work?</Text>

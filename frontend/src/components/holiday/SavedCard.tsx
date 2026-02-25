@@ -30,6 +30,27 @@ export function SavedCard({ bookmark, onDelete, onRestore }: Props) {
     onDelete();
   };
 
+  const handleShare = async () => {
+    const countryNames = [...new Set(lw.holidays.map((h) => countryNameMap[h.countryCode] || h.countryCode))].join(', ');
+    const holidayLines = lw.holidays.map((h) => `- ${h.name} (${countryNameMap[h.countryCode] || h.countryCode})`).join('\n');
+    const bridgeLine = lw.type === 'bridge' ? `\nTip: ${lw.description}` : '';
+    const shareText =
+      `${lw.totalDays}-Day Weekend: ${formatDateRange(lw.startDate, lw.endDate)}\n` +
+      `${getWeekdayRange(lw.startDate, lw.endDate)}\n\n` +
+      `Countries: ${countryNames}\n\n` +
+      `Holidays:\n${holidayLines}` +
+      bridgeLine +
+      `\n\nFound with Overlap - Holiday Calendar`;
+    try {
+      await Share.share(
+        { message: shareText },
+        Platform.OS === 'android' ? { dialogTitle: 'Share Long Weekend' } : {}
+      );
+    } catch (e) {
+      console.error('Share error:', e);
+    }
+  };
+
   const savedDate = new Date(bookmark.savedAt).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',

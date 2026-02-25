@@ -37,7 +37,8 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({ year, month, longW
       if (d.getMonth() !== month) continue;
       const day = d.getDate();
       const dow = d.getDay();
-      const dateStr = d.toISOString().split('T')[0];
+      // Use local time to format date string (toISOString uses UTC which shifts dates)
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
       // Collect flags for this day from holidays
       const countries = holidayCountries.get(dateStr);
@@ -50,10 +51,8 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({ year, month, longW
         weekendDates.add(day);
       } else if (holidayDateStrings.has(dateStr)) {
         holidayDates.add(day);
-      } else if (lw.type === 'bridge') {
-        bridgeDates.add(day);
       } else {
-        holidayDates.add(day);
+        bridgeDates.add(day);
       }
     }
   }

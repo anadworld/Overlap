@@ -37,6 +37,7 @@ export function CountryPickerModal({
   onFind,
 }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
+  const insets = useSafeAreaInsets();
 
   const filtered = countries.filter(
     (c) =>

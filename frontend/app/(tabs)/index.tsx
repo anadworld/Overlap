@@ -249,6 +249,11 @@ export default function HomeScreen() {
 
             {activeTab === 'holidays' && (
               <View style={styles.cardsContainer}>
+                <AddToCalendarButton
+                  holidays={comparisonResult.holidays}
+                  selectedCountries={selectedCountries}
+                  countryNameMap={countryNameMap}
+                />
                 {comparisonResult.holidays.map((holiday) => (
                   <HolidayCard
                     key={holiday.date}

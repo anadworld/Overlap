@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    alignSelf: 'flex-end',
+    alignSelf: 'flex-start',
     backgroundColor: '#F0F9FF',
     paddingVertical: 8,
     paddingHorizontal: 14,

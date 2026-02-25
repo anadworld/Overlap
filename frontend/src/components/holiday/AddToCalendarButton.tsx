@@ -55,30 +55,37 @@ export function AddToCalendarButton({ holidays, selectedCountries, countryNameMa
     setShowPicker(false);
     setAdding(true);
 
-    if (Platform.OS === 'web' || !Calendar) {
-      // Web/Expo Go fallback: generate .ics and open it
-      const filtered = forCountry
-        ? holidays.filter((h) => h.countries.includes(forCountry))
-        : holidays;
-      const icsEvents = filtered.map((h) => {
-        const names = h.holidays
-          .filter((hh) => !forCountry || hh.countryCode === forCountry)
-          .map((hh) => hh.name)
-          .join(', ');
-        const d = h.date.replace(/-/g, '');
-        const nextDay = new Date(h.date + 'T00:00:00');
-        nextDay.setDate(nextDay.getDate() + 1);
-        const nd = `${nextDay.getFullYear()}${String(nextDay.getMonth() + 1).padStart(2, '0')}${String(nextDay.getDate()).padStart(2, '0')}`;
-        return `BEGIN:VEVENT\nDTSTART;VALUE=DATE:${d}\nDTEND;VALUE=DATE:${nd}\nSUMMARY:${names}\nDESCRIPTION:Public Holiday${forCountry ? ' - ' + (countryNameMap[forCountry] || forCountry) : ''}\nEND:VEVENT`;
-      });
-      const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Overlap//Holiday Calendar//EN\n${icsEvents.join('\n')}\nEND:VCALENDAR`;
-      const blob = new Blob([ics], { type: 'text/calendar' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `holidays-${forCountry || 'all'}.ics`;
-      a.click();
-      URL.revokeObjectURL(url);
+    if (!Calendar) {
+      if (Platform.OS === 'web') {
+        // Web: download .ics file
+        const filtered = forCountry
+          ? holidays.filter((h) => h.countries.includes(forCountry))
+          : holidays;
+        const icsEvents = filtered.map((h) => {
+          const names = h.holidays
+            .filter((hh) => !forCountry || hh.countryCode === forCountry)
+            .map((hh) => hh.name)
+            .join(', ');
+          const d = h.date.replace(/-/g, '');
+          const nextDay = new Date(h.date + 'T00:00:00');
+          nextDay.setDate(nextDay.getDate() + 1);
+          const nd = `${nextDay.getFullYear()}${String(nextDay.getMonth() + 1).padStart(2, '0')}${String(nextDay.getDate()).padStart(2, '0')}`;
+          return `BEGIN:VEVENT\nDTSTART;VALUE=DATE:${d}\nDTEND;VALUE=DATE:${nd}\nSUMMARY:${names}\nDESCRIPTION:Public Holiday${forCountry ? ' - ' + (countryNameMap[forCountry] || forCountry) : ''}\nEND:VEVENT`;
+        });
+        const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Overlap//Holiday Calendar//EN\n${icsEvents.join('\n')}\nEND:VCALENDAR`;
+        const blob = new Blob([ics], { type: 'text/calendar' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `holidays-${forCountry || 'all'}.ics`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } else {
+        Alert.alert(
+          'Production Build Required',
+          'Adding holidays to your calendar is available in the full app from the App Store or Google Play.',
+        );
+      }
       setAdding(false);
       return;
     }

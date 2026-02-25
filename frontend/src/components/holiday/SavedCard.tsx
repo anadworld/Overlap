@@ -114,13 +114,18 @@ export function SavedCard({ bookmark, onDelete, onRestore }: Props) {
           })}
         </View>
 
-        {/* Footer: saved date + re-run */}
+        {/* Footer: saved date + share + re-run */}
         <View style={styles.cardFooter}>
           <Text style={styles.savedDate}>Saved {savedDate}</Text>
-          <TouchableOpacity style={styles.rerunBtn} onPress={onRestore} testID="bookmark-rerun-btn">
-            <Text style={styles.rerunText}>Re-run</Text>
-            <Ionicons name="arrow-forward" size={14} color="#7C9CBF" />
-          </TouchableOpacity>
+          <View style={styles.footerActions}>
+            <TouchableOpacity style={styles.shareBtn} onPress={handleShare} testID="bookmark-share-btn">
+              <Ionicons name="share-outline" size={16} color="#7C9CBF" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.rerunBtn} onPress={onRestore} testID="bookmark-rerun-btn">
+              <Text style={styles.rerunText}>Re-run</Text>
+              <Ionicons name="arrow-forward" size={14} color="#7C9CBF" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Swipeable>

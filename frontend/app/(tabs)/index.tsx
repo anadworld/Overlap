@@ -447,22 +447,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 40,
   },
-  emptyStateTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#4A5568',
-    marginTop: 16,
-  },
-  getStartedButton: {
-    backgroundColor: '#7C9CBF',
-    paddingVertical: 14,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-    marginTop: 24,
-  },
-  getStartedButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFF',
+  emptyStateTagline: {
+    fontSize: 17,
+    fontWeight: '500',
+    color: '#718096',
+    letterSpacing: 0.3,
+    marginBottom: 8,
+    fontStyle: 'italic',
   },
 });

@@ -387,6 +387,14 @@ export default function SettingsScreen() {
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
+              <Text style={styles.featureText}>Add holidays directly to your personal calendar</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
+              <Text style={styles.featureText}>Monthly calendar preview with highlighted opportunities</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
               <Text style={styles.featureText}>Plan ahead with multi-year support</Text>
             </View>
           </View>

@@ -41,6 +41,12 @@
           "icon": "./assets/images/icon.png",
           "color": "#7C9CBF"
         }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Allow Overlap to access your calendar to add holiday events."
+        }
       ]
     ],
     "experiments": {

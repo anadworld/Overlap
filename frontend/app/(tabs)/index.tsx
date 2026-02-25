@@ -199,7 +199,7 @@ export default function HomeScreen() {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7C9CBF" />
             }
           >
-            <CountryLegend countries={comparisonResult.countries} />
+            {/* Stats bar and results */}
 
             {activeTab === 'longweekends' && (
               <View style={styles.cardsContainer}>

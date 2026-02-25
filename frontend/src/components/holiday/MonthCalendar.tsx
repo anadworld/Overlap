@@ -17,26 +17,27 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({ year, month, longW
   const bridgeDates = new Set<number>();
 
   for (const lw of longWeekends) {
-    if (!lw.dates) continue;
-    for (const dateStr of lw.dates) {
-      const d = new Date(dateStr + 'T00:00:00');
+    // Generate all dates in the range startDate → endDate
+    const start = new Date(lw.startDate + 'T00:00:00');
+    const end = new Date(lw.endDate + 'T00:00:00');
+    const holidayDateStrings = new Set(
+      (lw.holidays || []).map((h: any) => h.date)
+    );
+
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       if (d.getMonth() !== month) continue;
       const day = d.getDate();
       const dow = d.getDay();
+      const dateStr = d.toISOString().split('T')[0];
+
       if (dow === 0 || dow === 6) {
         weekendDates.add(day);
+      } else if (holidayDateStrings.has(dateStr)) {
+        holidayDates.add(day);
+      } else if (lw.type === 'bridge') {
+        bridgeDates.add(day);
       } else {
-        // Check if it's a holiday or bridge day
-        const isHoliday = lw.holidays?.some(
-          (h: any) => h.date === dateStr || h.dates?.includes(dateStr)
-        );
-        if (isHoliday) {
-          holidayDates.add(day);
-        } else if (lw.type === 'bridge') {
-          bridgeDates.add(day);
-        } else {
-          holidayDates.add(day);
-        }
+        holidayDates.add(day);
       }
     }
   }

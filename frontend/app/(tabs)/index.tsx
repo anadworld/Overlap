@@ -497,6 +497,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 40,
   },
+  heroAnimation: {
+    width: 120,
+    height: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  globeCircle: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: '#F0F9FF',
+    borderWidth: 1.5,
+    borderColor: '#D4E6F6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   emptyStateTagline: {
     fontSize: 17,
     fontWeight: '500',

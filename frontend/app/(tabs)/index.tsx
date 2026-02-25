@@ -171,12 +171,44 @@ export default function HomeScreen() {
 
                     return monthKeys.map((m) => (
                       <View key={m}>
-                        <View style={styles.monthHeader}>
-                          <Text style={styles.monthTitle}>{MONTHS[m]}</Text>
-                          <Text style={styles.monthCount}>
-                            {grouped[m].length} {grouped[m].length === 1 ? 'opportunity' : 'opportunities'}
-                          </Text>
-                        </View>
+                        <TouchableOpacity
+                          style={styles.monthHeader}
+                          onPress={() => {
+                            setExpandedMonths((prev) => {
+                              const next = new Set(prev);
+                              if (next.has(m)) next.delete(m);
+                              else next.add(m);
+                              return next;
+                            });
+                          }}
+                          testID={`month-header-${m}`}
+                        >
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                            <Ionicons
+                              name={expandedMonths.has(m) ? 'calendar' : 'calendar-outline'}
+                              size={18}
+                              color={expandedMonths.has(m) ? '#7C9CBF' : '#A0AEC0'}
+                            />
+                            <Text style={styles.monthTitle}>{MONTHS[m]}</Text>
+                          </View>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                            <Text style={styles.monthCount}>
+                              {grouped[m].length} {grouped[m].length === 1 ? 'opportunity' : 'opportunities'}
+                            </Text>
+                            <Ionicons
+                              name={expandedMonths.has(m) ? 'chevron-up' : 'chevron-down'}
+                              size={16}
+                              color="#A0AEC0"
+                            />
+                          </View>
+                        </TouchableOpacity>
+                        {expandedMonths.has(m) && (
+                          <MonthCalendar
+                            year={selectedYear}
+                            month={m}
+                            longWeekends={grouped[m]}
+                          />
+                        )}
                         {grouped[m].map((lw, i) => (
                           <LongWeekendCard
                             key={`${lw.startDate}-${i}`}

@@ -679,6 +679,21 @@ export default function SettingsScreen() {
             your preferred timing. All existing reminders will be rescheduled automatically.
           </Text>
           
+          <Text style={styles.modalSubheading}>How do I add holidays to my calendar?</Text>
+          <Text style={styles.modalParagraph}>
+            On the Holidays tab, tap "Add to Calendar" at the top of the list. If you have 
+            multiple countries selected, you can choose to add holidays for a specific country 
+            or all countries at once. The holidays will be added as all-day events to your 
+            device calendar.
+          </Text>
+          
+          <Text style={styles.modalSubheading}>What is the monthly calendar preview?</Text>
+          <Text style={styles.modalParagraph}>
+            In the Long Weekends tab, tap any month header to expand a mini calendar. Holiday 
+            dates are highlighted in amber, weekends in blue, and bridge days in green. Country 
+            flags appear on holiday dates to show which country the holiday belongs to.
+          </Text>
+          
           <Text style={styles.modalSubheading}>Where does the holiday data come from?</Text>
           <Text style={styles.modalParagraph}>
             We use the Nager.Date API, a reliable source for public holiday information covering 

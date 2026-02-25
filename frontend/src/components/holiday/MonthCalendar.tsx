@@ -113,6 +113,11 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({ year, month, longW
           {week.map((day, di) => (
             <View key={di} style={[styles.cell, day ? getDayStyle(day) : null]}>
               {day && <Text style={[styles.dayText, getDayTextStyle(day)]}>{day}</Text>}
+              {day && dayFlags.has(day) && (
+                <Text style={styles.flagText}>
+                  {[...dayFlags.get(day)!].map(c => getCountryFlag(c)).join('')}
+                </Text>
+              )}
             </View>
           ))}
         </View>

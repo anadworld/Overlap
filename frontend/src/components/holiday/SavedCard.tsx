@@ -245,6 +245,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  footerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  shareBtn: {
+    backgroundColor: '#F0F9FF',
+    padding: 8,
+    borderRadius: 8,
+  },
   savedDate: {
     fontSize: 12,
     color: '#A0AEC0',

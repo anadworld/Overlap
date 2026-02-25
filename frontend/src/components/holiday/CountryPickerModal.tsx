@@ -110,7 +110,7 @@ export function CountryPickerModal({
             {isLoading ? (
               <ActivityIndicator color="#FFF" />
             ) : (
-              <Text style={styles.findButtonText}>Find Overlapping Dates</Text>
+              <Text style={styles.findButtonText}>Discover Holidays</Text>
             )}
           </TouchableOpacity>
         </View>

@@ -294,18 +294,10 @@ export default function HomeScreen() {
             <ActivityIndicator size="large" color="#7C9CBF" />
           ) : (
             <>
-              <Ionicons name="calendar" size={64} color="#CBD5E0" />
-              <Text style={styles.emptyStateTitle}>Discover Holidays</Text>
+              <Text style={styles.emptyStateTagline}>Your next long weekend is waiting</Text>
               <Text style={styles.emptyStateText}>
                 Tap above to select 1-5 countries and find holidays and long weekend opportunities.
               </Text>
-              <TouchableOpacity
-                style={styles.getStartedButton}
-                onPress={() => setShowCountryPicker(true)}
-                testID="get-started-btn"
-              >
-                <Text style={styles.getStartedButtonText}>Get Started</Text>
-              </TouchableOpacity>
             </>
           )}
         </View>

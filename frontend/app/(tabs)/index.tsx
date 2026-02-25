@@ -28,6 +28,7 @@ import { getCountryFlag, COUNTRY_COLORS } from '../../src/utils';
 import { getPendingRestore, clearPendingRestore } from '../../src/store/pendingRestore';
 
 export default function HomeScreen() {
+  const [expandedMonths, setExpandedMonths] = useState<Set<number>>(new Set());
   const {
     countries,
     selectedCountries,

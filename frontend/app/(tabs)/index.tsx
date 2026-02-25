@@ -30,6 +30,48 @@ import { AddToCalendarButton } from '../../src/components/holiday/AddToCalendarB
 import { getCountryFlag, COUNTRY_COLORS } from '../../src/utils';
 import { getPendingRestore, clearPendingRestore } from '../../src/store/pendingRestore';
 
+function AnimatedPlane() {
+  const rotation = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(rotation, {
+        toValue: 1,
+        duration: 6000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ).start();
+  }, [rotation]);
+
+  const translateX = rotation.interpolate({
+    inputRange: [0, 0.25, 0.5, 0.75, 1],
+    outputRange: [0, 44, 0, -44, 0],
+  });
+  const translateY = rotation.interpolate({
+    inputRange: [0, 0.25, 0.5, 0.75, 1],
+    outputRange: [-44, 0, 44, 0, -44],
+  });
+  const rotate = rotation.interpolate({
+    inputRange: [0, 0.25, 0.5, 0.75, 1],
+    outputRange: ['45deg', '135deg', '225deg', '315deg', '405deg'],
+  });
+  const scale = rotation.interpolate({
+    inputRange: [0, 0.25, 0.5, 0.75, 1],
+    outputRange: [1, 0.85, 0.7, 0.85, 1],
+  });
+
+  return (
+    <Animated.View
+      style={{
+        position: 'absolute',
+        transform: [{ translateX }, { translateY }, { rotate }, { scale }],
+      }}
+    >
+      <Ionicons name="paper-plane" size={20} color="#F6AD55" />
+    </Animated.View>
+  );
+}
+
 export default function HomeScreen() {
   const [expandedMonths, setExpandedMonths] = useState<Set<number>>(new Set());
   const {

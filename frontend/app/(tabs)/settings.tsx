@@ -516,6 +516,7 @@ export default function SettingsScreen() {
             {"\n"}• Display holiday data and long weekend opportunities
             {"\n"}• Store your saved long weekends locally on your device
             {"\n"}• Schedule local notification reminders for saved holidays
+            {"\n"}• Add holiday events to your personal calendar (with your permission)
             {"\n"}• Improve user experience
             {"\n"}• Analyze usage patterns
             {"\n"}• Fix bugs and technical issues

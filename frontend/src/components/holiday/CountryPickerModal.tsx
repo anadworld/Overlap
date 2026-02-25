@@ -103,7 +103,7 @@ export function CountryPickerModal({
           style={styles.countryList}
         />
 
-        <View style={styles.modalFooter}>
+        <View style={[styles.modalFooter, { paddingBottom: 16 + insets.bottom }]}>
           <TouchableOpacity
             style={[styles.findButton, selectedCountries.length < 1 && styles.findButtonDisabled]}
             onPress={() => { onClose(); onFind(); }}

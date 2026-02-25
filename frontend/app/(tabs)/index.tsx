@@ -296,6 +296,12 @@ export default function HomeScreen() {
             <ActivityIndicator size="large" color="#7C9CBF" />
           ) : (
             <>
+              <View style={styles.heroAnimation}>
+                <View style={styles.globeCircle}>
+                  <Ionicons name="globe-outline" size={52} color="#7C9CBF" />
+                </View>
+                <AnimatedPlane />
+              </View>
               <Text style={styles.emptyStateTagline}>Your next long weekend is waiting</Text>
               <Text style={styles.emptyStateText}>
                 Tap above to select 1-5 countries and find holidays and long weekend opportunities.

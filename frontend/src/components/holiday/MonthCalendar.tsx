@@ -96,10 +96,6 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({ year, month, longW
     return {};
   };
 
-  // Debug: log dayFlags
-  console.log('MonthCalendar render - dayFlags size:', dayFlags.size);
-  dayFlags.forEach((v, k) => console.log(`  Day ${k}:`, [...v]));
-
   return (
     <View style={styles.container} testID={`month-calendar-${month}`}>
       {/* Day headers */}

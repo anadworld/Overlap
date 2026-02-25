@@ -93,7 +93,7 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Overlap – Holiday Calendar</Text>
-        <Text style={styles.headerSubtitle}>Find holidays & long weekends across countries</Text>
+        <Text style={styles.headerSubtitle}>Discover holidays & long weekends across countries</Text>
       </View>
 
       {/* Selection Bar */}

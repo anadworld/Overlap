@@ -135,7 +135,7 @@ export default function SettingsScreen() {
     
     try {
       const result = await Share.share({
-        message: `Check out Overlap – Holiday Calendar! Find holidays & long weekends across countries. ${storeUrl}`,
+        message: `Check out Overlap – Holiday Calendar! Discover holidays & long weekends across countries. ${storeUrl}`,
       });
       
       if (result.action === Share.sharedAction) {

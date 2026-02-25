@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LongWeekendOpportunity } from '../../types';
+import { getCountryFlag } from '../../utils';
 
 interface MonthCalendarProps {
   year: number;
@@ -15,20 +16,35 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({ year, month, longW
   const holidayDates = new Set<number>();
   const weekendDates = new Set<number>();
   const bridgeDates = new Set<number>();
+  // Map day → Set of country codes that have a holiday on that day
+  const dayFlags = new Map<number, Set<string>>();
 
   for (const lw of longWeekends) {
-    // Generate all dates in the range startDate → endDate
     const start = new Date(lw.startDate + 'T00:00:00');
     const end = new Date(lw.endDate + 'T00:00:00');
     const holidayDateStrings = new Set(
       (lw.holidays || []).map((h: any) => h.date)
     );
+    // Map holiday date → country codes
+    const holidayCountries = new Map<string, string[]>();
+    for (const h of (lw.holidays || [])) {
+      const codes = holidayCountries.get(h.date) || [];
+      codes.push(h.countryCode);
+      holidayCountries.set(h.date, codes);
+    }
 
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       if (d.getMonth() !== month) continue;
       const day = d.getDate();
       const dow = d.getDay();
       const dateStr = d.toISOString().split('T')[0];
+
+      // Collect flags for this day from holidays
+      const countries = holidayCountries.get(dateStr);
+      if (countries) {
+        if (!dayFlags.has(day)) dayFlags.set(day, new Set());
+        countries.forEach(c => dayFlags.get(day)!.add(c));
+      }
 
       if (dow === 0 || dow === 6) {
         weekendDates.add(day);

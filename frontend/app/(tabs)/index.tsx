@@ -24,6 +24,7 @@ import { CountryLegend } from '../../src/components/holiday/CountryLegend';
 import { HolidayCard } from '../../src/components/holiday/HolidayCard';
 import { LongWeekendCard } from '../../src/components/holiday/LongWeekendCard';
 import { MonthCalendar } from '../../src/components/holiday/MonthCalendar';
+import { AddToCalendarButton } from '../../src/components/holiday/AddToCalendarButton';
 import { getCountryFlag, COUNTRY_COLORS } from '../../src/utils';
 import { getPendingRestore, clearPendingRestore } from '../../src/store/pendingRestore';
 

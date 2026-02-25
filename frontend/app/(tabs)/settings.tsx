@@ -594,6 +594,9 @@ export default function SettingsScreen() {
           <Text style={styles.licenseTitle}>expo-notifications</Text>
           <Text style={styles.licenseText}>MIT License - Local push notifications for Expo</Text>
           
+          <Text style={styles.licenseTitle}>expo-calendar</Text>
+          <Text style={styles.licenseText}>MIT License - Calendar integration for Expo</Text>
+          
           <Text style={styles.licenseTitle}>react-native-reanimated</Text>
           <Text style={styles.licenseText}>MIT License - Animations library for React Native</Text>
           

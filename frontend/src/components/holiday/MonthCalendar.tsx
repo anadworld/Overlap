@@ -184,6 +184,11 @@ const styles = StyleSheet.create({
     color: '#2D3748',
     fontWeight: '500',
   },
+  flagText: {
+    fontSize: 8,
+    lineHeight: 10,
+    marginTop: 1,
+  },
   // Holiday dates (amber/yellow)
   holidayDay: {
     backgroundColor: '#FEEBC8',

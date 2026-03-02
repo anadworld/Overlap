@@ -7,7 +7,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://holiday-compare-1.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://overlap-holidays-2.preview.emergentagent.com')
 
 class TestHealthEndpoint:
     """Health check tests"""

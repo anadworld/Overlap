@@ -8,186 +8,178 @@ The user wants to build a mobile iOS/Android native app named Overlap – Holida
     - Detect and display long weekends (holidays adjacent to weekends).
     - Suggest bridge days where taking one day off creates a 4-day weekend.
 - **UI/UX**:
-    - A light pastel theme with a two-tab navigation system: Home and Settings.
-    - A Saved tab was later added to bookmark long weekends.
-    - Home screen allows country and year selection.
-    - Results are filtered by clickable stat cards: Holidays, Overlaps, Long Weekends.
-- **Settings Tab**: Must contain standard app information (About, Help & FAQ, Rate, Share), Legal (Terms, Privacy), and a version number.
-- **Platform**: The primary target is the Apple App Store and Google Play Store.
+    - A light pastel theme with a three-tab navigation system: Home, Saved, and Settings.
+    - Home screen allows country and year selection, with an animated empty state.
+    - Results are grouped by month with collapsible mini-calendars.
+- **Features**:
+    - Bookmark long weekends to a Saved tab.
+    - Share functionality for long weekends.
+    - Configurable push notification reminders for saved holidays.
+    - Ability to add holidays to the device's native calendar.
+- **Platform**: Apple App Store (as Designed for iPhone) and Google Play Store.
 
 **User's preferred language**: English
 
 **what currently exists?**
 A full-stack application with an Expo (React Native) frontend and a FastAPI backend.
-- **Backend**: Fetches holiday data from the Nager.Date API and uses MongoDB for caching. The  endpoint contains the core logic to identify long weekends and overlaps.
-- **Frontend**: A three-tab Expo app (Home, Saved, Settings). The Home screen was refactored from a monolithic component into a clean structure of smaller, reusable components located in a  directory. A Saved feature, which bookmarks long weekends using , has been fully implemented. Critical build-time configuration issues have been resolved.
+- **Backend**: Fetches holiday data from the Nager.Date API, uses MongoDB for caching, and has endpoints for app versioning. All relevant database collections are indexed for performance.
+- **Frontend**: A three-tab Expo app (Home, Saved, Settings) with a heavily refined UI. It includes features like saving long weekends, push notification reminders, adding events to the calendar, a premium animated home screen, and collapsible monthly calendar previews.
+- **Deployment**: The app has been configured for EAS builds for both Android and iOS. An Android build was successfully completed, but a new one is needed to include the latest UI fixes.
 
 **Last working item**:
-- Last item agent was working: Kicking off an Android production build using Expo Application Services (EAS) after fixing multiple critical build configuration errors.
+- Last item agent was working: The user wants the app to be listed on the Apple App Store as Designed for iPhone, compatible with iPad, not as a universal app that supports tablets.
 - Status: IN PROGRESS
 - Agent Testing Done: N
-- Which testing method agent to use? N/A. The next step is to check the status of the EAS build that was initiated. This can be done with the An Expo user account is required to proceed.
-
-Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username command.
+- Which testing method agent to use? N/A. The fix is a configuration change in . It will be validated when the next iOS build is submitted to the App Store.
 - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-  Issue 1: Complete the EAS build for Android. (P0)
-  Issue 2: Trigger and complete the EAS build for iOS. (P1)
-  Issue 3: Verify the fix for the Share functionality on iOS. (P2)
+  Issue 1: Fix Android Safe Area Bug (P0)
+  Issue 2: Complete the iOS Build (P1)
 
   Issues Detail:
   - Issue 1: 
-     - Attempted fixes: The agent successfully identified and fixed two build blockers: 1) created a  to include the mandatory , and 2) corrected an invalid splash screen image path in . An Android keystore was also generated and configured in . The agent then triggered a new build.
+     - Attempted fixes: The agent identified that the Discover Holidays button in the  was cut off by the Android navigation bar. A fix was implemented in  using  to add dynamic bottom padding.
      - Next debug checklist:
-        1. Run An Expo user account is required to proceed.
-
-Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username to check the status of the Android build that was started at the end of the last session.
-        2. If it failed, analyze the new build logs from EAS to identify the next error.
-        3. If it succeeded, inform the user and proceed to the iOS build.
-     - Why fix this issue and what will be achieved with the fix? This is the final step to produce a deployable Android application ( file) for the Google Play Store.
-     - Status: IN PROGRESS
+        1. Restart the Expo server.
+        2. Take a screenshot on an Android emulator, ensuring the  is open.
+        3. Verify that the Discover Holidays button is fully visible and not obstructed.
+     - Why fix this issue and what will be achieved with the fix? This is a critical UI bug that makes the main action in the country selection modal unusable on some Android devices.
+     - Status:  IN PROGRESS
      - Is recurring issue? Y
-     - Should Test frontend/backend/both after fix? The build itself is the test.
+     - Should Test frontend/backend/both after fix? Frontend
      - Blocked on other issue: None
 
   - Issue 2: 
-     - Attempted fixes: The agent has not yet attempted an iOS build since fixing the  and splash screen issues, which were blocking all builds. The user has confirmed they have an Apple Developer account.
+     - Attempted fixes: A previous iOS build failed due to missing Apple Developer credentials on the EAS server.
      - Next debug checklist:
-        1. Once the Android build is confirmed successful (or its issues are understood), trigger an iOS build using An Expo user account is required to proceed.
+        1. Inform the user that they need to configure their Apple credentials with EAS. This is an interactive process they must complete.
+        2. Guide the user to run An Expo user account is required to proceed.
+
+Log in to EAS with email or username (exit and run eas login --help to see other login options)
+Input is required, but stdin is not readable. Failed to display prompt: Email or username in their local terminal and follow the prompts.
+        3. Once the credentials are set up, trigger a new iOS build using An Expo user account is required to proceed.
 
 Log in to EAS with email or username (exit and run eas login --help to see other login options)
 Input is required, but stdin is not readable. Failed to display prompt: Email or username.
-        2. The user has already provided an Expo token, so the command can be run non-interactively.
-        3. Monitor the build and debug any logs if it fails.
-     - Why fix this issue and what will be achieved with the fix? To produce a deployable iOS application for the Apple App Store.
-     - Status: NOT STARTED
+     - Why fix this issue and what will be achieved with the fix? To produce a deployable  file for the Apple App Store and complete the project's core goal.
+     - Status:  BLOCKED
      - Is recurring issue? N
      - Should Test frontend/backend/both after fix? The build itself is the test.
-     - Blocked on other issue: None
-
-  - Issue 3: 
-     - Attempted fixes: The agent implemented a platform-specific fix in  to remove the  attribute from the  call on iOS. This was done to prevent the WhatsApp share extension from showing an incorrect UI.
-     - Next debug checklist:
-        1. After a successful build is available for the user to test, ask them to verify the Share functionality on their iPhone, specifically when sharing to WhatsApp.
-     - Why fix this issue and what will be achieved with the fix? To ensure a core social feature works as expected on both platforms.
-     - Status: USER VERIFICATION PENDING
-     - Is recurring issue? Y
-     - Should Test frontend/backend/both after fix? The user needs to test this on a physical device.
-     - Blocked on other issue: Issue 1: Complete the EAS build for Android
+     - Blocked on other issue: User action is required to provide credentials.
 
 **In progress Task List**:
-  - Task 1: Complete and verify the Android production build.
-     - Where to resume: Check the status of the last An Expo user account is required to proceed.
-
-Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username command using An Expo user account is required to proceed.
-
-Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username.
-     - What will be achieved with this? A successful  file for the Google Play Store.
-     - Status: IN PROGRESS
-     - Should Test frontend/backend/both after fix? The build is the test.
-     - Blocked on something: None
+  - Task 1:  Update  for iOS App Store Listing
+     - Where to resume: The agent has already applied the fix by changing  to  in .
+     - What will be achieved with this? The app will be correctly listed as Designed for iPhone in the App Store.
+     - Status:  IN PROGRESS
+     - Should Test frontend/backend/both after fix? This is verified upon submission to the App Store.
+     - Blocked on something: None.
 
 **Upcoming and Future Tasks**
     Upcoming Tasks:
-    - **P0: Trigger and complete the iOS production build.** (Same as Issue 2)
-    - **P1: User verification of the Share feature fix.** (Same as Issue 3)
+    - **P0: Trigger and complete a new Android production build.** A previous build succeeded, but a new one is required to incorporate the critical safe area fix and other recent changes.
+    - **P1: Trigger and complete the iOS production build.** (Same as Issue 2).
+    - **P2: User verification of the Share functionality fix on iOS.** This has been pending and requires a new testable build.
     Future Tasks:
-    - There are no new feature requests in the backlog. Future work would involve maintenance or adding performance optimizations, such as database indexes for the backend cache.
+    - The feature backlog is clear.
 
 **Completed work in this session**
-- **Deployment Blockers Resolved**:
-  - Fixed Android build failure by creating  with the mandatory .
-  - Corrected the invalid splash image path in .
-  - Generated an Android keystore and configured  to use it for non-interactive builds.
-  - Set  in  for .
-- **Major Code Refactoring**:
-  - Refactored the monolithic  into smaller, reusable components (, , , , etc.).
-  - Moved all shared logic (, , ) into a new  directory to resolve Expo Router warnings and improve project structure.
-- **New Feature: Saved Long Weekends**:
-  - Implemented a Saved tab and bookmarking functionality using .
-  - Added a  hook to manage saved state.
+- **Core Features Implemented**:
+  - **App Update System**: Added a backend endpoint and frontend modal to prompt users to update the app.
+  - **Holiday Reminders (Push Notifications)**: Integrated  to schedule local reminders for saved holidays, with configurable timing via a dropdown in settings.
+  - **Add to Calendar**: Integrated  to allow users to add holidays to their device's calendar ( download for web).
+- **UI/UX Enhancements**:
+  - **Animated Home Screen**: Replaced the static empty state with an animated globe and orbiting paper plane.
+  - **Month Grouping & Mini-Calendar**: Long weekends are now grouped by month, with a collapsible mini-calendar showing highlighted dates, a legend, and country flags.
+  - **Chronological Sorting**: Long weekend results are now sorted by date.
+  - **Share from Saved**: Added a share button to cards in the Saved tab.
 - **Bug Fixes**:
-  - **Share Functionality (iOS)**: Implemented a platform-specific fix to prevent an incorrect UI from appearing in the WhatsApp share extension.
-  - **Android UI**: Fixed the bottom tab bar layout on Android using .
-  - **Technical Debt**: Replaced deprecated  props with  and  with .
+  - **Mini-Calendar Timezone Bug**: Corrected a date-shifting error that misclassified holidays.
+  - **Expo Go Crashes**: Implemented safe fallbacks for  and  to prevent crashes in the Expo Go development client.
+- **Backend & Performance**:
+  - **MongoDB Indexing**: Added indexes to all queried collections to improve API response times.
+- **Documentation**:
+  - **In-App Docs**: Updated all sections of the Settings tab (About, FAQ, Terms, Privacy, Licenses) to reflect all new features.
+- **Deployment Configuration**:
+  - Changed  to correctly list the app as Designed for iPhone ().
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Frontend**: React Native, Expo, Expo Router, TypeScript, , 
+- **Frontend**: React Native, Expo, Expo Router, TypeScript, , , 
 - **Backend**: Python, FastAPI
 - **Database**: MongoDB (for caching)
 - **Deployment**: Expo Application Services (EAS)
 
 **key DB schema**
-- MongoDB is used for caching in a  collection. Schema is unstructured but contains , , and .
+  - **app_config**:  (Indexed on )
+  - **holidays_cache**:  (Indexed on )
+  - **countries_cache**:  (Indexed on )
+  - **saved_comparisons**:  (Indexed on uid=0(root) gid=0(root) groups=0(root))
 
 **changes in tech stack**
--  was added for the bookmark feature.
-- EAS CLI is used for building and deployment.
+-  added for holiday reminders.
+-  added for calendar integration.
 
 **All files of reference**
-- ****: Configures the EAS build; updated to use a local Android keystore.
-- ****: Main Expo config; updated with , correct splash image path, and a .
-- ****: New file added to include the mandatory .
-- ****: New file generated for signing Android builds.
-- ****: New directory containing all refactored, non-route components and hooks.
-- ****: Contains the platform-specific fix for the Share functionality.
-
-**Areas that need refactoring**:
-- The major refactoring is complete. The testing agent noted missing database indexes in the backend cache queries, which is a low-priority performance optimization for the future.
+- ****: Edited to set  and add native plugins.
+- ****: Recently edited to fix an Android safe area bug.
+- ****: Updated with comprehensive documentation for all new features.
+- ****: Contains the logic for the home screen, including the new monthly grouping and mini-calendar.
+- ****: Updated to add the  endpoint and create MongoDB indexes.
 
 **key api endpoints**
 - 
 - 
+- 
+- 
 
 **Critical Info for New Agent**
-- **Deployment is Priority #1**: The immediate task is to confirm the status of the Android build. Use An Expo user account is required to proceed.
-
-Log in to EAS with email or username (exit and run eas login --help to see other login options)
-Input is required, but stdin is not readable. Failed to display prompt: Email or username. If it failed, debug the logs. If it succeeded, start the iOS build.
-- **Expo Token is Available**: The user provided an Expo token which is in the history. It has been used to log in and link the project.
-- **Android Keystore is Local**: A keystore () was generated with the password .  is configured to use it, which is necessary for non-interactive builds.
+- **iOS Build is Blocked on User**: The highest priority is guiding the user to set up their Apple Developer credentials with EAS. Without this, no iOS build can be made.
+- **Android UI Bug Fix Needs Verification**: The fix for the  safe area on Android has been coded but not visually confirmed. This must be verified before starting a new Android build.
+- **Expo Go Limitations**: Remind the user that features relying on  and  will not function in the Expo Go app and must be tested on a proper build.
+- **New Builds Required**: Numerous fixes and features have been added since the last successful build. New builds for both Android and iOS are necessary to deliver these updates.
 
 **documents and test reports created in this job**
-- 
-- 
-- 
+-  (updated multiple times)
+-  to 
 
-**Last 10 User Messages and any pending HUMAN messages**
-- User triggered final Android build after fixing  and splash screen path. - **IN PROGRESS**
-- User provided Expo token and confirmed having an Apple ID for the iOS build. - **ACTIONED**
-- User confirmed they want builds for both iOS and Android. - **ACTIONED**
-- User asked the agent to update the backend URL and trigger the build. - **ACTIONED**
-- User requested a deployment health check. - **ACTIONED**
-- User reported that the Share feature was not working on iPhones with WhatsApp. - **FIX IMPLEMENTED / VERIFICATION PENDING**
-- User approved the implementation of the Saved/Bookmark feature. - **COMPLETED**
+**Last 10 User Messages and any pending HUMAN messages** 
+- User requested to ensure the app is ready for Apple and Android builds.
+- User reported the Discover Holidays button is cut off on Android.
+- User asked to ensure the app is listed as Designed for iPhone on the App Store.
+- User requested to review all settings documentation again with new features.
+- User requested to remove the country flags legend from the holiday list and move the Add to Calendar button.
+- User found the text-only empty state dull and requested an animation.
+- User requested a more premium and subtle empty state.
+- User requested to change the subtitle to Discover holidays....
+- User requested to change the main call-to-action button text to Discover Holidays.
+- User confirmed the Android UI fix worked and asked about why an old UI element (country legend) was still showing on their iPhone build, indicating their build is out of date.
 
 **Project Health Check:**
 - **Broken**:
-    - **Android/iOS Deployment**: IN PROGRESS. Critical blockers have been fixed. An Android build is currently running or has just finished. The iOS build is pending.
+    - **Android UI**: A critical UI bug in the  has a fix implemented but is pending verification.
+    - **iOS Build Process**: Blocked, pending user action to configure Apple credentials with EAS.
 - **Mocked**: None.
 
 **3rd Party Integrations**
-- **Nager.Date API**: Public API for fetching holiday data. No key required.
-- **Expo Application Services (EAS)**: Used for building the native apps. Requires an Expo account and token.
-- **@react-native-async-storage/async-storage**: Used for local device storage.
+- **Nager.Date API**: Public API for fetching holiday data.
+- **Expo Application Services (EAS)**: Used for building native apps.
+- **@react-native-async-storage/async-storage**: For local device storage.
+- **expo-notifications**: For scheduling local push notifications.
+- **expo-calendar**: For adding events to the device calendar.
 
 **Testing status**
-- **Testing agent used after significant changes**: YES
-- **Troubleshoot agent used after agent stuck in loop**: NO
-- **Test files created**: None.
-- **Known regressions**: None.
+  - Testing agent used after significant changes: YES
+  - Troubleshoot agent used after agent stuck in loop: NO
+  - Test files created: None
+  - Known regressions: A UI regression on Android's safe area was identified and a fix has been implemented.
 
 **Credentials to test flow:**
 - **Expo Token**: 
 - **Android Keystore Password**: 
 
 **What agent forgot to execute**
-The agent has been systematic in resolving deployment blockers. The only minor loose end is not explicitly re-verifying an old FAQ modal bug (from a previous session), but this was a very low priority compared to the critical deployment tasks and was likely resolved during the extensive UI refactoring and testing.</analysis>
+The agent has been diligent and has not forgotten any major tasks. The primary pending action is to visually verify the Android UI fix that was just implemented before moving on to trigger new builds.</analysis>

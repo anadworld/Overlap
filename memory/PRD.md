@@ -1,94 +1,34 @@
-# Overlap – Holiday Calendar · PRD
+# Overlap - Holiday Calendar PRD
 
 ## Original Problem Statement
-Build a mobile iOS/Android app that shows and compares public holidays between countries, highlighting overlaps and "long weekend" opportunities.
-
-## Core Requirements
-- Select 1–5 countries + a year → list all public holidays
-- Identify overlapping holidays (all selected countries share the same holiday)
-- Detect long weekends (holidays adjacent to weekends)
-- Suggest bridge days (one extra day off = 4-day weekend)
-- App name: "Overlap – Holiday Calendar"
-
-## Tech Stack
-- Frontend: React Native + Expo + Expo Router (TypeScript)
-- Backend: Python + FastAPI
-- External API: Nager.Date (no key required)
-- Database: MongoDB (caching + app config)
-- Notifications: expo-notifications (local scheduling)
+Build a mobile iOS/Android native app named "Overlap - Holiday Calendar" that shows and compares public holidays between countries. Features include: country selection (1-5), long weekend detection, bridge days, bookmarks, sharing, push notifications, and calendar integration.
 
 ## Architecture
-```
-/app
-├── backend/
-│   ├── server.py
-│   └── tests/
-└── frontend/
-    ├── app.json
-    ├── babel.config.js
-    ├── eas.json
-    ├── src/
-    │   ├── hooks/
-    │   │   ├── useHolidayData.ts
-    │   │   ├── useBookmarks.ts
-    │   │   ├── useUpdateCheck.ts
-    │   │   └── useNotifications.ts    ← NEW
-    │   ├── components/
-    │   │   ├── UpdatePrompt.tsx
-    │   │   └── holiday/
-    │   │       ├── StatsBar.tsx, CountryLegend.tsx
-    │   │       ├── HolidayCard.tsx, LongWeekendCard.tsx
-    │   │       ├── SavedCard.tsx
-    │   │       ├── CountryPickerModal.tsx
-    │   │       └── YearPickerModal.tsx
-    │   ├── store/pendingRestore.ts
-    │   ├── types.ts
-    │   └── utils.ts
-    └── app/
-        ├── _layout.tsx
-        └── (tabs)/
-            ├── _layout.tsx
-            ├── index.tsx    ← schedules notifications on bookmark
-            ├── saved.tsx    ← cancels notifications on delete
-            └── settings.tsx ← notification preferences UI
-```
-
-## Key API Endpoints
-- `GET /api/countries` → list of available countries
-- `POST /api/compare` → holidays, overlaps, long weekends
-- `GET /api/app-version` → latest version info
-- `PUT /api/app-version` → update latest version (admin)
+- **Frontend**: React Native / Expo with TypeScript
+- **Backend**: FastAPI (Python) with MongoDB caching
+- **External API**: Nager.Date API for holiday data
+- **Deployment**: Expo Application Services (EAS) for mobile builds, Emergent native deployment for backend
 
 ## What's Been Implemented
-- Holiday comparison with overlap/long weekend/bridge day detection
-- Home screen with filter cards, country/year pickers
-- Settings with About, FAQ, legal modals, version
-- Saved/Bookmark tab using AsyncStorage
-- Share functionality with iOS fix
-- App update notification system
-- **Holiday reminder notifications** — local push notifications for saved long weekends with configurable timing (1 day / 3 days / 1 week before)
-- Android production build (.aab) completed
+- Full 3-tab app (Home, Saved, Settings) with animated home screen
+- Holiday comparison with overlap detection, long weekends, bridge days
+- Bookmarks, share, push notifications, calendar integration
+- Backend with caching, app versioning, MongoDB indexing
+- EAS build configuration for Android & iOS
+- Settings documentation (About, FAQ, Terms, Privacy, Licenses)
 
-## Changelog
-| Date | Change |
-|------|--------|
-| Feb 2026 | Initial app with holiday comparison, settings, bookmarks |
-| Feb 2026 | Android build fixes (babel-preset-expo, minSdkVersion, package-lock) |
-| Feb 2026 | **Android production build SUCCEEDED** |
-| Feb 2026 | App update notification system (version check + modal) |
-| Feb 2026 | **Holiday reminder notifications** — expo-notifications with Settings UI |
+## Deployment Fixes (March 2, 2026)
+1. **Backend .env**: Removed quotes from MONGO_URL and DB_NAME for production Atlas compatibility
+2. **app.json**: Removed user-specific `owner` ("anadworld") and `extra.eas.projectId` that conflict with Emergent's @emergent007 EAS account
+3. **app.json**: Changed slug to "overlap-holidays-2" to match deployment system's expected slug (derived from EXPO_TUNNEL_SUBDOMAIN)
+4. **EAS Slug Conflict Note**: The deployment system strips projectId from app.json and runs `eas init`, which fails if the slug already exists. This is a deployment pipeline issue - the system should link to existing projects on re-deployments rather than trying to create new ones.
 
-## Prioritised Backlog
-### Done
-- [x] Android production build
-- [x] App update notification system
-- [x] Holiday reminder notifications with Settings preferences
+## Pending Issues
+- P0: Android safe area bug fix needs verification
+- P1: iOS build blocked on Apple Developer credentials
+- P0: EAS slug conflict on re-deployment (deployment system issue)
 
-### P1 — Pending
-- [ ] iOS production build — requires Apple Developer credentials on Expo
-
-### P2 — Pending User Verification
-- [ ] Share fix (iOS WhatsApp) — needs physical device testing
-
-### Backlog
-- [ ] MongoDB cache indexes for backend performance
+## Backlog
+- Trigger new Android production build after safe area fix verification
+- Complete iOS build process
+- Verify Share functionality on iOS

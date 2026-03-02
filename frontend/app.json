@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Overlap - Holiday Calendar",
-    "slug": "overlap-holiday-calendar",
+    "slug": "overlap-holidays-2",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -53,11 +53,7 @@
       "typedRoutes": true
     },
     "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "69de7e22-bc9e-4b62-95c8-c6e8ebe847a6"
-      }
-    },
-    "owner": "anadworld"
+      "router": {}
+    }
   }
 }

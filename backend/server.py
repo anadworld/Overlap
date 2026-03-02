@@ -440,7 +440,7 @@ async def health_check():
 async def get_countries():
     """Get list of available countries from Nager.Date API"""
     # Check cache first
-    cached = await db.countries_cache.find_one({"type": "countries_list"})
+    cached = await db.countries_cache.find_one({"type": "countries_list"}, {"_id": 0, "data": 1, "updatedAt": 1})
     
     if cached and cached.get("updatedAt"):
         # Use cache if less than 24 hours old
@@ -471,7 +471,7 @@ async def get_holidays(country_code: str, year: int):
     
     # Check cache
     cache_key = f"{country_code}_{year}"
-    cached = await db.holidays_cache.find_one({"cache_key": cache_key})
+    cached = await db.holidays_cache.find_one({"cache_key": cache_key}, {"_id": 0, "data": 1})
     
     if cached:
         return cached["data"]
@@ -583,7 +583,7 @@ async def save_comparison(request: CompareRequest):
 @api_router.get("/saved-comparisons", response_model=List[SavedComparison])
 async def get_saved_comparisons():
     """Get all saved comparisons"""
-    comparisons = await db.saved_comparisons.find().sort("createdAt", -1).to_list(100)
+    comparisons = await db.saved_comparisons.find({}, {"_id": 0}).sort("createdAt", -1).to_list(100)
     return [SavedComparison(**c) for c in comparisons]
 
 @api_router.delete("/saved-comparisons/{comparison_id}")

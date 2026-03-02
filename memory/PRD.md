@@ -21,7 +21,8 @@ Build a mobile iOS/Android native app named "Overlap - Holiday Calendar" that sh
 1. **Backend .env**: Removed quotes from MONGO_URL and DB_NAME for production Atlas compatibility
 2. **app.json**: Removed user-specific `owner` ("anadworld") and `extra.eas.projectId` that conflict with Emergent's @emergent007 EAS account
 3. **app.json**: Changed slug to "overlap-holidays-2" to match deployment system's expected slug (derived from EXPO_TUNNEL_SUBDOMAIN)
-4. **EAS Slug Conflict Note**: The deployment system strips projectId from app.json and runs `eas init`, which fails if the slug already exists. This is a deployment pipeline issue - the system should link to existing projects on re-deployments rather than trying to create new ones.
+4. **MongoDB Query Optimization**: Added `_id: 0` projections to all MongoDB queries (countries_cache, holidays_cache, saved_comparisons) to prevent ObjectId serialization issues in production
+5. **EAS Slug Conflict Note**: The deployment system strips projectId from app.json and runs `eas init`, which fails if the slug already exists. This is a deployment pipeline issue - the system should link to existing projects on re-deployments rather than trying to create new ones.
 
 ## Pending Issues
 - P0: Android safe area bug fix needs verification

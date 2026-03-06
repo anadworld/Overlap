@@ -27,6 +27,20 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+function formatDateWithYear(dateStr: string): string {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function formatRange(startDate: string, endDate: string): string {
+  const sYear = new Date(startDate + 'T00:00:00').getFullYear();
+  const eYear = new Date(endDate + 'T00:00:00').getFullYear();
+  if (sYear !== eYear) {
+    return `${formatDateWithYear(startDate)} – ${formatDateWithYear(endDate)}`;
+  }
+  return `${formatDate(startDate)} – ${formatDate(endDate)}`;
+}
+
 function daysBetween(start: string, end: string): number {
   const s = new Date(start + 'T00:00:00');
   const e = new Date(end + 'T00:00:00');
@@ -219,7 +233,7 @@ export default function SchoolScreen() {
                   <View style={styles.cardBody}>
                     <Text style={styles.cardName}>{h.name}</Text>
                     <Text style={styles.cardDates}>
-                      {formatDate(h.startDate)} – {formatDate(h.endDate)}
+                      {formatRange(h.startDate, h.endDate)}
                     </Text>
                     <View style={styles.cardMeta}>
                       <View style={styles.durationBadge}>

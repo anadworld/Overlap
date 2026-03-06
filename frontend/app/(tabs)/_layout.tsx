@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View } from 'react-native';
 
 const TAB_COLORS = {
-  holiday: { active: '#5A9E6F', inactive: '#A3C4AD' },
+  holiday: { active: '#4A8B9F', inactive: '#A0C4CF' },
   school: { active: '#5B8DEF', inactive: '#A3BFF0' },
   saved: { active: '#F5A623', inactive: '#F0CFA0' },
   settings: { active: '#7C9CBF', inactive: '#B0C4D8' },

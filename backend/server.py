@@ -760,6 +760,7 @@ async def get_school_holidays(country_code: str, year: int, subdivision: Optiona
 
     holidays = merge_groups
 
+    holidays = [h for h in merge_groups if h["startDate"] >= f"{year}-01-01"]
     holidays.sort(key=lambda x: x["startDate"])
 
     await db.holidays_cache.update_one(

@@ -15,7 +15,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#7C9CBF"
+        "backgroundColor": "#E8567F"
       },
       "package": "com.anadworld.overlap"
     },

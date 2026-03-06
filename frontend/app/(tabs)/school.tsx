@@ -325,43 +325,18 @@ export default function SchoolScreen() {
   );
 }
 
-// Inline Country Picker for School tab with grayed-out unsupported countries
+// Inline Country Picker for School tab - shows only supported countries
 function CountryPickerForSchool({ visible, supportedCountries, onSelect, onClose }: {
   visible: boolean;
   supportedCountries: Country[];
   onSelect: (c: Country) => void;
   onClose: () => void;
 }) {
-  const [allCountries, setAllCountries] = useState<Country[]>([]);
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
-  const insets = useSafeAreaInsets();
 
-  useEffect(() => {
-    if (!visible) return;
-    (async () => {
-      try {
-        const res = await fetch(`${API_BASE}/api/countries`);
-        const data: Country[] = await res.json();
-        setAllCountries(data);
-      } catch { /* ignore */ }
-      setLoading(false);
-    })();
-  }, [visible]);
-
-  const supportedCodes = new Set(supportedCountries.map(c => c.countryCode));
-
-  const filtered = allCountries.filter(
+  const filtered = supportedCountries.filter(
     c => c.name.toLowerCase().includes(search.toLowerCase()) || c.countryCode.toLowerCase().includes(search.toLowerCase())
   );
-
-  // Sort: supported first, then alphabetical
-  const sorted = [...filtered].sort((a, b) => {
-    const aSupported = supportedCodes.has(a.countryCode) ? 0 : 1;
-    const bSupported = supportedCodes.has(b.countryCode) ? 0 : 1;
-    if (aSupported !== bSupported) return aSupported - bSupported;
-    return a.name.localeCompare(b.name);
-  });
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
@@ -394,45 +369,29 @@ function CountryPickerForSchool({ visible, supportedCountries, onSelect, onClose
           )}
         </View>
 
-        {loading ? (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color="#7C9CBF" />
-          </View>
-        ) : (
-          <FlatList
-            data={sorted}
-            keyExtractor={(item) => item.countryCode}
-            renderItem={({ item }) => {
-              const supported = supportedCodes.has(item.countryCode);
-              return (
-                <TouchableOpacity
-                  style={[styles.countryItem, !supported && styles.countryItemDisabled]}
-                  onPress={() => supported && onSelect(item)}
-                  disabled={!supported}
-                  data-testid={`school-country-${item.countryCode}`}
-                >
-                  <Text style={[styles.countryItemFlag, !supported && { opacity: 0.35 }]}>
-                    {getCountryFlag(item.countryCode)}
-                  </Text>
-                  <View style={styles.countryItemInfo}>
-                    <Text style={[styles.countryItemName, !supported && styles.countryItemNameDisabled]}>
-                      {item.name}
-                    </Text>
-                    <Text style={styles.countryItemCode}>{item.countryCode}</Text>
-                  </View>
-                  {supported ? (
-                    <View style={styles.availableBadge}>
-                      <Ionicons name="school" size={14} color="#7C9CBF" />
-                    </View>
-                  ) : (
-                    <Text style={styles.unavailableText}>N/A</Text>
-                  )}
-                </TouchableOpacity>
-              );
-            }}
-            style={styles.countryList}
-          />
-        )}
+        <FlatList
+          data={filtered}
+          keyExtractor={(item) => item.countryCode}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.countryItem}
+              onPress={() => onSelect(item)}
+              data-testid={`school-country-${item.countryCode}`}
+            >
+              <Text style={styles.countryItemFlag}>
+                {getCountryFlag(item.countryCode)}
+              </Text>
+              <View style={styles.countryItemInfo}>
+                <Text style={styles.countryItemName}>{item.name}</Text>
+                <Text style={styles.countryItemCode}>{item.countryCode}</Text>
+              </View>
+              <View style={styles.availableBadge}>
+                <Ionicons name="school" size={14} color="#7C9CBF" />
+              </View>
+            </TouchableOpacity>
+          )}
+          style={styles.countryList}
+        />
       </SafeAreaView>
     </Modal>
   );

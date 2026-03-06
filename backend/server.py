@@ -723,19 +723,27 @@ async def get_school_holidays(country_code: str, year: int, subdivision: Optiona
     if raw is None:
         raise HTTPException(status_code=404, detail=f"No school holidays for {country_code} in {year}")
 
-    holidays = []
+    # Merge holidays with the same name and date range
+    merge_map: dict[str, dict] = {}
     for h in raw:
         names = h.get("name", [])
         en_name = next((n["text"] for n in names if n.get("language") == "EN"), names[0]["text"] if names else "School Holiday")
         subs = h.get("subdivisions", []) or h.get("groups", [])
-        holidays.append({
-            "id": h.get("id", ""),
-            "startDate": h["startDate"],
-            "endDate": h["endDate"],
-            "name": en_name,
-            "nationwide": h.get("nationwide", False),
-            "subdivisions": [{"code": s.get("code", ""), "shortName": s.get("shortName", "")} for s in subs],
-        })
+        key = f"{en_name}|{h['startDate']}|{h['endDate']}"
+        if key in merge_map:
+            for s in subs:
+                merge_map[key]["subdivisions"].append({"code": s.get("code", ""), "shortName": s.get("shortName", "")})
+        else:
+            merge_map[key] = {
+                "id": h.get("id", ""),
+                "startDate": h["startDate"],
+                "endDate": h["endDate"],
+                "name": en_name,
+                "nationwide": h.get("nationwide", False),
+                "subdivisions": [{"code": s.get("code", ""), "shortName": s.get("shortName", "")} for s in subs],
+            }
+
+    holidays = list(merge_map.values())
 
     holidays.sort(key=lambda x: x["startDate"])
 

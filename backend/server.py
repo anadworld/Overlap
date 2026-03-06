@@ -723,27 +723,42 @@ async def get_school_holidays(country_code: str, year: int, subdivision: Optiona
     if raw is None:
         raise HTTPException(status_code=404, detail=f"No school holidays for {country_code} in {year}")
 
-    # Merge holidays with the same name and date range
-    merge_map: dict[str, dict] = {}
+    # Merge holidays with the same name and overlapping/close dates (within 14 days)
+    from datetime import date as date_type
+    merge_groups: list[dict] = []
     for h in raw:
         names = h.get("name", [])
         en_name = next((n["text"] for n in names if n.get("language") == "EN"), names[0]["text"] if names else "School Holiday")
         subs = h.get("subdivisions", []) or h.get("groups", [])
-        key = f"{en_name}|{h['startDate']}|{h['endDate']}"
-        if key in merge_map:
-            for s in subs:
-                merge_map[key]["subdivisions"].append({"code": s.get("code", ""), "shortName": s.get("shortName", "")})
-        else:
-            merge_map[key] = {
+        start = date_type.fromisoformat(h["startDate"])
+        end = date_type.fromisoformat(h["endDate"])
+        sub_list = [{"code": s.get("code", ""), "shortName": s.get("shortName", "")} for s in subs]
+
+        merged = False
+        for g in merge_groups:
+            if g["name"] == en_name and abs((start - date_type.fromisoformat(g["startDate"])).days) <= 14:
+                if h["startDate"] < g["startDate"]:
+                    g["startDate"] = h["startDate"]
+                if h["endDate"] > g["endDate"]:
+                    g["endDate"] = h["endDate"]
+                existing_codes = {s["code"] for s in g["subdivisions"]}
+                for s in sub_list:
+                    if s["code"] not in existing_codes:
+                        g["subdivisions"].append(s)
+                g["nationwide"] = g["nationwide"] or h.get("nationwide", False)
+                merged = True
+                break
+        if not merged:
+            merge_groups.append({
                 "id": h.get("id", ""),
                 "startDate": h["startDate"],
                 "endDate": h["endDate"],
                 "name": en_name,
                 "nationwide": h.get("nationwide", False),
-                "subdivisions": [{"code": s.get("code", ""), "shortName": s.get("shortName", "")} for s in subs],
-            }
+                "subdivisions": sub_list,
+            })
 
-    holidays = list(merge_map.values())
+    holidays = merge_groups
 
     holidays.sort(key=lambda x: x["startDate"])
 

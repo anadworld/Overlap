@@ -16,6 +16,7 @@ Build a mobile iOS/Android native app named "Overlap - Holiday Calendar" that sh
 - Backend with caching, app versioning, MongoDB indexing
 - EAS build configuration for Android & iOS
 - Settings documentation (About, FAQ, Terms, Privacy, Licenses)
+- **School Holidays tab** (March 6, 2026): Integrated OpenHolidaysAPI for 36 European countries with subdivision/region filtering, grayed-out unsupported countries, monthly grouping
 
 ## Deployment Fixes (March 2, 2026)
 1. **Backend .env**: Removed quotes from MONGO_URL and DB_NAME for production Atlas compatibility
@@ -26,7 +27,7 @@ Build a mobile iOS/Android native app named "Overlap - Holiday Calendar" that sh
 
 ## Pending Issues
 - P0: Android safe area bug fix needs verification
-- P1: iOS build blocked on Apple Developer credentials
+- P1: iOS build blocked on Apple Developer credentials (API key TNMPKX4PFC needs to be configured in Emergent iOS build settings via support)
 - P0: EAS slug conflict on re-deployment (deployment system issue)
 
 ## Backlog

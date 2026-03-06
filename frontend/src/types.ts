@@ -47,3 +47,18 @@ export interface Bookmark {
   lw: LongWeekendOpportunity;
   countryNameMap: Record<string, string>;
 }
+
+export interface SchoolHoliday {
+  id: string;
+  startDate: string;
+  endDate: string;
+  name: string;
+  nationwide: boolean;
+  subdivisions: { code: string; shortName: string }[];
+}
+
+export interface Subdivision {
+  code: string;
+  name: string;
+  shortName: string;
+}

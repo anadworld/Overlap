@@ -29,6 +29,9 @@ api_router = APIRouter(prefix="/api")
 # Nager.Date API base URL
 NAGER_API_BASE = "https://date.nager.at/api/v3"
 
+# OpenHolidays API base URL (for school holidays)
+OPENHOLIDAYS_API_BASE = "https://openholidaysapi.org"
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -112,6 +115,19 @@ async def fetch_from_nager(endpoint: str) -> Any:
             return None
         else:
             raise HTTPException(status_code=response.status_code, detail="Error fetching data from holiday API")
+
+# Helper function to fetch data from OpenHolidays API
+async def fetch_from_openholidays(endpoint: str, params: dict = None) -> Any:
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.get(f"{OPENHOLIDAYS_API_BASE}{endpoint}", params=params)
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 204:
+            return []
+        elif response.status_code == 404:
+            return None
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Error fetching data from school holidays API")
 
 # Helper function to detect long weekend opportunities
 def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_countries: List[str]) -> List[LongWeekendOpportunity]:
@@ -628,6 +644,107 @@ async def update_app_version(req: UpdateAppVersionRequest):
         upsert=True,
     )
     return {"message": "Version info updated", **update_data}
+
+# ── School Holidays (OpenHolidays API) ──
+
+@api_router.get("/school-holiday-countries")
+async def get_school_holiday_countries():
+    """Get list of countries supported by OpenHolidays API for school holidays"""
+    cached = await db.countries_cache.find_one({"type": "school_holiday_countries"}, {"_id": 0, "data": 1, "updatedAt": 1})
+    if cached and cached.get("updatedAt"):
+        cache_age = (datetime.utcnow() - cached["updatedAt"]).total_seconds()
+        if cache_age < 86400 * 7:  # 7 days cache
+            return cached["data"]
+
+    raw = await fetch_from_openholidays("/Countries")
+    if not raw:
+        return []
+
+    countries = []
+    for c in raw:
+        names = c.get("name", [])
+        en_name = next((n["text"] for n in names if n.get("language") == "EN"), names[0]["text"] if names else c.get("isoCode", ""))
+        countries.append({"countryCode": c["isoCode"], "name": en_name})
+
+    countries.sort(key=lambda x: x["name"])
+    await db.countries_cache.update_one(
+        {"type": "school_holiday_countries"},
+        {"$set": {"data": countries, "updatedAt": datetime.utcnow()}},
+        upsert=True,
+    )
+    return countries
+
+@api_router.get("/subdivisions/{country_code}")
+async def get_subdivisions(country_code: str):
+    """Get subdivisions (states/regions) for a country from OpenHolidays API"""
+    cache_key = f"subdivisions_{country_code.upper()}"
+    cached = await db.countries_cache.find_one({"type": cache_key}, {"_id": 0, "data": 1, "updatedAt": 1})
+    if cached and cached.get("updatedAt"):
+        cache_age = (datetime.utcnow() - cached["updatedAt"]).total_seconds()
+        if cache_age < 86400 * 30:  # 30 days cache
+            return cached["data"]
+
+    raw = await fetch_from_openholidays("/Subdivisions", params={"countryIsoCode": country_code.upper()})
+    if not raw:
+        return []
+
+    subdivisions = []
+    for s in raw:
+        names = s.get("name", [])
+        en_name = next((n["text"] for n in names if n.get("language") == "EN"), names[0]["text"] if names else s.get("code", ""))
+        subdivisions.append({"code": s["code"], "name": en_name, "shortName": s.get("shortName", s["code"])})
+
+    subdivisions.sort(key=lambda x: x["name"])
+    await db.countries_cache.update_one(
+        {"type": cache_key},
+        {"$set": {"data": subdivisions, "updatedAt": datetime.utcnow()}},
+        upsert=True,
+    )
+    return subdivisions
+
+@api_router.get("/school-holidays/{country_code}/{year}")
+async def get_school_holidays(country_code: str, year: int, subdivision: Optional[str] = None):
+    """Get school holidays for a country and year from OpenHolidays API"""
+    cache_key = f"school_{country_code.upper()}_{year}_{subdivision or 'all'}"
+    cached = await db.holidays_cache.find_one({"cache_key": cache_key}, {"_id": 0, "data": 1})
+    if cached:
+        return cached["data"]
+
+    params = {
+        "countryIsoCode": country_code.upper(),
+        "languageIsoCode": "EN",
+        "validFrom": f"{year}-01-01",
+        "validTo": f"{year}-12-31",
+    }
+    if subdivision:
+        params["subdivisionCode"] = subdivision
+
+    raw = await fetch_from_openholidays("/SchoolHolidays", params=params)
+    if raw is None:
+        raise HTTPException(status_code=404, detail=f"No school holidays for {country_code} in {year}")
+
+    holidays = []
+    for h in raw:
+        names = h.get("name", [])
+        en_name = next((n["text"] for n in names if n.get("language") == "EN"), names[0]["text"] if names else "School Holiday")
+        subs = h.get("subdivisions", [])
+        holidays.append({
+            "id": h.get("id", ""),
+            "startDate": h["startDate"],
+            "endDate": h["endDate"],
+            "name": en_name,
+            "nationwide": h.get("nationwide", False),
+            "subdivisions": [{"code": s.get("code", ""), "shortName": s.get("shortName", "")} for s in subs],
+        })
+
+    holidays.sort(key=lambda x: x["startDate"])
+
+    await db.holidays_cache.update_one(
+        {"cache_key": cache_key},
+        {"$set": {"data": holidays, "updatedAt": datetime.utcnow()}},
+        upsert=True,
+    )
+    return holidays
 
 # Include the router in the main app
 app.include_router(api_router)

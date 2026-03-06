@@ -727,7 +727,7 @@ async def get_school_holidays(country_code: str, year: int, subdivision: Optiona
     for h in raw:
         names = h.get("name", [])
         en_name = next((n["text"] for n in names if n.get("language") == "EN"), names[0]["text"] if names else "School Holiday")
-        subs = h.get("subdivisions", [])
+        subs = h.get("subdivisions", []) or h.get("groups", [])
         holidays.append({
             "id": h.get("id", ""),
             "startDate": h["startDate"],

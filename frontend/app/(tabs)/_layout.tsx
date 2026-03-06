@@ -1,19 +1,26 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 
-// Extracted icon components to avoid unstable nested component warnings
-const HomeIcon = ({ color, size }: { color: string; size: number }) => (
-  <Ionicons name="calendar" size={size} color={color} />
+const TAB_COLORS = {
+  holiday: { active: '#E8567F', inactive: '#E8A0B4' },
+  school: { active: '#5B8DEF', inactive: '#A3BFF0' },
+  saved: { active: '#F5A623', inactive: '#F0CFA0' },
+  settings: { active: '#7C9CBF', inactive: '#B0C4D8' },
+};
+
+const HomeIcon = ({ focused, size }: { color: string; size: number; focused: boolean }) => (
+  <Ionicons name={focused ? 'calendar' : 'calendar-outline'} size={size} color={focused ? TAB_COLORS.holiday.active : TAB_COLORS.holiday.inactive} />
 );
-const SchoolIcon = ({ color, size }: { color: string; size: number }) => (
-  <Ionicons name="school-outline" size={size} color={color} />
+const SchoolIcon = ({ focused, size }: { color: string; size: number; focused: boolean }) => (
+  <Ionicons name={focused ? 'school' : 'school-outline'} size={size} color={focused ? TAB_COLORS.school.active : TAB_COLORS.school.inactive} />
 );
-const SavedIcon = ({ color, size, focused }: { color: string; size: number; focused?: boolean }) => (
-  <Ionicons name={focused ? 'bookmark' : 'bookmark-outline'} size={size} color={color} />
+const SavedIcon = ({ focused, size }: { color: string; size: number; focused: boolean }) => (
+  <Ionicons name={focused ? 'bookmark' : 'bookmark-outline'} size={size} color={focused ? TAB_COLORS.saved.active : TAB_COLORS.saved.inactive} />
 );
-const SettingsIcon = ({ color, size }: { color: string; size: number }) => (
-  <Ionicons name="settings-outline" size={size} color={color} />
+const SettingsIcon = ({ focused, size }: { color: string; size: number; focused: boolean }) => (
+  <Ionicons name={focused ? 'settings' : 'settings-outline'} size={size} color={focused ? TAB_COLORS.settings.active : TAB_COLORS.settings.inactive} />
 );
 
 function TabLayoutContent() {
@@ -24,7 +31,7 @@ function TabLayoutContent() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#7C9CBF',
+        tabBarActiveTintColor: '#2D3748',
         tabBarInactiveTintColor: '#A0AEC0',
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
@@ -36,14 +43,30 @@ function TabLayoutContent() {
         },
         tabBarLabelStyle: {
           fontSize: 12,
-          fontWeight: '500',
+          fontWeight: '600',
         },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: 'Holiday', tabBarIcon: HomeIcon }} />
-      <Tabs.Screen name="school" options={{ title: 'School', tabBarIcon: SchoolIcon }} />
-      <Tabs.Screen name="saved" options={{ title: 'Saved', tabBarIcon: SavedIcon }} />
-      <Tabs.Screen name="settings" options={{ title: 'Settings', tabBarIcon: SettingsIcon }} />
+      <Tabs.Screen name="index" options={{
+        title: 'Holiday',
+        tabBarIcon: HomeIcon,
+        tabBarActiveTintColor: TAB_COLORS.holiday.active,
+      }} />
+      <Tabs.Screen name="school" options={{
+        title: 'School',
+        tabBarIcon: SchoolIcon,
+        tabBarActiveTintColor: TAB_COLORS.school.active,
+      }} />
+      <Tabs.Screen name="saved" options={{
+        title: 'Saved',
+        tabBarIcon: SavedIcon,
+        tabBarActiveTintColor: TAB_COLORS.saved.active,
+      }} />
+      <Tabs.Screen name="settings" options={{
+        title: 'Settings',
+        tabBarIcon: SettingsIcon,
+        tabBarActiveTintColor: TAB_COLORS.settings.active,
+      }} />
     </Tabs>
   );
 }

@@ -1,9 +1,21 @@
-import React, { useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Share, Platform } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Share, Platform, Alert } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 import { Bookmark } from '../../types';
 import { getCountryFlag, formatDateRange, getWeekdayRange, formatHolidayDate, COUNTRY_COLORS } from '../../utils';
+
+const isExpoGo = Constants.appOwnership === 'expo';
+
+let Calendar: typeof import('expo-calendar') | null = null;
+if (!isExpoGo && Platform.OS !== 'web') {
+  try {
+    Calendar = require('expo-calendar');
+  } catch {
+    Calendar = null;
+  }
+}
 
 interface Props {
   bookmark: Bookmark;
@@ -24,10 +36,70 @@ const renderRightActions = (
 export function SavedCard({ bookmark, onDelete, onRestore }: Props) {
   const { lw, countries, year, countryNameMap } = bookmark;
   const swipeRef = useRef<Swipeable>(null);
+  const [addingCal, setAddingCal] = useState(false);
 
   const handleDelete = () => {
     swipeRef.current?.close();
     onDelete();
+  };
+
+  const handleAddToCalendar = async () => {
+    setAddingCal(true);
+    const countryNames = [...new Set(lw.holidays.map((h) => countryNameMap[h.countryCode] || h.countryCode))].join(', ');
+    const holidayNames = lw.holidays.map((h) => h.name).join(', ');
+    const title = `${lw.totalDays}-Day Weekend (${countryNames})`;
+    const notes = `Holidays: ${holidayNames}\n\nSaved with Overlap - Holiday Calendar`;
+    const startDate = new Date(lw.startDate + 'T00:00:00');
+    const endDate = new Date(lw.endDate + 'T23:59:59');
+
+    if (!Calendar) {
+      if (Platform.OS === 'web') {
+        const dStart = lw.startDate.replace(/-/g, '');
+        const dEndNext = new Date(lw.endDate + 'T00:00:00');
+        dEndNext.setDate(dEndNext.getDate() + 1);
+        const dEnd = `${dEndNext.getFullYear()}${String(dEndNext.getMonth() + 1).padStart(2, '0')}${String(dEndNext.getDate()).padStart(2, '0')}`;
+        const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Overlap//Holiday Calendar//EN\nBEGIN:VEVENT\nDTSTART;VALUE=DATE:${dStart}\nDTEND;VALUE=DATE:${dEnd}\nSUMMARY:${title}\nDESCRIPTION:${holidayNames}\nEND:VEVENT\nEND:VCALENDAR`;
+        const blob = new Blob([ics], { type: 'text/calendar' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `long-weekend-${lw.startDate}.ics`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } else {
+        Alert.alert('Production Build Required', 'Adding to calendar is available in the full app.');
+      }
+      setAddingCal(false);
+      return;
+    }
+
+    try {
+      const { status } = await Calendar.requestCalendarPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Calendar access is needed.');
+        setAddingCal(false);
+        return;
+      }
+      const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+      const defaultCal = calendars.find((c) => c.isPrimary || c.allowsModifications);
+      const calId = defaultCal?.id || calendars[0]?.id;
+      if (!calId) {
+        Alert.alert('No Calendar', 'No writable calendar found.');
+        setAddingCal(false);
+        return;
+      }
+      await Calendar.createEventAsync(calId, {
+        title,
+        startDate,
+        endDate,
+        allDay: true,
+        notes,
+      });
+      Alert.alert('Added!', `${lw.totalDays}-day weekend added to your calendar.`);
+    } catch {
+      Alert.alert('Error', 'Could not add to calendar.');
+    }
+    setAddingCal(false);
   };
 
   const handleShare = async () => {
@@ -114,10 +186,19 @@ export function SavedCard({ bookmark, onDelete, onRestore }: Props) {
           })}
         </View>
 
-        {/* Footer: saved date + share + re-run */}
+        {/* Footer: saved date + calendar + share + re-run */}
         <View style={styles.cardFooter}>
           <Text style={styles.savedDate}>Saved {savedDate}</Text>
           <View style={styles.footerActions}>
+            <TouchableOpacity
+              style={styles.calendarBtn}
+              onPress={handleAddToCalendar}
+              disabled={addingCal}
+              testID="bookmark-add-to-calendar-btn"
+            >
+              <Ionicons name="calendar-outline" size={16} color="#D97706" />
+              {addingCal && <Text style={styles.calendarBtnText}>...</Text>}
+            </TouchableOpacity>
             <TouchableOpacity style={styles.shareBtn} onPress={handleShare} testID="bookmark-share-btn">
               <Ionicons name="share-outline" size={16} color="#7C9CBF" />
             </TouchableOpacity>
@@ -249,6 +330,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  calendarBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF3C7',
+    padding: 8,
+    borderRadius: 8,
+    gap: 4,
+  },
+  calendarBtnText: {
+    fontSize: 11,
+    color: '#D97706',
+    fontWeight: '600',
   },
   shareBtn: {
     backgroundColor: '#F0F9FF',

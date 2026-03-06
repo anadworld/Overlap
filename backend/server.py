@@ -649,26 +649,40 @@ async def update_app_version(req: UpdateAppVersionRequest):
 
 @api_router.get("/school-holiday-countries")
 async def get_school_holiday_countries():
-    """Get list of countries supported by OpenHolidays API for school holidays"""
-    cached = await db.countries_cache.find_one({"type": "school_holiday_countries"}, {"_id": 0, "data": 1, "updatedAt": 1})
+    """Get list of countries with actual school holiday data from OpenHolidays API"""
+    cached = await db.countries_cache.find_one({"type": "school_holiday_countries_verified"}, {"_id": 0, "data": 1, "updatedAt": 1})
     if cached and cached.get("updatedAt"):
         cache_age = (datetime.utcnow() - cached["updatedAt"]).total_seconds()
-        if cache_age < 86400 * 7:  # 7 days cache
+        if cache_age < 86400 * 30:  # 30 days cache
             return cached["data"]
 
     raw = await fetch_from_openholidays("/Countries")
     if not raw:
         return []
 
+    current_year = datetime.utcnow().year
     countries = []
-    for c in raw:
-        names = c.get("name", [])
-        en_name = next((n["text"] for n in names if n.get("language") == "EN"), names[0]["text"] if names else c.get("isoCode", ""))
-        countries.append({"countryCode": c["isoCode"], "name": en_name})
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        for c in raw:
+            code = c["isoCode"]
+            try:
+                resp = await client.get(f"{OPENHOLIDAYS_API_BASE}/SchoolHolidays", params={
+                    "countryIsoCode": code,
+                    "languageIsoCode": "EN",
+                    "validFrom": f"{current_year}-01-01",
+                    "validTo": f"{current_year}-12-31",
+                })
+                if resp.status_code == 200 and len(resp.json()) > 0:
+                    names = c.get("name", [])
+                    en_name = next((n["text"] for n in names if n.get("language") == "EN"), names[0]["text"] if names else code)
+                    countries.append({"countryCode": code, "name": en_name})
+            except Exception:
+                pass
 
     countries.sort(key=lambda x: x["name"])
     await db.countries_cache.update_one(
-        {"type": "school_holiday_countries"},
+        {"type": "school_holiday_countries_verified"},
         {"$set": {"data": countries, "updatedAt": datetime.utcnow()}},
         upsert=True,
     )

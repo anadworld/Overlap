@@ -49,7 +49,6 @@ const SettingsItem: React.FC<SettingsItemProps> = ({ icon, title, subtitle, onPr
 
 export default function SettingsScreen() {
   const [showAboutModal, setShowAboutModal] = useState(false);
-  const [showLicensesModal, setShowLicensesModal] = useState(false);
   const [showTimingDropdown, setShowTimingDropdown] = useState(false);
 
   const {
@@ -278,7 +277,7 @@ export default function SettingsScreen() {
               icon="code-outline"
               title="Open Source Licenses"
               subtitle="Third-party attributions"
-              onPress={() => setShowLicensesModal(true)}
+              onPress={() => Linking.openURL('https://anadworld.com/overlap')}
             />
           </View>
         </View>
@@ -398,80 +397,6 @@ export default function SettingsScreen() {
             Public holiday data is provided by the Nager.Date API, covering 100+ countries worldwide. 
             School holiday data is provided by the OpenHolidaysAPI, supporting 30+ European countries 
             with regional breakdowns.
-          </Text>
-        </View>
-      ))}
-
-      {/* Licenses Modal */}
-      {renderModal(showLicensesModal, () => setShowLicensesModal(false), 'Open Source Licenses', (
-        <View>
-          <Text style={styles.modalParagraph}>
-            Overlap – Holiday Calendar uses the following open source software and APIs:
-          </Text>
-
-          <Text style={styles.licenseTitle}>React Native</Text>
-          <Text style={styles.licenseText}>MIT License - Copyright (c) Meta Platforms, Inc.</Text>
-          
-          <Text style={styles.licenseTitle}>Expo</Text>
-          <Text style={styles.licenseText}>MIT License - Copyright (c) 2015-present 650 Industries, Inc.</Text>
-          
-          <Text style={styles.licenseTitle}>Expo Router</Text>
-          <Text style={styles.licenseText}>MIT License - File-based routing for Expo</Text>
-
-          <Text style={styles.licenseTitle}>React Navigation</Text>
-          <Text style={styles.licenseText}>MIT License - Navigation framework for React Native</Text>
-          
-          <Text style={styles.licenseTitle}>@expo/vector-icons</Text>
-          <Text style={styles.licenseText}>MIT License - Icon library for Expo</Text>
-          
-          <Text style={styles.licenseTitle}>react-native-safe-area-context</Text>
-          <Text style={styles.licenseText}>MIT License - Safe area handling for React Native</Text>
-          
-          <Text style={styles.licenseTitle}>react-native-gesture-handler</Text>
-          <Text style={styles.licenseText}>MIT License - Gesture handling for React Native</Text>
-
-          <Text style={styles.licenseTitle}>react-native-reanimated</Text>
-          <Text style={styles.licenseText}>MIT License - Animations library for React Native</Text>
-
-          <Text style={styles.licenseTitle}>react-native-screens</Text>
-          <Text style={styles.licenseText}>MIT License - Native screen containers for React Native</Text>
-          
-          <Text style={styles.licenseTitle}>@react-native-async-storage/async-storage</Text>
-          <Text style={styles.licenseText}>MIT License - Local data storage for React Native</Text>
-          
-          <Text style={styles.licenseTitle}>expo-notifications</Text>
-          <Text style={styles.licenseText}>MIT License - Local push notifications for Expo</Text>
-          
-          <Text style={styles.licenseTitle}>expo-calendar</Text>
-          <Text style={styles.licenseText}>MIT License - Calendar integration for Expo</Text>
-
-          <Text style={styles.licenseTitle}>expo-haptics</Text>
-          <Text style={styles.licenseText}>MIT License - Haptic feedback for Expo</Text>
-
-          <Text style={styles.licenseTitle}>expo-linking</Text>
-          <Text style={styles.licenseText}>MIT License - Deep linking for Expo</Text>
-
-          <Text style={styles.licenseTitle}>expo-splash-screen</Text>
-          <Text style={styles.licenseText}>MIT License - Splash screen for Expo</Text>
-
-          <View style={styles.licenseDivider} />
-
-          <Text style={styles.licenseTitle}>Nager.Date API</Text>
-          <Text style={styles.licenseText}>MIT License - Public holiday data for 100+ countries</Text>
-          
-          <Text style={styles.licenseTitle}>OpenHolidaysAPI</Text>
-          <Text style={styles.licenseText}>MIT License - School holiday data for European countries</Text>
-          
-          <View style={styles.licenseDivider} />
-          
-          <Text style={styles.modalParagraph}>
-            All libraries listed above are released under the MIT License, which grants permission to use, copy, 
-            modify, merge, publish, distribute, sublicense, and/or sell copies of the software.
-          </Text>
-          
-          <Text style={styles.modalParagraph}>
-            For full license texts and additional attributions, please visit https://anadworld.com/overlap or 
-            contact us at overlap@anadworld.com.
           </Text>
         </View>
       ))}
@@ -655,22 +580,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   // License styles
-  licenseTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#2D3748',
-    marginTop: 16,
-    marginBottom: 4,
-  },
-  licenseText: {
-    fontSize: 13,
-    color: '#718096',
-  },
-  licenseDivider: {
-    height: 1,
-    backgroundColor: '#E2E8F0',
-    marginVertical: 20,
-  },
   // Notification styles
   timingRow: {
     flexDirection: 'row',

@@ -229,7 +229,7 @@ export default function SettingsScreen() {
               icon="mail-outline"
               title="Contact Support"
               subtitle="We're here to help"
-              onPress={handleContactSupport}
+              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap-contact')}
             />
           </View>
         </View>

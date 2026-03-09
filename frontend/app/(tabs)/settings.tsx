@@ -48,11 +48,8 @@ const SettingsItem: React.FC<SettingsItemProps> = ({ icon, title, subtitle, onPr
 );
 
 export default function SettingsScreen() {
-  const [showTermsModal, setShowTermsModal] = useState(false);
-  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [showLicensesModal, setShowLicensesModal] = useState(false);
-  const [showFaqModal, setShowFaqModal] = useState(false);
   const [showTimingDropdown, setShowTimingDropdown] = useState(false);
 
   const {
@@ -94,34 +91,6 @@ export default function SettingsScreen() {
     { value: '2weeks', label: '2 Weeks Before' },
     { value: '1month', label: '1 Month Before' },
   ];
-
-  const handleRateApp = async () => {
-    let url: string;
-    
-    if (Platform.OS === 'ios') {
-      // iOS App Store URL
-      url = `itms-apps://apps.apple.com/app/id${APP_STORE_ID}?action=write-review`;
-    } else {
-      // Google Play Store URL
-      url = `market://details?id=${PLAY_STORE_PACKAGE}`;
-    }
-    
-    try {
-      const supported = await Linking.canOpenURL(url);
-      if (supported) {
-        await Linking.openURL(url);
-      } else {
-        // Fallback to web URLs
-        const webUrl = Platform.OS === 'ios' 
-          ? `https://apps.apple.com/app/id${APP_STORE_ID}`
-          : `https://play.google.com/store/apps/details?id=${PLAY_STORE_PACKAGE}`;
-        await Linking.openURL(webUrl);
-      }
-    } catch (error) {
-      console.error('Error opening store:', error);
-      Alert.alert('Error', 'Unable to open the app store. Please try again later.');
-    }
-  };
 
   const handleContactSupport = () => {
     Linking.openURL('mailto:overlap@anadworld.com?subject=Overlap – Holiday Calendar Support');
@@ -188,12 +157,6 @@ export default function SettingsScreen() {
               title="About Overlap"
               subtitle="Learn more about the app"
               onPress={() => setShowAboutModal(true)}
-            />
-            <SettingsItem
-              icon="star-outline"
-              title="Rate the App"
-              subtitle="Love the app? Leave a review!"
-              onPress={handleRateApp}
             />
             <SettingsItem
               icon="share-outline"
@@ -284,7 +247,7 @@ export default function SettingsScreen() {
               icon="help-circle-outline"
               title="Help & FAQ"
               subtitle="Get answers to common questions"
-              onPress={() => setShowFaqModal(true)}
+              onPress={() => Linking.openURL('https://anadworld.com/overlap')}
             />
             <SettingsItem
               icon="mail-outline"
@@ -303,13 +266,13 @@ export default function SettingsScreen() {
               icon="document-text-outline"
               title="Terms of Use"
               subtitle="Terms and conditions"
-              onPress={() => setShowTermsModal(true)}
+              onPress={() => Linking.openURL('https://anadworld.com/overlap')}
             />
             <SettingsItem
               icon="shield-checkmark-outline"
               title="Privacy Policy"
               subtitle="How we protect your data"
-              onPress={() => setShowPrivacyModal(true)}
+              onPress={() => Linking.openURL('https://anadworld.com/overlap')}
             />
             <SettingsItem
               icon="code-outline"
@@ -418,154 +381,6 @@ export default function SettingsScreen() {
         </View>
       ))}
 
-      {/* Terms of Use Modal */}
-      {renderModal(showTermsModal, () => setShowTermsModal(false), 'Terms of Use', (
-        <View>
-          <Text style={styles.modalLastUpdated}>Last Updated: February 2026</Text>
-          
-          <Text style={styles.modalSubheading}>1. Acceptance of Terms</Text>
-          <Text style={styles.modalParagraph}>
-            By downloading, installing, or using the Overlap – Holiday Calendar application ("App"), you agree to be 
-            bound by these Terms of Use. If you do not agree to these terms, please do not use the App.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>2. Description of Service</Text>
-          <Text style={styles.modalParagraph}>
-            Overlap – Holiday Calendar provides information about public holidays in various countries. The App allows 
-            users to view holidays for one or more countries, compare holidays across multiple countries, 
-            identify overlapping dates, discover long weekend opportunities including bridge days and 
-            consecutive holiday streaks, save favourite long weekends for quick access, receive push 
-            notification reminders before upcoming saved holidays, add holidays to your personal calendar,
-            view monthly calendar previews with highlighted opportunities, and share holiday details with others.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>3. Accuracy of Information</Text>
-          <Text style={styles.modalParagraph}>
-            While we strive to provide accurate holiday information, we cannot guarantee the accuracy, 
-            completeness, or timeliness of the data. Holiday dates may change based on government decisions, 
-            religious observations, or other factors. Users should verify important dates through official 
-            sources.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>4. User Conduct</Text>
-          <Text style={styles.modalParagraph}>
-            You agree to use the App only for lawful purposes and in accordance with these Terms. You agree 
-            not to use the App in any way that could damage, disable, or impair the App or interfere with 
-            any other party's use of the App.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>5. Intellectual Property</Text>
-          <Text style={styles.modalParagraph}>
-            The App and its original content, features, and functionality are owned by Overlap – Holiday Calendar and 
-            are protected by international copyright, trademark, and other intellectual property laws.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>6. Disclaimer of Warranties</Text>
-          <Text style={styles.modalParagraph}>
-            THE APP IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS 
-            OR IMPLIED. WE DO NOT WARRANT THAT THE APP WILL BE UNINTERRUPTED, SECURE, OR ERROR-FREE.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>7. Limitation of Liability</Text>
-          <Text style={styles.modalParagraph}>
-            IN NO EVENT SHALL OVERLAP – HOLIDAY CALENDAR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, 
-            OR PUNITIVE DAMAGES ARISING OUT OF OR RELATED TO YOUR USE OF THE APP.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>8. Changes to Terms</Text>
-          <Text style={styles.modalParagraph}>
-            We reserve the right to modify these Terms at any time. We will notify users of any material 
-            changes by updating the "Last Updated" date. Your continued use of the App after such changes 
-            constitutes acceptance of the new Terms.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>9. Contact Information</Text>
-          <Text style={styles.modalParagraph}>
-            For questions about these Terms, please contact us at: overlap@anadworld.com
-          </Text>
-        </View>
-      ))}
-
-      {/* Privacy Policy Modal */}
-      {renderModal(showPrivacyModal, () => setShowPrivacyModal(false), 'Privacy Policy', (
-        <View>
-          <Text style={styles.modalLastUpdated}>Last Updated: February 2026</Text>
-          
-          <Text style={styles.modalSubheading}>1. Introduction</Text>
-          <Text style={styles.modalParagraph}>
-            Overlap – Holiday Calendar ("we," "our," or "us") is committed to protecting your privacy. This Privacy 
-            Policy explains how we collect, use, and safeguard your information when you use our mobile 
-            application.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>2. Information We Collect</Text>
-          <Text style={styles.modalParagraph}>
-            <Text style={styles.modalBold}>Information You Provide:</Text> We do not require you to create 
-            an account or provide personal information to use the App.
-          </Text>
-          <Text style={styles.modalParagraph}>
-            <Text style={styles.modalBold}>Automatically Collected Information:</Text> We may collect 
-            certain information automatically, including device type, operating system version, and app 
-            usage statistics to improve our service.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>3. How We Use Your Information</Text>
-          <Text style={styles.modalParagraph}>
-            We use the information we collect to:
-            {"\n"}• Provide and maintain the App
-            {"\n"}• Display holiday data and long weekend opportunities
-            {"\n"}• Store your saved long weekends locally on your device
-            {"\n"}• Schedule local notification reminders for saved holidays
-            {"\n"}• Add holiday events to your personal calendar (with your permission)
-            {"\n"}• Improve user experience
-            {"\n"}• Analyze usage patterns
-            {"\n"}• Fix bugs and technical issues
-          </Text>
-          
-          <Text style={styles.modalSubheading}>4. Data Storage and Security</Text>
-          <Text style={styles.modalParagraph}>
-            Your country selections, saved long weekends, and notification preferences are stored locally 
-            on your device using AsyncStorage. Holiday data is fetched in real-time from our servers. 
-            Notification reminders are scheduled locally on your device and are not sent through external 
-            servers. We implement appropriate security measures to protect against unauthorized access 
-            to or alteration of your data.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>5. Third-Party Services</Text>
-          <Text style={styles.modalParagraph}>
-            The App uses the Nager.Date API to retrieve holiday information. This third-party service may 
-            collect certain technical information. We encourage you to review their privacy policy.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>6. Children's Privacy</Text>
-          <Text style={styles.modalParagraph}>
-            Our App is not directed to children under 13. We do not knowingly collect personal information 
-            from children under 13. If you believe we have collected such information, please contact us.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>7. Your Rights</Text>
-          <Text style={styles.modalParagraph}>
-            You have the right to:
-            {"\n"}• Access your personal data
-            {"\n"}• Request deletion of your data
-            {"\n"}• Opt out of analytics collection
-            {"\n"}• Request a copy of your data
-          </Text>
-          
-          <Text style={styles.modalSubheading}>8. Changes to This Policy</Text>
-          <Text style={styles.modalParagraph}>
-            We may update this Privacy Policy from time to time. We will notify you of any changes by 
-            posting the new Privacy Policy in the App and updating the "Last Updated" date.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>9. Contact Us</Text>
-          <Text style={styles.modalParagraph}>
-            If you have questions or concerns about this Privacy Policy, please contact us at:
-            {"\n"}Email: overlap@anadworld.com
-          </Text>
-        </View>
-      ))}
-
       {/* Licenses Modal */}
       {renderModal(showLicensesModal, () => setShowLicensesModal(false), 'Open Source Licenses', (
         <View>
@@ -614,101 +429,6 @@ export default function SettingsScreen() {
         </View>
       ))}
 
-      {/* FAQ Modal */}
-      {renderModal(showFaqModal, () => setShowFaqModal(false), 'Help & FAQ', (
-        <View>
-          <Text style={styles.modalSubheading}>How do I use the app?</Text>
-          <Text style={styles.modalParagraph}>
-            1. Tap the selection bar to choose 1-5 countries{"\n"}
-            2. Select a year from the dropdown{"\n"}
-            3. Browse holidays, overlaps, or long weekends using the colored cards
-          </Text>
-          
-          <Text style={styles.modalSubheading}>What are "Overlaps"?</Text>
-          <Text style={styles.modalParagraph}>
-            Overlaps are dates when ALL your selected countries have a public holiday on the same day. 
-            Perfect for planning trips or meetings when everyone has the day off!
-          </Text>
-          
-          <Text style={styles.modalSubheading}>What is a "Long Weekend"?</Text>
-          <Text style={styles.modalParagraph}>
-            A long weekend is when a public holiday falls near a weekend, giving you 3 or more 
-            consecutive days off. We detect Friday holidays (3 days), Monday holidays (3 days), 
-            and combinations that create 4+ day breaks.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>What is a "Bridge Day"?</Text>
-          <Text style={styles.modalParagraph}>
-            A bridge day is when a holiday falls on Thursday or Tuesday. By taking just one day off 
-            (Friday or Monday), you can create a 4-day weekend! Look for the yellow suggestions.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>How many countries can I compare?</Text>
-          <Text style={styles.modalParagraph}>
-            You can select between 1 and 5 countries at a time. With just 1 country, you'll see 
-            all holidays and long weekends. With 2-5 countries, you'll also see overlapping dates.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>How far ahead can I plan?</Text>
-          <Text style={styles.modalParagraph}>
-            The app supports multiple years of holiday data. Use the year dropdown to explore 
-            past and future holidays for your vacation planning.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>Can I share my findings?</Text>
-          <Text style={styles.modalParagraph}>
-            Yes! Tap the share icon on any long weekend card to share the dates and holiday 
-            details with friends, family, or colleagues via WhatsApp, Messages, email, or any sharing app.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>How do I save a long weekend?</Text>
-          <Text style={styles.modalParagraph}>
-            Tap the bookmark icon on any long weekend card to save it. Your saved long weekends 
-            appear in the "Saved" tab for quick access. Tap the bookmark again to remove it, or 
-            swipe left on a saved long weekend in the "Saved" tab to delete it.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>How do holiday reminders work?</Text>
-          <Text style={styles.modalParagraph}>
-            When you save a long weekend, Overlap can send you a push notification before it starts. 
-            Go to Settings and toggle "Holiday Reminders" on. You can choose to be reminded 1 day, 
-            3 days, 1 week, 2 weeks, or 1 month before. Reminders are scheduled locally on your 
-            device and work even without an internet connection.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>How do I change reminder timing?</Text>
-          <Text style={styles.modalParagraph}>
-            In Settings under "Notifications", tap the dropdown next to "Remind me" and choose 
-            your preferred timing. All existing reminders will be rescheduled automatically.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>How do I add holidays to my calendar?</Text>
-          <Text style={styles.modalParagraph}>
-            On the Holidays tab, tap "Add to Calendar" at the top of the list. If you have 
-            multiple countries selected, you can choose to add holidays for a specific country 
-            or all countries at once. The holidays will be added as all-day events to your 
-            device calendar.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>What is the monthly calendar preview?</Text>
-          <Text style={styles.modalParagraph}>
-            In the Long Weekends tab, tap any month header to expand a mini calendar. Holiday 
-            dates are highlighted in amber, weekends in blue, and bridge days in green. Country 
-            flags appear on holiday dates to show which country the holiday belongs to.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>Where does the holiday data come from?</Text>
-          <Text style={styles.modalParagraph}>
-            We use the Nager.Date API, a reliable source for public holiday information covering 
-            100+ countries worldwide. Data is updated regularly to reflect official changes.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>Still have questions?</Text>
-          <Text style={styles.modalParagraph}>
-            Contact us at overlap@anadworld.com and we'll be happy to help!
-          </Text>
-        </View>
-      ))}
     </SafeAreaView>
   );
 }
@@ -832,12 +552,6 @@ const styles = StyleSheet.create({
   modalBottomPadding: {
     height: 40,
   },
-  modalLastUpdated: {
-    fontSize: 12,
-    color: '#718096',
-    fontStyle: 'italic',
-    marginBottom: 20,
-  },
   modalSubheading: {
     fontSize: 16,
     fontWeight: '600',
@@ -850,9 +564,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: '#4A5568',
     marginBottom: 12,
-  },
-  modalBold: {
-    fontWeight: '600',
   },
   // About modal styles
   aboutHeader: {

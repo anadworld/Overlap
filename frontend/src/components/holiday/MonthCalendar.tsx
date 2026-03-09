@@ -28,9 +28,9 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({ year, month, longW
     // Map holiday date → country codes
     const holidayCountries = new Map<string, string[]>();
     for (const h of (lw.holidays || [])) {
-      const codes = holidayCountries.get(h.date) || [];
-      codes.push(h.countryCode);
-      holidayCountries.set(h.date, codes);
+      const codes = holidayCountries.get(h.date as string) || [];
+      codes.push(h.countryCode as string);
+      holidayCountries.set(h.date as string, codes);
     }
 
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {

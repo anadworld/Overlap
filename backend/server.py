@@ -663,6 +663,9 @@ async def get_school_holiday_countries():
 
     raw = await fetch_from_openholidays("/Countries")
     if not raw:
+        # Fall back to stale cache if API is unreachable
+        if cached and cached.get("data"):
+            return cached["data"]
         return []
 
     current_year = datetime.utcnow().year
@@ -705,6 +708,9 @@ async def get_subdivisions(country_code: str):
 
     raw = await fetch_from_openholidays("/Subdivisions", params={"countryIsoCode": country_code.upper()})
     if not raw:
+        # Fall back to stale cache if API is unreachable
+        if cached and cached.get("data"):
+            return cached["data"]
         return []
 
     subdivisions = []

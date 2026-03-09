@@ -36,7 +36,7 @@ export default function SavedScreen() {
 
   const handleRestore = (bookmark: Bookmark) => {
     setPendingRestore(bookmark);
-    router.navigate('/(tabs)/');
+    router.navigate('/(tabs)' as any);
   };
 
   return (

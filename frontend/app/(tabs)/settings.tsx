@@ -305,12 +305,12 @@ export default function SettingsScreen() {
           </View>
           
           <Text style={styles.modalParagraph}>
-            Overlap – Holiday Calendar is your go-to app for exploring public holidays and discovering the best opportunities 
-            to maximize your time off. Whether you're planning a solo vacation in your home country, coordinating 
+            Overlap – Holiday Calendar is your go-to app for exploring public holidays, school breaks, and discovering 
+            the best opportunities to maximize your time off. Whether you're planning a solo vacation, coordinating 
             international travel, or syncing schedules with global teams, we've got you covered.
           </Text>
           
-          <Text style={styles.modalSubheading}>Key Features</Text>
+          <Text style={styles.modalSubheading}>Public Holidays</Text>
           <View style={styles.featureList}>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
@@ -338,26 +338,46 @@ export default function SettingsScreen() {
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Save and bookmark your favourite long weekends</Text>
+              <Text style={styles.featureText}>Monthly calendar preview with highlighted opportunities</Text>
+            </View>
+          </View>
+
+          <Text style={styles.modalSubheading}>School Holidays</Text>
+          <View style={styles.featureList}>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#D97706" />
+              <Text style={styles.featureText}>School break schedules for 30+ European countries</Text>
             </View>
             <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
+              <Ionicons name="checkmark-circle" size={20} color="#D97706" />
+              <Text style={styles.featureText}>Filter by region or state within each country</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#D97706" />
+              <Text style={styles.featureText}>View breaks grouped by month for easy planning</Text>
+            </View>
+          </View>
+
+          <Text style={styles.modalSubheading}>Save & Plan</Text>
+          <View style={styles.featureList}>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#7C9CBF" />
+              <Text style={styles.featureText}>Bookmark your favourite long weekends</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#7C9CBF" />
+              <Text style={styles.featureText}>Add holidays and saved long weekends to your calendar</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#7C9CBF" />
               <Text style={styles.featureText}>Push notification reminders before saved holidays</Text>
             </View>
             <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
+              <Ionicons name="checkmark-circle" size={20} color="#7C9CBF" />
               <Text style={styles.featureText}>Share long weekends with friends and colleagues</Text>
             </View>
             <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Add holidays directly to your personal calendar</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Monthly calendar preview with highlighted opportunities</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
+              <Ionicons name="checkmark-circle" size={20} color="#7C9CBF" />
               <Text style={styles.featureText}>Plan ahead with multi-year support</Text>
             </View>
           </View>
@@ -365,18 +385,19 @@ export default function SettingsScreen() {
           <Text style={styles.modalSubheading}>Long Weekend Detection</Text>
           <Text style={styles.modalParagraph}>
             Our smart algorithm automatically detects:{"\n"}
-            • Friday holidays → 3-day weekends{"\n"}
-            • Monday holidays → 3-day weekends{"\n"}
-            • Thursday holidays → Bridge day opportunities{"\n"}
-            • Tuesday holidays → Bridge day opportunities{"\n"}
-            • Friday + Monday combos → 4-day weekends{"\n"}
-            • Consecutive holidays → Extended time off
+            {"\u2022"} Friday holidays → 3-day weekends{"\n"}
+            {"\u2022"} Monday holidays → 3-day weekends{"\n"}
+            {"\u2022"} Thursday holidays → Bridge day opportunities{"\n"}
+            {"\u2022"} Tuesday holidays → Bridge day opportunities{"\n"}
+            {"\u2022"} Friday + Monday combos → 4-day weekends{"\n"}
+            {"\u2022"} Consecutive holidays → Extended time off
           </Text>
           
-          <Text style={styles.modalSubheading}>Data Source</Text>
+          <Text style={styles.modalSubheading}>Data Sources</Text>
           <Text style={styles.modalParagraph}>
-            Holiday data is provided by the Nager.Date API, a free and reliable source for public holiday 
-            information worldwide.
+            Public holiday data is provided by the Nager.Date API, covering 100+ countries worldwide. 
+            School holiday data is provided by the OpenHolidaysAPI, supporting 30+ European countries 
+            with regional breakdowns.
           </Text>
         </View>
       ))}

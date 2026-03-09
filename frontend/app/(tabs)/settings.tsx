@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  Modal,
   Linking,
   Platform,
   Share,
@@ -49,7 +48,6 @@ const SettingsItem: React.FC<SettingsItemProps> = ({ icon, title, subtitle, onPr
 );
 
 export default function SettingsScreen() {
-  const [showAboutModal, setShowAboutModal] = useState(false);
   const [showTimingDropdown, setShowTimingDropdown] = useState(false);
 
   const {
@@ -116,28 +114,6 @@ export default function SettingsScreen() {
     }
   };
 
-  const renderModal = (
-    visible: boolean,
-    onClose: () => void,
-    title: string,
-    content: React.ReactNode
-  ) => (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
-      <SafeAreaView style={styles.modalContainer} edges={['top', 'left', 'right']}>
-        <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>{title}</Text>
-          <TouchableOpacity onPress={onClose} style={styles.modalCloseButton}>
-            <Ionicons name="close" size={24} color="#4A5568" />
-          </TouchableOpacity>
-        </View>
-        <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false}>
-          {content}
-          <View style={styles.modalBottomPadding} />
-        </ScrollView>
-      </SafeAreaView>
-    </Modal>
-  );
-
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" backgroundColor="#F8FAFC" />
@@ -156,7 +132,7 @@ export default function SettingsScreen() {
               icon="information-circle-outline"
               title="About Overlap"
               subtitle="Learn more about the app"
-              onPress={() => setShowAboutModal(true)}
+              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap')}
             />
             <SettingsItem
               icon="share-outline"
@@ -247,7 +223,7 @@ export default function SettingsScreen() {
               icon="help-circle-outline"
               title="Help & FAQ"
               subtitle="Get answers to common questions"
-              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap')}
+              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap-faq')}
             />
             <SettingsItem
               icon="mail-outline"
@@ -266,19 +242,19 @@ export default function SettingsScreen() {
               icon="document-text-outline"
               title="Terms of Use"
               subtitle="Terms and conditions"
-              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap')}
+              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap-terms-of-use')}
             />
             <SettingsItem
               icon="shield-checkmark-outline"
               title="Privacy Policy"
               subtitle="How we protect your data"
-              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap')}
+              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap-privacy-policy')}
             />
             <SettingsItem
               icon="code-outline"
               title="Open Source Licenses"
               subtitle="Third-party attributions"
-              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap')}
+              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap-open-source')}
             />
           </View>
         </View>
@@ -292,115 +268,6 @@ export default function SettingsScreen() {
 
         <View style={styles.bottomPadding} />
       </ScrollView>
-
-      {/* About Modal */}
-      {renderModal(showAboutModal, () => setShowAboutModal(false), 'About Overlap', (
-        <View>
-          <View style={styles.aboutHeader}>
-            <View style={styles.appIconContainer}>
-              <Ionicons name="calendar" size={48} color="#7C9CBF" />
-            </View>
-            <Text style={styles.aboutAppName}>Overlap – Holiday Calendar</Text>
-            <Text style={styles.aboutVersion}>Version {APP_VERSION}</Text>
-          </View>
-          
-          <Text style={styles.modalParagraph}>
-            Overlap – Holiday Calendar is your go-to app for exploring public holidays, school breaks, and discovering 
-            the best opportunities to maximize your time off. Whether you're planning a solo vacation, coordinating 
-            international travel, or syncing schedules with global teams, we've got you covered.
-          </Text>
-          
-          <Text style={styles.modalSubheading}>Public Holidays</Text>
-          <View style={styles.featureList}>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>View holidays for 1-5 countries at once</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>100+ countries supported worldwide</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Smart long weekend detection (3-4+ days)</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Bridge day suggestions to maximize time off</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Identify overlapping holidays across countries</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Spot consecutive holiday streaks</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#8FBC8F" />
-              <Text style={styles.featureText}>Monthly calendar preview with highlighted opportunities</Text>
-            </View>
-          </View>
-
-          <Text style={styles.modalSubheading}>School Holidays</Text>
-          <View style={styles.featureList}>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#D97706" />
-              <Text style={styles.featureText}>School break schedules for 30+ European countries</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#D97706" />
-              <Text style={styles.featureText}>Filter by region or state within each country</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#D97706" />
-              <Text style={styles.featureText}>View breaks grouped by month for easy planning</Text>
-            </View>
-          </View>
-
-          <Text style={styles.modalSubheading}>Save & Plan</Text>
-          <View style={styles.featureList}>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#7C9CBF" />
-              <Text style={styles.featureText}>Bookmark your favourite long weekends</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#7C9CBF" />
-              <Text style={styles.featureText}>Add holidays and saved long weekends to your calendar</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#7C9CBF" />
-              <Text style={styles.featureText}>Push notification reminders before saved holidays</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#7C9CBF" />
-              <Text style={styles.featureText}>Share long weekends with friends and colleagues</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color="#7C9CBF" />
-              <Text style={styles.featureText}>Plan ahead with multi-year support</Text>
-            </View>
-          </View>
-          
-          <Text style={styles.modalSubheading}>Long Weekend Detection</Text>
-          <Text style={styles.modalParagraph}>
-            Our smart algorithm automatically detects:{"\n"}
-            {"\u2022"} Friday holidays → 3-day weekends{"\n"}
-            {"\u2022"} Monday holidays → 3-day weekends{"\n"}
-            {"\u2022"} Thursday holidays → Bridge day opportunities{"\n"}
-            {"\u2022"} Tuesday holidays → Bridge day opportunities{"\n"}
-            {"\u2022"} Friday + Monday combos → 4-day weekends{"\n"}
-            {"\u2022"} Consecutive holidays → Extended time off
-          </Text>
-          
-          <Text style={styles.modalSubheading}>Data Sources</Text>
-          <Text style={styles.modalParagraph}>
-            Public holiday data is provided by the Nager.Date API, covering 100+ countries worldwide. 
-            School holiday data is provided by the OpenHolidaysAPI, supporting 30+ European countries 
-            with regional breakdowns.
-          </Text>
-        </View>
-      ))}
 
     </SafeAreaView>
   );
@@ -496,91 +363,6 @@ const styles = StyleSheet.create({
   bottomPadding: {
     height: 40,
   },
-  // Modal styles
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-    backgroundColor: '#FFFFFF',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#2D3748',
-  },
-  modalCloseButton: {
-    padding: 4,
-  },
-  modalContent: {
-    flex: 1,
-    padding: 20,
-  },
-  modalBottomPadding: {
-    height: 40,
-  },
-  modalSubheading: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2D3748',
-    marginTop: 20,
-    marginBottom: 8,
-  },
-  modalParagraph: {
-    fontSize: 14,
-    lineHeight: 22,
-    color: '#4A5568',
-    marginBottom: 12,
-  },
-  // About modal styles
-  aboutHeader: {
-    alignItems: 'center',
-    paddingVertical: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-    marginBottom: 20,
-  },
-  appIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 20,
-    backgroundColor: '#F0F9FF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-  },
-  aboutAppName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#2D3748',
-  },
-  aboutVersion: {
-    fontSize: 14,
-    color: '#718096',
-    marginTop: 4,
-  },
-  featureList: {
-    marginTop: 8,
-    marginBottom: 16,
-  },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    gap: 10,
-  },
-  featureText: {
-    fontSize: 14,
-    color: '#4A5568',
-    flex: 1,
-  },
-  // License styles
   // Notification styles
   timingRow: {
     flexDirection: 'row',

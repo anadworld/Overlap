@@ -16,6 +16,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
+import * as WebBrowser from 'expo-web-browser';
 import { useNotifications, ReminderTiming } from '../../src/hooks/useNotifications';
 import { useBookmarks } from '../../src/hooks/useBookmarks';
 
@@ -246,7 +247,7 @@ export default function SettingsScreen() {
               icon="help-circle-outline"
               title="Help & FAQ"
               subtitle="Get answers to common questions"
-              onPress={() => Linking.openURL('https://anadworld.com/overlap')}
+              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap')}
             />
             <SettingsItem
               icon="mail-outline"
@@ -265,19 +266,19 @@ export default function SettingsScreen() {
               icon="document-text-outline"
               title="Terms of Use"
               subtitle="Terms and conditions"
-              onPress={() => Linking.openURL('https://anadworld.com/overlap')}
+              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap')}
             />
             <SettingsItem
               icon="shield-checkmark-outline"
               title="Privacy Policy"
               subtitle="How we protect your data"
-              onPress={() => Linking.openURL('https://anadworld.com/overlap')}
+              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap')}
             />
             <SettingsItem
               icon="code-outline"
               title="Open Source Licenses"
               subtitle="Third-party attributions"
-              onPress={() => Linking.openURL('https://anadworld.com/overlap')}
+              onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap')}
             />
           </View>
         </View>

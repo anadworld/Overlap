@@ -2,15 +2,20 @@
   "expo": {
     "name": "Overlap - Holiday Calendar",
     "slug": "overlap-holidays-2",
-    "version": "1.0.0",
+    "version": "1.0.9",
+     "owner": "anadworld",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "overlap",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": false,
-      "bundleIdentifier": "com.anadworld.overlap"
+  "supportsTablet": true,
+  "isTabletOnly": false,
+  "bundleIdentifier": "app.emergent.vacationplanner489409be91",
+  "infoPlist": {
+    "ITSAppUsesNonExemptEncryption": false
+  }
     },
     "android": {
       "adaptiveIcon": {
@@ -52,8 +57,11 @@
     "experiments": {
       "typedRoutes": true
     },
-    "extra": {
-      "router": {}
+   "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "5f5e1b9a-29c6-43cd-9e82-6fad22c661f2"
+      }
     }
   }
 }

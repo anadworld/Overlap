@@ -118,16 +118,21 @@ async def fetch_from_nager(endpoint: str) -> Any:
 
 # Helper function to fetch data from OpenHolidays API
 async def fetch_from_openholidays(endpoint: str, params: dict = None) -> Any:
-    async with httpx.AsyncClient(timeout=30.0) as client:
-        response = await client.get(f"{OPENHOLIDAYS_API_BASE}{endpoint}", params=params)
-        if response.status_code == 200:
-            return response.json()
-        elif response.status_code == 204:
-            return []
-        elif response.status_code == 404:
-            return None
-        else:
-            raise HTTPException(status_code=response.status_code, detail="Error fetching data from school holidays API")
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(f"{OPENHOLIDAYS_API_BASE}{endpoint}", params=params)
+            if response.status_code == 200:
+                return response.json()
+            elif response.status_code == 204:
+                return []
+            elif response.status_code == 404:
+                return None
+            else:
+                logger.warning(f"OpenHolidays API returned {response.status_code} for {endpoint}")
+                return None
+    except Exception as e:
+        logger.warning(f"OpenHolidays API connection failed for {endpoint}: {e}")
+        return None
 
 # Helper function to detect long weekend opportunities
 def detect_long_weekends(holidays_by_date: dict, countries_map: dict, selected_countries: List[str]) -> List[LongWeekendOpportunity]:
@@ -734,8 +739,32 @@ async def get_school_holidays(country_code: str, year: int, subdivision: Optiona
         params["subdivisionCode"] = subdivision
 
     raw = await fetch_from_openholidays("/SchoolHolidays", params=params)
+
+    # If API failed and we have a subdivision filter, try filtering from cached "all" data
+    if raw is None and subdivision:
+        all_cache_key = f"school_{country_code.upper()}_{year}_all"
+        all_cached = await db.holidays_cache.find_one({"cache_key": all_cache_key}, {"_id": 0, "data": 1})
+        if all_cached and all_cached.get("data"):
+            # subdivision is e.g. "NL-NH", data may have "NH", "NH-AA", etc.
+            # Match on exact code OR prefix after removing country code
+            sub_short = subdivision.split("-", 1)[-1] if "-" in subdivision else subdivision
+            filtered = []
+            for h in all_cached["data"]:
+                if h.get("nationwide"):
+                    filtered.append(h)
+                elif any(
+                    s.get("code") == subdivision or
+                    s.get("code") == sub_short or
+                    s.get("code", "").startswith(sub_short + "-") or
+                    s.get("shortName") == sub_short
+                    for s in h.get("subdivisions", [])
+                ):
+                    filtered.append(h)
+            return filtered
+        return []
+
     if raw is None:
-        raise HTTPException(status_code=404, detail=f"No school holidays for {country_code} in {year}")
+        return []
 
     # Merge holidays with the same name and overlapping/close dates (within 14 days)
     from datetime import date as date_type

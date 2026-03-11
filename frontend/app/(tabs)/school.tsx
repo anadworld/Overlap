@@ -10,6 +10,7 @@ import {
   Modal,
   TextInput,
   FlatList,
+  SectionList,
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,6 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Country, SchoolHoliday, Subdivision } from '../../src/types';
 import { getCountryFlag } from '../../src/utils';
+import { useFavoriteCountries } from '../../src/hooks/useFavoriteCountries';
 
 const API_BASE = process.env.EXPO_PUBLIC_BACKEND_URL;
 
@@ -60,6 +62,7 @@ export default function SchoolScreen() {
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
   const [showSubdivisionPicker, setShowSubdivisionPicker] = useState(false);
+  const { favorites, toggleFavorite } = useFavoriteCountries();
 
   const currentYear = new Date().getFullYear();
   const yearOptions = Array.from({ length: 6 }, (_, i) => currentYear - 1 + i);
@@ -287,6 +290,8 @@ export default function SchoolScreen() {
         supportedCountries={supportedCountries}
         onSelect={handleSelectCountry}
         onClose={() => setShowCountryPicker(false)}
+        favorites={favorites}
+        onToggleFavorite={toggleFavorite}
       />
 
       {/* Year Picker Modal */}
@@ -340,17 +345,29 @@ export default function SchoolScreen() {
 }
 
 // Inline Country Picker for School tab - shows only supported countries
-function CountryPickerForSchool({ visible, supportedCountries, onSelect, onClose }: {
+function CountryPickerForSchool({ visible, supportedCountries, onSelect, onClose, favorites, onToggleFavorite }: {
   visible: boolean;
   supportedCountries: Country[];
   onSelect: (c: Country) => void;
   onClose: () => void;
+  favorites: string[];
+  onToggleFavorite: (countryCode: string) => void;
 }) {
   const [search, setSearch] = useState('');
 
   const filtered = supportedCountries.filter(
     c => c.name.toLowerCase().includes(search.toLowerCase()) || c.countryCode.toLowerCase().includes(search.toLowerCase())
   );
+
+  const favSet = new Set(favorites);
+  const favCountries = filtered.filter(c => favSet.has(c.countryCode));
+  const otherCountries = filtered.filter(c => !favSet.has(c.countryCode));
+
+  const sections: { title: string; data: Country[] }[] = [];
+  if (favCountries.length > 0) {
+    sections.push({ title: 'Favorites', data: favCountries });
+  }
+  sections.push({ title: 'All Countries', data: otherCountries });
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
@@ -383,28 +400,53 @@ function CountryPickerForSchool({ visible, supportedCountries, onSelect, onClose
           )}
         </View>
 
-        <FlatList
-          data={filtered}
+        <SectionList
+          sections={sections}
           keyExtractor={(item) => item.countryCode}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.countryItem}
-              onPress={() => onSelect(item)}
-              data-testid={`school-country-${item.countryCode}`}
-            >
-              <Text style={styles.countryItemFlag}>
-                {getCountryFlag(item.countryCode)}
-              </Text>
-              <View style={styles.countryItemInfo}>
-                <Text style={styles.countryItemName}>{item.name}</Text>
-                <Text style={styles.countryItemCode}>{item.countryCode}</Text>
-              </View>
-              <View style={styles.availableBadge}>
-                <Ionicons name="school" size={14} color="#7C9CBF" />
-              </View>
-            </TouchableOpacity>
+          renderSectionHeader={({ section }) => (
+            <View style={styles.sectionHeader}>
+              <Ionicons
+                name={section.title === 'Favorites' ? 'heart' : 'globe-outline'}
+                size={14}
+                color={section.title === 'Favorites' ? '#E53E3E' : '#718096'}
+              />
+              <Text style={styles.sectionHeaderText}>{section.title}</Text>
+            </View>
           )}
+          renderItem={({ item }) => {
+            const isFav = favSet.has(item.countryCode);
+            return (
+              <View style={styles.countryItem}>
+                <TouchableOpacity
+                  style={styles.countryItemTouchable}
+                  onPress={() => onSelect(item)}
+                >
+                  <Text style={styles.countryItemFlag}>
+                    {getCountryFlag(item.countryCode)}
+                  </Text>
+                  <View style={styles.countryItemInfo}>
+                    <Text style={styles.countryItemName}>{item.name}</Text>
+                    <Text style={styles.countryItemCode}>{item.countryCode}</Text>
+                  </View>
+                  <View style={styles.availableBadge}>
+                    <Ionicons name="school" size={14} color="#7C9CBF" />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => onToggleFavorite(item.countryCode)}
+                  style={styles.heartButton}
+                >
+                  <Ionicons
+                    name={isFav ? 'heart' : 'heart-outline'}
+                    size={20}
+                    color={isFav ? '#E53E3E' : '#CBD5E0'}
+                  />
+                </TouchableOpacity>
+              </View>
+            );
+          }}
           style={styles.countryList}
+          stickySectionHeadersEnabled={false}
         />
       </SafeAreaView>
     </Modal>
@@ -655,4 +697,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   unavailableText: { fontSize: 12, color: '#CBD5E0', fontWeight: '500' },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#F8FAFC',
+  },
+  sectionHeaderText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#718096',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  countryItemTouchable: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  heartButton: {
+    padding: 4,
+  },
 });

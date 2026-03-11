@@ -8,12 +8,14 @@ import {
   TextInput,
   SectionList,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Country } from '../../types';
 import { getCountryFlag } from '../../utils';
+import { RecentSearch } from '../../hooks/useRecentSearches';
 
 interface Props {
   visible: boolean;
@@ -26,6 +28,8 @@ interface Props {
   onFind: () => void;
   favorites: string[];
   onToggleFavorite: (countryCode: string) => void;
+  recentSearches?: RecentSearch[];
+  onRestoreSearch?: (countries: Country[]) => void;
 }
 
 export function CountryPickerModal({
@@ -39,6 +43,8 @@ export function CountryPickerModal({
   onFind,
   favorites,
   onToggleFavorite,
+  recentSearches = [],
+  onRestoreSearch,
 }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const insets = useSafeAreaInsets();
@@ -128,6 +134,26 @@ export function CountryPickerModal({
             </TouchableOpacity>
           )}
         </View>
+
+        {recentSearches.length > 0 && searchQuery.length === 0 && (
+          <View style={styles.recentContainer}>
+            <Text style={styles.recentLabel}>Recent</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.recentScroll}>
+              {recentSearches.map((search, i) => (
+                <TouchableOpacity
+                  key={i}
+                  style={styles.recentPill}
+                  onPress={() => onRestoreSearch?.(search.countries)}
+                >
+                  <Ionicons name="time-outline" size={14} color="#7C9CBF" />
+                  <Text style={styles.recentPillText}>
+                    {search.countries.map(c => getCountryFlag(c.countryCode) + ' ' + c.countryCode).join(', ')}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
 
         <SectionList
           sections={sections}
@@ -270,6 +296,41 @@ const styles = StyleSheet.create({
   },
   heartButton: {
     padding: 4,
+  },
+  recentContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  recentLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#718096',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  recentScroll: {
+    flexDirection: 'row',
+  },
+  recentPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#F0F9FF',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  recentPillText: {
+    fontSize: 13,
+    color: '#4A5568',
+    fontWeight: '500',
   },
   modalFooter: {
     padding: 16,

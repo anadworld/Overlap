@@ -20,6 +20,7 @@ import { useHolidayData } from '../../src/hooks/useHolidayData';
 import { useBookmarks } from '../../src/hooks/useBookmarks';
 import { useNotifications } from '../../src/hooks/useNotifications';
 import { useFavoriteCountries } from '../../src/hooks/useFavoriteCountries';
+import { useRecentSearches } from '../../src/hooks/useRecentSearches';
 import { CountryPickerModal } from '../../src/components/holiday/CountryPickerModal';
 import { YearPickerModal } from '../../src/components/holiday/YearPickerModal';
 import { StatsBar } from '../../src/components/holiday/StatsBar';
@@ -95,6 +96,7 @@ export default function HomeScreen() {
   const { isBookmarked, toggleBookmark, reload: reloadBookmarks, bookmarks } = useBookmarks();
   const { scheduleForBookmark, cancelForBookmark } = useNotifications();
   const { favorites, toggleFavorite } = useFavoriteCountries();
+  const { recentSearches, saveSearch } = useRecentSearches();
 
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
@@ -363,9 +365,11 @@ export default function HomeScreen() {
         onClose={() => setShowCountryPicker(false)}
         onToggleCountry={toggleCountry}
         onClearAll={() => setSelectedCountries([])}
-        onFind={compareHolidays}
+        onFind={() => { saveSearch(selectedCountries); compareHolidays(); }}
         favorites={favorites}
         onToggleFavorite={toggleFavorite}
+        recentSearches={recentSearches}
+        onRestoreSearch={(countries) => { setSelectedCountries(countries); }}
       />
 
       <YearPickerModal

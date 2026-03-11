@@ -19,6 +19,7 @@ import { useFocusEffect } from 'expo-router';
 import { useHolidayData } from '../../src/hooks/useHolidayData';
 import { useBookmarks } from '../../src/hooks/useBookmarks';
 import { useNotifications } from '../../src/hooks/useNotifications';
+import { useFavoriteCountries } from '../../src/hooks/useFavoriteCountries';
 import { CountryPickerModal } from '../../src/components/holiday/CountryPickerModal';
 import { YearPickerModal } from '../../src/components/holiday/YearPickerModal';
 import { StatsBar } from '../../src/components/holiday/StatsBar';
@@ -93,6 +94,7 @@ export default function HomeScreen() {
 
   const { isBookmarked, toggleBookmark, reload: reloadBookmarks, bookmarks } = useBookmarks();
   const { scheduleForBookmark, cancelForBookmark } = useNotifications();
+  const { favorites, toggleFavorite } = useFavoriteCountries();
 
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
@@ -362,6 +364,8 @@ export default function HomeScreen() {
         onToggleCountry={toggleCountry}
         onClearAll={() => setSelectedCountries([])}
         onFind={compareHolidays}
+        favorites={favorites}
+        onToggleFavorite={toggleFavorite}
       />
 
       <YearPickerModal

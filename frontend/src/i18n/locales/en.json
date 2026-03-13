@@ -1,0 +1,210 @@
+{
+  "tabs": {
+    "holiday": "Holiday",
+    "school": "School",
+    "saved": "Saved",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Overlap – Holiday Calendar",
+    "subtitle": "Discover holidays & long weekends across countries",
+    "tapToSelect": "Tap to select countries",
+    "emptyTagline": "Your next long weekend is waiting",
+    "emptyText": "Tap above to select 1-5 countries and find holidays and long weekend opportunities.",
+    "discoverHolidays": "Discover Holidays",
+    "noLongWeekends": "No long weekend opportunities found",
+    "noOverlaps": "No overlapping holidays found"
+  },
+  "stats": {
+    "holidays": "holidays",
+    "overlaps": "overlaps",
+    "longWeekends": "long weekends"
+  },
+  "countryPicker": {
+    "title": "Select Countries",
+    "countriesSelected": "{{count}}/5 countries selected",
+    "clearAll": "Clear all",
+    "searchPlaceholder": "Search countries...",
+    "favorites": "Favorites",
+    "allCountries": "All Countries",
+    "recent": "Recent"
+  },
+  "yearPicker": {
+    "title": "Select Year"
+  },
+  "holidayCard": {
+    "overlap": "Overlap"
+  },
+  "longWeekend": {
+    "days": "DAYS",
+    "bridgeDay": "Bridge Day",
+    "consecutive": "Consecutive",
+    "longWeekend": "Long Weekend",
+    "holidaysIncluded": "HOLIDAYS INCLUDED:",
+    "takeFridayOff": "Take Friday off for {{days}}-day weekend!",
+    "takeMondayOff": "Take Monday off for {{days}}-day weekend!",
+    "opportunity": "opportunity",
+    "opportunities": "opportunities"
+  },
+  "calendar": {
+    "addToCalendar": "Add to Calendar",
+    "adding": "Adding...",
+    "addHolidaysTitle": "Add holidays to calendar",
+    "allCountries": "All Countries",
+    "addedTitle": "Added to Calendar",
+    "addedMessage": "{{count}} holiday(s) added to your calendar.",
+    "permissionTitle": "Permission Required",
+    "permissionMessage": "Calendar access is needed to add holiday events.",
+    "permissionNeeded": "Calendar access is needed.",
+    "productionRequired": "Production Build Required",
+    "productionMessage": "Adding holidays to your calendar is available in the full app from the App Store or Google Play.",
+    "noCalendar": "No Calendar",
+    "noCalendarMessage": "No writable calendar found.",
+    "error": "Error",
+    "errorMessage": "Could not add to calendar.",
+    "publicHoliday": "Public Holiday"
+  },
+  "monthCalendar": {
+    "holiday": "Holiday",
+    "weekend": "Weekend",
+    "bridgeDay": "Bridge Day",
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  },
+  "saved": {
+    "title": "Saved Long Weekends",
+    "emptySubtitle": "Your favourites will appear here",
+    "countSaved": "{{count}} saved",
+    "emptyTitle": "Nothing saved yet",
+    "emptyText": "Tap the bookmark icon on any long weekend from the Home tab to save it here.",
+    "savedLabel": "Saved {{date}}",
+    "rerun": "Re-run",
+    "delete": "Delete",
+    "addedTitle": "Added!",
+    "addedMessage": "{{days}}-day weekend added to your calendar."
+  },
+  "school": {
+    "title": "School Holidays",
+    "subtitle": "Browse school breaks across Europe",
+    "tapToSelect": "Tap to select a country",
+    "allRegions": "All regions",
+    "breaks": "breaks",
+    "break": "break",
+    "days": "days",
+    "nationwide": "Nationwide",
+    "noHolidays": "No school holidays found for {{year}}",
+    "emptyTagline": "Plan around school breaks",
+    "emptyText": "Select a country to view school holiday calendars. Available for 36 European countries.",
+    "selectCountry": "Select Country",
+    "countriesAvailable": "{{count}} countries with school holiday data"
+  },
+  "settings": {
+    "title": "Settings",
+    "appInfo": "App Information",
+    "aboutOverlap": "About Overlap",
+    "aboutSubtitle": "Learn more about the app",
+    "shareApp": "Share App",
+    "shareSubtitle": "Tell your friends",
+    "shareMessage": "Check out Overlap – Holiday Calendar! Discover holidays & long weekends across countries. {{url}}",
+    "notifications": "Notifications",
+    "holidayReminders": "Holiday Reminders",
+    "remindersSubtitle": "Get notified about your upcoming saved holiday.",
+    "remindMe": "Remind me",
+    "permissionsRequired": "Permissions Required",
+    "permissionsMessage": "Please enable notifications in your device settings to receive holiday reminders.",
+    "support": "Support",
+    "helpFaq": "Help & FAQ",
+    "helpSubtitle": "Get answers to common questions",
+    "contactSupport": "Contact Support",
+    "contactSubtitle": "We're here to help",
+    "legal": "Legal",
+    "termsOfUse": "Terms of Use",
+    "termsSubtitle": "Terms and conditions",
+    "privacyPolicy": "Privacy Policy",
+    "privacySubtitle": "How we protect your data",
+    "openSource": "Open Source Licenses",
+    "openSourceSubtitle": "Third-party attributions",
+    "versionLabel": "Overlap – Holiday Calendar",
+    "version": "Version {{version}} ({{build}})",
+    "copyright": "© 2026 Overlap – Holiday Calendar. All rights reserved.",
+    "errorSharing": "Unable to share. Please try again.",
+    "timing1day": "1 Day Before",
+    "timing3days": "3 Days Before",
+    "timing1week": "1 Week Before",
+    "timing2weeks": "2 Weeks Before",
+    "timing1month": "1 Month Before"
+  },
+  "update": {
+    "required": "Update Required",
+    "available": "Update Available",
+    "requiredMessage": "A required update (v{{version}}) is available. Please update to continue using the app.",
+    "availableMessage": "A new version (v{{version}}) is available with improvements and fixes.",
+    "updateNow": "Update Now",
+    "maybeLater": "Maybe Later"
+  },
+  "notifications": {
+    "title": "Long Weekend Coming Up!",
+    "body": "Your saved {{days}}-day break ({{countries}}) starts {{timing}}!",
+    "timingTomorrow": "tomorrow",
+    "timing3days": "in 3 days",
+    "timing1week": "in a week",
+    "timing2weeks": "in 2 weeks",
+    "timing1month": "in a month",
+    "allowTitle": "Allow Overlap to send you push notifications",
+    "allowMessage": "Get timely reminders about your upcoming saved holidays so you never miss a long weekend.",
+    "allow": "Allow",
+    "notNow": "Not Now"
+  },
+  "errors": {
+    "loadCountries": "Failed to load countries. Please try again.",
+    "compareHolidays": "Failed to compare holidays. Please try again.",
+    "selectCountry": "Please select at least 1 country",
+    "loadSchoolCountries": "Failed to load supported countries",
+    "loadSchoolHolidays": "Failed to load school holidays"
+  },
+  "share": {
+    "dialogTitle": "Share Long Weekend",
+    "foundWith": "Found with Overlap - Holiday Calendar",
+    "savedWith": "Saved with Overlap - Holiday Calendar",
+    "countries": "Countries",
+    "holidays": "Holidays",
+    "tip": "Tip"
+  },
+  "dayNames": {
+    "sun": "SUN",
+    "mon": "MON",
+    "tue": "TUE",
+    "wed": "WED",
+    "thu": "THU",
+    "fri": "FRI",
+    "sat": "SAT"
+  },
+  "dayNamesShort": {
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  }
+}

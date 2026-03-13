@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const TAB_COLORS = {
   holiday: { active: '#4A8B9F', inactive: '#A0C4CF' },
@@ -26,6 +27,7 @@ const SettingsIcon = ({ focused, size }: { color: string; size: number; focused:
 function TabLayoutContent() {
   const insets = useSafeAreaInsets();
   const bottomInset = insets.bottom;
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -48,22 +50,22 @@ function TabLayoutContent() {
       }}
     >
       <Tabs.Screen name="index" options={{
-        title: 'Holiday',
+        title: t('tabs.holiday'),
         tabBarIcon: HomeIcon,
         tabBarActiveTintColor: TAB_COLORS.holiday.active,
       }} />
       <Tabs.Screen name="school" options={{
-        title: 'School',
+        title: t('tabs.school'),
         tabBarIcon: SchoolIcon,
         tabBarActiveTintColor: TAB_COLORS.school.active,
       }} />
       <Tabs.Screen name="saved" options={{
-        title: 'Saved',
+        title: t('tabs.saved'),
         tabBarIcon: SavedIcon,
         tabBarActiveTintColor: TAB_COLORS.saved.active,
       }} />
       <Tabs.Screen name="settings" options={{
-        title: 'Settings',
+        title: t('tabs.settings'),
         tabBarIcon: SettingsIcon,
         tabBarActiveTintColor: TAB_COLORS.settings.active,
       }} />

@@ -16,14 +16,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
+import { useTranslation } from 'react-i18next';
 import { useNotifications, ReminderTiming } from '../../src/hooks/useNotifications';
 import { useBookmarks } from '../../src/hooks/useBookmarks';
 
 const APP_VERSION = Constants.expoConfig?.version || '1.0.0';
 const BUILD_NUMBER = Constants.expoConfig?.ios?.buildNumber || Constants.expoConfig?.android?.versionCode || '1';
 
-// Store URLs - Update these with your actual App Store and Play Store IDs
-const APP_STORE_ID = '6740092498'; // Your Apple App Store ID
+const APP_STORE_ID = '6740092498';
 const PLAY_STORE_PACKAGE = 'com.anadworld.overlap';
 
 interface SettingsItemProps {
@@ -48,6 +48,7 @@ const SettingsItem: React.FC<SettingsItemProps> = ({ icon, title, subtitle, onPr
 );
 
 export default function SettingsScreen() {
+  const { t } = useTranslation();
   const [showTimingDropdown, setShowTimingDropdown] = useState(false);
 
   const {
@@ -66,8 +67,8 @@ export default function SettingsScreen() {
         await rescheduleAll(bookmarks);
       } else {
         Alert.alert(
-          'Permissions Required',
-          'Please enable notifications in your device settings to receive holiday reminders.',
+          t('settings.permissionsRequired'),
+          t('settings.permissionsMessage'),
         );
       }
     } else {
@@ -83,34 +84,24 @@ export default function SettingsScreen() {
   };
 
   const timingOptions: { value: ReminderTiming; label: string }[] = [
-    { value: '1day', label: '1 Day Before' },
-    { value: '3days', label: '3 Days Before' },
-    { value: '1week', label: '1 Week Before' },
-    { value: '2weeks', label: '2 Weeks Before' },
-    { value: '1month', label: '1 Month Before' },
+    { value: '1day', label: t('settings.timing1day') },
+    { value: '3days', label: t('settings.timing3days') },
+    { value: '1week', label: t('settings.timing1week') },
+    { value: '2weeks', label: t('settings.timing2weeks') },
+    { value: '1month', label: t('settings.timing1month') },
   ];
-
-  const handleContactSupport = () => {
-    Linking.openURL('mailto:overlap@anadworld.com?subject=Overlap – Holiday Calendar Support');
-  };
 
   const handleShareApp = async () => {
     const appStoreUrl = `https://apps.apple.com/app/id${APP_STORE_ID}`;
     const playStoreUrl = `https://play.google.com/store/apps/details?id=${PLAY_STORE_PACKAGE}`;
-    
     const storeUrl = Platform.OS === 'ios' ? appStoreUrl : playStoreUrl;
-    
+
     try {
-      const result = await Share.share({
-        message: `Check out Overlap – Holiday Calendar! Discover holidays & long weekends across countries. ${storeUrl}`,
+      await Share.share({
+        message: t('settings.shareMessage', { url: storeUrl }),
       });
-      
-      if (result.action === Share.sharedAction) {
-        console.log('Shared successfully');
-      }
     } catch (error) {
-      console.error('Error sharing:', error);
-      Alert.alert('Error', 'Unable to share. Please try again.');
+      Alert.alert(t('calendar.error'), t('settings.errorSharing'));
     }
   };
 
@@ -118,42 +109,39 @@ export default function SettingsScreen() {
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" backgroundColor="#F8FAFC" />
 
-      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Settings</Text>
+        <Text style={styles.headerTitle}>{t('settings.title')}</Text>
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* App Info Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>App Information</Text>
+          <Text style={styles.sectionTitle}>{t('settings.appInfo')}</Text>
           <View style={styles.sectionContent}>
             <SettingsItem
               icon="information-circle-outline"
-              title="About Overlap"
-              subtitle="Learn more about the app"
+              title={t('settings.aboutOverlap')}
+              subtitle={t('settings.aboutSubtitle')}
               onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap')}
             />
             <SettingsItem
               icon="share-outline"
-              title="Share App"
-              subtitle="Tell your friends"
+              title={t('settings.shareApp')}
+              subtitle={t('settings.shareSubtitle')}
               onPress={handleShareApp}
             />
           </View>
         </View>
 
-        {/* Notifications Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Notifications</Text>
+          <Text style={styles.sectionTitle}>{t('settings.notifications')}</Text>
           <View style={styles.sectionContent}>
             <View style={styles.settingsItem} testID="settings-notification-toggle">
               <View style={styles.settingsItemIcon}>
                 <Ionicons name="notifications-outline" size={22} color="#7C9CBF" />
               </View>
               <View style={styles.settingsItemContent}>
-                <Text style={styles.settingsItemTitle}>Holiday Reminders</Text>
-                <Text style={styles.settingsItemSubtitle}>Get notified about your upcoming saved holiday.</Text>
+                <Text style={styles.settingsItemTitle}>{t('settings.holidayReminders')}</Text>
+                <Text style={styles.settingsItemSubtitle}>{t('settings.remindersSubtitle')}</Text>
               </View>
               <Switch
                 value={prefs.enabled}
@@ -165,7 +153,7 @@ export default function SettingsScreen() {
             </View>
             {prefs.enabled && (
               <View style={styles.timingRow} testID="reminder-timing-section">
-                <Text style={styles.timingLabel}>Remind me</Text>
+                <Text style={styles.timingLabel}>{t('settings.remindMe')}</Text>
                 <TouchableOpacity
                   style={styles.timingDropdown}
                   onPress={() => setShowTimingDropdown(!showTimingDropdown)}
@@ -215,212 +203,85 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        {/* Support Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Support</Text>
+          <Text style={styles.sectionTitle}>{t('settings.support')}</Text>
           <View style={styles.sectionContent}>
             <SettingsItem
               icon="help-circle-outline"
-              title="Help & FAQ"
-              subtitle="Get answers to common questions"
+              title={t('settings.helpFaq')}
+              subtitle={t('settings.helpSubtitle')}
               onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap-faq')}
             />
             <SettingsItem
               icon="mail-outline"
-              title="Contact Support"
-              subtitle="We're here to help"
+              title={t('settings.contactSupport')}
+              subtitle={t('settings.contactSubtitle')}
               onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap-contact')}
             />
           </View>
         </View>
 
-        {/* Legal Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Legal</Text>
+          <Text style={styles.sectionTitle}>{t('settings.legal')}</Text>
           <View style={styles.sectionContent}>
             <SettingsItem
               icon="document-text-outline"
-              title="Terms of Use"
-              subtitle="Terms and conditions"
+              title={t('settings.termsOfUse')}
+              subtitle={t('settings.termsSubtitle')}
               onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap-terms-of-use')}
             />
             <SettingsItem
               icon="shield-checkmark-outline"
-              title="Privacy Policy"
-              subtitle="How we protect your data"
+              title={t('settings.privacyPolicy')}
+              subtitle={t('settings.privacySubtitle')}
               onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap-privacy-policy')}
             />
             <SettingsItem
               icon="code-outline"
-              title="Open Source Licenses"
-              subtitle="Third-party attributions"
+              title={t('settings.openSource')}
+              subtitle={t('settings.openSourceSubtitle')}
               onPress={() => WebBrowser.openBrowserAsync('https://anadworld.com/overlap-open-source')}
             />
           </View>
         </View>
 
-        {/* Version Info */}
         <View style={styles.versionContainer}>
-          <Text style={styles.versionText}>Overlap – Holiday Calendar</Text>
-          <Text style={styles.versionNumber}>Version {APP_VERSION} ({BUILD_NUMBER})</Text>
-          <Text style={styles.copyrightText}>© 2026 Overlap – Holiday Calendar. All rights reserved.</Text>
+          <Text style={styles.versionText}>{t('settings.versionLabel')}</Text>
+          <Text style={styles.versionNumber}>{t('settings.version', { version: APP_VERSION, build: BUILD_NUMBER })}</Text>
+          <Text style={styles.copyrightText}>{t('settings.copyright')}</Text>
         </View>
 
         <View style={styles.bottomPadding} />
       </ScrollView>
-
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? 16 : 10,
-    paddingBottom: 16,
-    backgroundColor: '#F8FAFC',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#2D3748',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#718096',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    paddingHorizontal: 20,
-    marginBottom: 8,
-  },
-  sectionContent: {
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  settingsItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  settingsItemIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    backgroundColor: '#F0F9FF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 14,
-  },
-  settingsItemContent: {
-    flex: 1,
-  },
-  settingsItemTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#2D3748',
-  },
-  settingsItemSubtitle: {
-    fontSize: 13,
-    color: '#718096',
-    marginTop: 2,
-  },
-  versionContainer: {
-    alignItems: 'center',
-    paddingVertical: 32,
-  },
-  versionText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#4A5568',
-  },
-  versionNumber: {
-    fontSize: 14,
-    color: '#718096',
-    marginTop: 4,
-  },
-  copyrightText: {
-    fontSize: 12,
-    color: '#A0AEC0',
-    marginTop: 8,
-  },
-  bottomPadding: {
-    height: 40,
-  },
-  // Notification styles
-  timingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-    borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
-  },
-  timingLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#4A5568',
-  },
-  timingDropdown: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#F1F5F9',
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  timingDropdownText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#7C9CBF',
-  },
-  timingMenu: {
-    marginHorizontal: 20,
-    marginBottom: 8,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    overflow: 'hidden',
-  },
-  timingMenuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  timingMenuItemActive: {
-    backgroundColor: '#F0F9FF',
-  },
-  timingMenuItemText: {
-    fontSize: 14,
-    color: '#4A5568',
-  },
-  timingMenuItemTextActive: {
-    color: '#7C9CBF',
-    fontWeight: '600',
-  },
+  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  header: { paddingHorizontal: 20, paddingTop: Platform.OS === 'android' ? 16 : 10, paddingBottom: 16, backgroundColor: '#F8FAFC' },
+  headerTitle: { fontSize: 28, fontWeight: 'bold', color: '#2D3748' },
+  scrollView: { flex: 1 },
+  section: { marginBottom: 24 },
+  sectionTitle: { fontSize: 13, fontWeight: '600', color: '#718096', textTransform: 'uppercase', letterSpacing: 0.5, paddingHorizontal: 20, marginBottom: 8 },
+  sectionContent: { backgroundColor: '#FFFFFF', borderTopWidth: 1, borderBottomWidth: 1, borderColor: '#E2E8F0' },
+  settingsItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 20, backgroundColor: '#FFFFFF', borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
+  settingsItemIcon: { width: 36, height: 36, borderRadius: 8, backgroundColor: '#F0F9FF', alignItems: 'center', justifyContent: 'center', marginRight: 14 },
+  settingsItemContent: { flex: 1 },
+  settingsItemTitle: { fontSize: 16, fontWeight: '500', color: '#2D3748' },
+  settingsItemSubtitle: { fontSize: 13, color: '#718096', marginTop: 2 },
+  versionContainer: { alignItems: 'center', paddingVertical: 32 },
+  versionText: { fontSize: 16, fontWeight: '600', color: '#4A5568' },
+  versionNumber: { fontSize: 14, color: '#718096', marginTop: 4 },
+  copyrightText: { fontSize: 12, color: '#A0AEC0', marginTop: 8 },
+  bottomPadding: { height: 40 },
+  timingRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 14, borderTopWidth: 1, borderTopColor: '#F1F5F9' },
+  timingLabel: { fontSize: 14, fontWeight: '500', color: '#4A5568' },
+  timingDropdown: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#F1F5F9', paddingVertical: 8, paddingHorizontal: 14, borderRadius: 10, borderWidth: 1, borderColor: '#E2E8F0' },
+  timingDropdownText: { fontSize: 14, fontWeight: '500', color: '#7C9CBF' },
+  timingMenu: { marginHorizontal: 20, marginBottom: 8, backgroundColor: '#FFFFFF', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', overflow: 'hidden' },
+  timingMenuItem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 12, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
+  timingMenuItemActive: { backgroundColor: '#F0F9FF' },
+  timingMenuItemText: { fontSize: 14, color: '#4A5568' },
+  timingMenuItemTextActive: { color: '#7C9CBF', fontWeight: '600' },
 });

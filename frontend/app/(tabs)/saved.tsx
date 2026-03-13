@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 import { useBookmarks } from '../../src/hooks/useBookmarks';
 import { useNotifications } from '../../src/hooks/useNotifications';
@@ -18,11 +19,11 @@ import { setPendingRestore } from '../../src/store/pendingRestore';
 import { Bookmark } from '../../src/types';
 
 export default function SavedScreen() {
+  const { t } = useTranslation();
   const { bookmarks, reload, removeBookmark } = useBookmarks();
   const { cancelForBookmark } = useNotifications();
   const router = useRouter();
 
-  // Reload bookmarks each time this tab is focused
   useFocusEffect(
     useCallback(() => {
       reload();
@@ -43,23 +44,20 @@ export default function SavedScreen() {
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" backgroundColor="#F8FAFC" translucent={false} />
 
-      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Saved Long Weekends</Text>
+        <Text style={styles.headerTitle}>{t('saved.title')}</Text>
         <Text style={styles.headerSubtitle}>
           {bookmarks.length === 0
-            ? 'Your favourites will appear here'
-            : `${bookmarks.length} saved`}
+            ? t('saved.emptySubtitle')
+            : t('saved.countSaved', { count: bookmarks.length })}
         </Text>
       </View>
 
       {bookmarks.length === 0 ? (
         <View style={styles.emptyState} testID="saved-empty-state">
           <Ionicons name="bookmark-outline" size={64} color="#CBD5E0" />
-          <Text style={styles.emptyTitle}>Nothing saved yet</Text>
-          <Text style={styles.emptySubtitle}>
-            Tap the bookmark icon on any long weekend from the Home tab to save it here.
-          </Text>
+          <Text style={styles.emptyTitle}>{t('saved.emptyTitle')}</Text>
+          <Text style={styles.emptySubtitle}>{t('saved.emptyText')}</Text>
         </View>
       ) : (
         <ScrollView

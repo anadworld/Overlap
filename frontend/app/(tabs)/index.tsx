@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 import { useHolidayData } from '../../src/hooks/useHolidayData';
 import { useBookmarks } from '../../src/hooks/useBookmarks';
@@ -75,6 +76,7 @@ function AnimatedPlane() {
 }
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const [expandedMonths, setExpandedMonths] = useState<Set<number>>(new Set());
   const {
     countries,
@@ -101,7 +103,6 @@ export default function HomeScreen() {
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
 
-  // On tab focus: reload bookmarks + apply any pending restore from Saved tab
   useFocusEffect(
     useCallback(() => {
       reloadBookmarks();
@@ -117,6 +118,12 @@ export default function HomeScreen() {
 
   const currentYear = new Date().getFullYear();
   const yearOptions = Array.from({ length: 12 }, (_, i) => currentYear - 2 + i);
+
+  const monthKeys_t = [
+    t('months.january'), t('months.february'), t('months.march'), t('months.april'),
+    t('months.may'), t('months.june'), t('months.july'), t('months.august'),
+    t('months.september'), t('months.october'), t('months.november'), t('months.december'),
+  ];
 
   const countryNameMap =
     comparisonResult?.countries.reduce((acc, c) => {
@@ -138,13 +145,11 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" backgroundColor="#F8FAFC" translucent={false} />
 
-      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Overlap – Holiday Calendar</Text>
-        <Text style={styles.headerSubtitle}>Discover holidays & long weekends across countries</Text>
+        <Text style={styles.headerTitle}>{t('home.title')}</Text>
+        <Text style={styles.headerSubtitle}>{t('home.subtitle')}</Text>
       </View>
 
-      {/* Selection Bar */}
       <TouchableOpacity
         style={styles.selectionBar}
         onPress={() => setShowCountryPicker(true)}
@@ -161,7 +166,7 @@ export default function HomeScreen() {
               ))}
             </View>
           ) : (
-            <Text style={styles.placeholderText}>Tap to select countries</Text>
+            <Text style={styles.placeholderText}>{t('home.tapToSelect')}</Text>
           )}
         </View>
         <TouchableOpacity
@@ -177,7 +182,6 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </TouchableOpacity>
 
-      {/* Error */}
       {error && (
         <View style={styles.errorContainer}>
           <Ionicons name="alert-circle" size={20} color="#E57373" />
@@ -185,7 +189,6 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {/* Results */}
       {comparisonResult ? (
         <>
           <StatsBar
@@ -203,22 +206,19 @@ export default function HomeScreen() {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7C9CBF" />
             }
           >
-            {/* Stats bar and results */}
-
             {activeTab === 'longweekends' && (
               <View style={styles.cardsContainer}>
                 {comparisonResult.longWeekends?.length > 0 ? (
                   (() => {
-                    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
                     const grouped: Record<number, typeof comparisonResult.longWeekends> = {};
                     for (const lw of comparisonResult.longWeekends) {
                       const m = new Date(lw.startDate + 'T00:00:00').getMonth();
                       if (!grouped[m]) grouped[m] = [];
                       grouped[m].push(lw);
                     }
-                    const monthKeys = Object.keys(grouped).map(Number).sort((a, b) => a - b);
+                    const monthKeysList = Object.keys(grouped).map(Number).sort((a, b) => a - b);
 
-                    return monthKeys.map((m) => (
+                    return monthKeysList.map((m) => (
                       <View key={m}>
                         <TouchableOpacity
                           style={styles.monthHeader}
@@ -238,11 +238,11 @@ export default function HomeScreen() {
                               size={18}
                               color={expandedMonths.has(m) ? '#7C9CBF' : '#A0AEC0'}
                             />
-                            <Text style={styles.monthTitle}>{MONTHS[m]}</Text>
+                            <Text style={styles.monthTitle}>{monthKeys_t[m]}</Text>
                           </View>
                           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                             <Text style={styles.monthCount}>
-                              {grouped[m].length} {grouped[m].length === 1 ? 'opportunity' : 'opportunities'}
+                              {grouped[m].length} {grouped[m].length === 1 ? t('longWeekend.opportunity') : t('longWeekend.opportunities')}
                             </Text>
                             <Ionicons
                               name={expandedMonths.has(m) ? 'chevron-up' : 'chevron-down'}
@@ -289,7 +289,7 @@ export default function HomeScreen() {
                 ) : (
                   <View style={styles.emptyState}>
                     <Ionicons name="sunny-outline" size={48} color="#CBD5E0" />
-                    <Text style={styles.emptyStateText}>No long weekend opportunities found</Text>
+                    <Text style={styles.emptyStateText}>{t('home.noLongWeekends')}</Text>
                   </View>
                 )}
               </View>
@@ -327,7 +327,7 @@ export default function HomeScreen() {
                 ) : (
                   <View style={styles.emptyState}>
                     <Ionicons name="link-outline" size={48} color="#CBD5E0" />
-                    <Text style={styles.emptyStateText}>No overlapping holidays found</Text>
+                    <Text style={styles.emptyStateText}>{t('home.noOverlaps')}</Text>
                   </View>
                 )}
               </View>
@@ -348,10 +348,8 @@ export default function HomeScreen() {
                 </View>
                 <AnimatedPlane />
               </View>
-              <Text style={styles.emptyStateTagline}>Your next long weekend is waiting</Text>
-              <Text style={styles.emptyStateText}>
-                Tap above to select 1-5 countries and find holidays and long weekend opportunities.
-              </Text>
+              <Text style={styles.emptyStateTagline}>{t('home.emptyTagline')}</Text>
+              <Text style={styles.emptyStateText}>{t('home.emptyText')}</Text>
             </>
           )}
         </View>

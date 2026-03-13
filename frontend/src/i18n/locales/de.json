@@ -1,0 +1,210 @@
+{
+  "tabs": {
+    "holiday": "Feiertage",
+    "school": "Schule",
+    "saved": "Gespeichert",
+    "settings": "Einstellungen"
+  },
+  "home": {
+    "title": "Overlap – Feiertagskalender",
+    "subtitle": "Feiertage und lange Wochenenden zwischen Ländern entdecken",
+    "tapToSelect": "Länder auswählen",
+    "emptyTagline": "Dein nächstes langes Wochenende wartet",
+    "emptyText": "Wähle 1-5 Länder um Feiertage und lange Wochenenden zu entdecken.",
+    "discoverHolidays": "Feiertage Entdecken",
+    "noLongWeekends": "Keine langen Wochenenden gefunden",
+    "noOverlaps": "Keine überlappenden Feiertage gefunden"
+  },
+  "stats": {
+    "holidays": "Feiertage",
+    "overlaps": "Überlappungen",
+    "longWeekends": "Lange Wochenenden"
+  },
+  "countryPicker": {
+    "title": "Länder Auswählen",
+    "countriesSelected": "{{count}}/5 Länder ausgewählt",
+    "clearAll": "Alle löschen",
+    "searchPlaceholder": "Länder suchen...",
+    "favorites": "Favoriten",
+    "allCountries": "Alle Länder",
+    "recent": "Zuletzt"
+  },
+  "yearPicker": {
+    "title": "Jahr Auswählen"
+  },
+  "holidayCard": {
+    "overlap": "Überlappung"
+  },
+  "longWeekend": {
+    "days": "TAGE",
+    "bridgeDay": "Brückentag",
+    "consecutive": "Aufeinanderfolgend",
+    "longWeekend": "Langes Wochenende",
+    "holidaysIncluded": "ENTHALTENE FEIERTAGE:",
+    "takeFridayOff": "Nimm Freitag frei für ein {{days}}-Tage-Wochenende!",
+    "takeMondayOff": "Nimm Montag frei für ein {{days}}-Tage-Wochenende!",
+    "opportunity": "Möglichkeit",
+    "opportunities": "Möglichkeiten"
+  },
+  "calendar": {
+    "addToCalendar": "Zum Kalender Hinzufügen",
+    "adding": "Hinzufügen...",
+    "addHolidaysTitle": "Feiertage zum Kalender hinzufügen",
+    "allCountries": "Alle Länder",
+    "addedTitle": "Zum Kalender Hinzugefügt",
+    "addedMessage": "{{count}} Feiertag(e) zu deinem Kalender hinzugefügt.",
+    "permissionTitle": "Berechtigung Erforderlich",
+    "permissionMessage": "Kalenderzugriff wird benötigt um Ereignisse hinzuzufügen.",
+    "permissionNeeded": "Kalenderzugriff wird benötigt.",
+    "productionRequired": "Vollversion Erforderlich",
+    "productionMessage": "Das Hinzufügen zum Kalender ist in der Vollversion im App Store oder Google Play verfügbar.",
+    "noCalendar": "Kein Kalender",
+    "noCalendarMessage": "Kein beschreibbarer Kalender gefunden.",
+    "error": "Fehler",
+    "errorMessage": "Konnte nicht zum Kalender hinzugefügt werden.",
+    "publicHoliday": "Feiertag"
+  },
+  "monthCalendar": {
+    "holiday": "Feiertag",
+    "weekend": "Wochenende",
+    "bridgeDay": "Brückentag",
+    "sun": "So",
+    "mon": "Mo",
+    "tue": "Di",
+    "wed": "Mi",
+    "thu": "Do",
+    "fri": "Fr",
+    "sat": "Sa"
+  },
+  "saved": {
+    "title": "Gespeicherte Lange Wochenenden",
+    "emptySubtitle": "Deine Favoriten erscheinen hier",
+    "countSaved": "{{count}} gespeichert",
+    "emptyTitle": "Noch nichts gespeichert",
+    "emptyText": "Tippe auf das Lesezeichen bei einem langen Wochenende um es hier zu speichern.",
+    "savedLabel": "Gespeichert am {{date}}",
+    "rerun": "Erneut",
+    "delete": "Löschen",
+    "addedTitle": "Hinzugefügt!",
+    "addedMessage": "{{days}}-Tage-Wochenende zu deinem Kalender hinzugefügt."
+  },
+  "school": {
+    "title": "Schulferien",
+    "subtitle": "Schulferien in Europa durchsuchen",
+    "tapToSelect": "Land auswählen",
+    "allRegions": "Alle Regionen",
+    "breaks": "Ferien",
+    "break": "Ferien",
+    "days": "Tage",
+    "nationwide": "Landesweit",
+    "noHolidays": "Keine Schulferien für {{year}} gefunden",
+    "emptyTagline": "Plane rund um die Schulferien",
+    "emptyText": "Wähle ein Land um Schulferienkalender anzuzeigen. Verfügbar für 36 europäische Länder.",
+    "selectCountry": "Land Auswählen",
+    "countriesAvailable": "{{count}} Länder mit Schulferiendaten"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "appInfo": "App-Informationen",
+    "aboutOverlap": "Über Overlap",
+    "aboutSubtitle": "Mehr über die App erfahren",
+    "shareApp": "App Teilen",
+    "shareSubtitle": "Erzähle es deinen Freunden",
+    "shareMessage": "Schau dir Overlap – Feiertagskalender an! Entdecke Feiertage und lange Wochenenden zwischen Ländern. {{url}}",
+    "notifications": "Benachrichtigungen",
+    "holidayReminders": "Feiertags-Erinnerungen",
+    "remindersSubtitle": "Erhalte Benachrichtigungen über deine gespeicherten Feiertage.",
+    "remindMe": "Erinnere mich",
+    "permissionsRequired": "Berechtigungen Erforderlich",
+    "permissionsMessage": "Bitte aktiviere Benachrichtigungen in deinen Geräteeinstellungen.",
+    "support": "Unterstützung",
+    "helpFaq": "Hilfe & FAQ",
+    "helpSubtitle": "Antworten auf häufige Fragen",
+    "contactSupport": "Support Kontaktieren",
+    "contactSubtitle": "Wir helfen dir gerne",
+    "legal": "Rechtliches",
+    "termsOfUse": "Nutzungsbedingungen",
+    "termsSubtitle": "Geschäftsbedingungen",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "privacySubtitle": "Wie wir deine Daten schützen",
+    "openSource": "Open Source Lizenzen",
+    "openSourceSubtitle": "Zuordnungen von Dritten",
+    "versionLabel": "Overlap – Feiertagskalender",
+    "version": "Version {{version}} ({{build}})",
+    "copyright": "© 2026 Overlap – Holiday Calendar. Alle Rechte vorbehalten.",
+    "errorSharing": "Teilen fehlgeschlagen. Bitte versuche es erneut.",
+    "timing1day": "1 Tag Vorher",
+    "timing3days": "3 Tage Vorher",
+    "timing1week": "1 Woche Vorher",
+    "timing2weeks": "2 Wochen Vorher",
+    "timing1month": "1 Monat Vorher"
+  },
+  "update": {
+    "required": "Update Erforderlich",
+    "available": "Update Verfügbar",
+    "requiredMessage": "Ein erforderliches Update (v{{version}}) ist verfügbar. Bitte aktualisiere um fortzufahren.",
+    "availableMessage": "Eine neue Version (v{{version}}) mit Verbesserungen ist verfügbar.",
+    "updateNow": "Jetzt Aktualisieren",
+    "maybeLater": "Später"
+  },
+  "notifications": {
+    "title": "Langes Wochenende Kommt!",
+    "body": "Deine gespeicherte {{days}}-Tage-Pause ({{countries}}) beginnt {{timing}}!",
+    "timingTomorrow": "morgen",
+    "timing3days": "in 3 Tagen",
+    "timing1week": "in einer Woche",
+    "timing2weeks": "in 2 Wochen",
+    "timing1month": "in einem Monat",
+    "allowTitle": "Benachrichtigungen von Overlap erlauben",
+    "allowMessage": "Erhalte Erinnerungen damit du kein langes Wochenende verpasst.",
+    "allow": "Erlauben",
+    "notNow": "Nicht Jetzt"
+  },
+  "errors": {
+    "loadCountries": "Länder konnten nicht geladen werden. Bitte versuche es erneut.",
+    "compareHolidays": "Feiertage konnten nicht verglichen werden. Bitte versuche es erneut.",
+    "selectCountry": "Bitte wähle mindestens 1 Land",
+    "loadSchoolCountries": "Verfügbare Länder konnten nicht geladen werden",
+    "loadSchoolHolidays": "Schulferien konnten nicht geladen werden"
+  },
+  "share": {
+    "dialogTitle": "Langes Wochenende Teilen",
+    "foundWith": "Gefunden mit Overlap - Holiday Calendar",
+    "savedWith": "Gespeichert mit Overlap - Holiday Calendar",
+    "countries": "Länder",
+    "holidays": "Feiertage",
+    "tip": "Tipp"
+  },
+  "dayNames": {
+    "sun": "SO",
+    "mon": "MO",
+    "tue": "DI",
+    "wed": "MI",
+    "thu": "DO",
+    "fri": "FR",
+    "sat": "SA"
+  },
+  "dayNamesShort": {
+    "sun": "So",
+    "mon": "Mo",
+    "tue": "Di",
+    "wed": "Mi",
+    "thu": "Do",
+    "fri": "Fr",
+    "sat": "Sa"
+  },
+  "months": {
+    "january": "Januar",
+    "february": "Februar",
+    "march": "März",
+    "april": "April",
+    "may": "Mai",
+    "june": "Juni",
+    "july": "Juli",
+    "august": "August",
+    "september": "September",
+    "october": "Oktober",
+    "november": "November",
+    "december": "Dezember"
+  }
+}

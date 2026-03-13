@@ -1,0 +1,210 @@
+{
+  "tabs": {
+    "holiday": "Feriados",
+    "school": "Escolar",
+    "saved": "Salvos",
+    "settings": "Configurações"
+  },
+  "home": {
+    "title": "Overlap – Calendário de Feriados",
+    "subtitle": "Descubra feriados e fins de semana prolongados entre países",
+    "tapToSelect": "Selecione países",
+    "emptyTagline": "Seu próximo fim de semana prolongado te espera",
+    "emptyText": "Selecione 1-5 países para encontrar feriados e fins de semana prolongados.",
+    "discoverHolidays": "Descobrir Feriados",
+    "noLongWeekends": "Nenhum fim de semana prolongado encontrado",
+    "noOverlaps": "Nenhum feriado coincidente encontrado"
+  },
+  "stats": {
+    "holidays": "feriados",
+    "overlaps": "coincidências",
+    "longWeekends": "fins de semana prolongados"
+  },
+  "countryPicker": {
+    "title": "Selecionar Países",
+    "countriesSelected": "{{count}}/5 países selecionados",
+    "clearAll": "Limpar tudo",
+    "searchPlaceholder": "Buscar países...",
+    "favorites": "Favoritos",
+    "allCountries": "Todos os Países",
+    "recent": "Recentes"
+  },
+  "yearPicker": {
+    "title": "Selecionar Ano"
+  },
+  "holidayCard": {
+    "overlap": "Coincidência"
+  },
+  "longWeekend": {
+    "days": "DIAS",
+    "bridgeDay": "Dia Ponte",
+    "consecutive": "Consecutivo",
+    "longWeekend": "Fim de Semana Prolongado",
+    "holidaysIncluded": "FERIADOS INCLUÍDOS:",
+    "takeFridayOff": "Tire a sexta de folga para um fim de semana de {{days}} dias!",
+    "takeMondayOff": "Tire a segunda de folga para um fim de semana de {{days}} dias!",
+    "opportunity": "oportunidade",
+    "opportunities": "oportunidades"
+  },
+  "calendar": {
+    "addToCalendar": "Adicionar ao Calendário",
+    "adding": "Adicionando...",
+    "addHolidaysTitle": "Adicionar feriados ao calendário",
+    "allCountries": "Todos os Países",
+    "addedTitle": "Adicionado ao Calendário",
+    "addedMessage": "{{count}} feriado(s) adicionado(s) ao seu calendário.",
+    "permissionTitle": "Permissão Necessária",
+    "permissionMessage": "Acesso ao calendário é necessário para adicionar eventos.",
+    "permissionNeeded": "Acesso ao calendário é necessário.",
+    "productionRequired": "Versão Completa Necessária",
+    "productionMessage": "Adicionar ao calendário está disponível na versão completa na App Store ou Google Play.",
+    "noCalendar": "Sem Calendário",
+    "noCalendarMessage": "Nenhum calendário editável encontrado.",
+    "error": "Erro",
+    "errorMessage": "Não foi possível adicionar ao calendário.",
+    "publicHoliday": "Feriado"
+  },
+  "monthCalendar": {
+    "holiday": "Feriado",
+    "weekend": "Fim de Semana",
+    "bridgeDay": "Dia Ponte",
+    "sun": "Dom",
+    "mon": "Seg",
+    "tue": "Ter",
+    "wed": "Qua",
+    "thu": "Qui",
+    "fri": "Sex",
+    "sat": "Sáb"
+  },
+  "saved": {
+    "title": "Fins de Semana Prolongados Salvos",
+    "emptySubtitle": "Seus favoritos aparecerão aqui",
+    "countSaved": "{{count}} salvo(s)",
+    "emptyTitle": "Nada salvo ainda",
+    "emptyText": "Toque no ícone de marcador em um fim de semana prolongado para salvá-lo aqui.",
+    "savedLabel": "Salvo em {{date}}",
+    "rerun": "Repetir",
+    "delete": "Excluir",
+    "addedTitle": "Adicionado!",
+    "addedMessage": "Fim de semana de {{days}} dias adicionado ao seu calendário."
+  },
+  "school": {
+    "title": "Férias Escolares",
+    "subtitle": "Consulte as férias escolares na Europa",
+    "tapToSelect": "Selecione um país",
+    "allRegions": "Todas as regiões",
+    "breaks": "férias",
+    "break": "féria",
+    "days": "dias",
+    "nationwide": "Nacional",
+    "noHolidays": "Nenhuma féria escolar encontrada para {{year}}",
+    "emptyTagline": "Planeje ao redor das férias escolares",
+    "emptyText": "Selecione um país para ver os calendários escolares. Disponível para 36 países europeus.",
+    "selectCountry": "Selecionar País",
+    "countriesAvailable": "{{count}} países com dados de férias escolares"
+  },
+  "settings": {
+    "title": "Configurações",
+    "appInfo": "Informações do App",
+    "aboutOverlap": "Sobre o Overlap",
+    "aboutSubtitle": "Saiba mais sobre o app",
+    "shareApp": "Compartilhar App",
+    "shareSubtitle": "Conte para seus amigos",
+    "shareMessage": "Confira o Overlap – Calendário de Feriados! Descubra feriados e fins de semana prolongados entre países. {{url}}",
+    "notifications": "Notificações",
+    "holidayReminders": "Lembretes de Feriados",
+    "remindersSubtitle": "Receba notificações sobre seus feriados salvos.",
+    "remindMe": "Lembre-me",
+    "permissionsRequired": "Permissões Necessárias",
+    "permissionsMessage": "Ative as notificações nas configurações do seu dispositivo.",
+    "support": "Suporte",
+    "helpFaq": "Ajuda e FAQ",
+    "helpSubtitle": "Respostas para perguntas frequentes",
+    "contactSupport": "Contatar Suporte",
+    "contactSubtitle": "Estamos aqui para ajudar",
+    "legal": "Legal",
+    "termsOfUse": "Termos de Uso",
+    "termsSubtitle": "Termos e condições",
+    "privacyPolicy": "Política de Privacidade",
+    "privacySubtitle": "Como protegemos seus dados",
+    "openSource": "Licenças Open Source",
+    "openSourceSubtitle": "Atribuições de terceiros",
+    "versionLabel": "Overlap – Calendário de Feriados",
+    "version": "Versão {{version}} ({{build}})",
+    "copyright": "© 2026 Overlap – Holiday Calendar. Todos os direitos reservados.",
+    "errorSharing": "Não foi possível compartilhar. Tente novamente.",
+    "timing1day": "1 Dia Antes",
+    "timing3days": "3 Dias Antes",
+    "timing1week": "1 Semana Antes",
+    "timing2weeks": "2 Semanas Antes",
+    "timing1month": "1 Mês Antes"
+  },
+  "update": {
+    "required": "Atualização Necessária",
+    "available": "Atualização Disponível",
+    "requiredMessage": "Uma atualização obrigatória (v{{version}}) está disponível. Atualize para continuar.",
+    "availableMessage": "Uma nova versão (v{{version}}) está disponível com melhorias.",
+    "updateNow": "Atualizar Agora",
+    "maybeLater": "Talvez Depois"
+  },
+  "notifications": {
+    "title": "Fim de Semana Prolongado Chegando!",
+    "body": "Sua pausa de {{days}} dias ({{countries}}) começa {{timing}}!",
+    "timingTomorrow": "amanhã",
+    "timing3days": "em 3 dias",
+    "timing1week": "em uma semana",
+    "timing2weeks": "em 2 semanas",
+    "timing1month": "em um mês",
+    "allowTitle": "Permitir notificações do Overlap",
+    "allowMessage": "Receba lembretes para nunca perder um fim de semana prolongado.",
+    "allow": "Permitir",
+    "notNow": "Agora Não"
+  },
+  "errors": {
+    "loadCountries": "Não foi possível carregar os países. Tente novamente.",
+    "compareHolidays": "Não foi possível comparar os feriados. Tente novamente.",
+    "selectCountry": "Selecione pelo menos 1 país",
+    "loadSchoolCountries": "Não foi possível carregar os países disponíveis",
+    "loadSchoolHolidays": "Não foi possível carregar as férias escolares"
+  },
+  "share": {
+    "dialogTitle": "Compartilhar Fim de Semana Prolongado",
+    "foundWith": "Encontrado com Overlap - Holiday Calendar",
+    "savedWith": "Salvo com Overlap - Holiday Calendar",
+    "countries": "Países",
+    "holidays": "Feriados",
+    "tip": "Dica"
+  },
+  "dayNames": {
+    "sun": "DOM",
+    "mon": "SEG",
+    "tue": "TER",
+    "wed": "QUA",
+    "thu": "QUI",
+    "fri": "SEX",
+    "sat": "SÁB"
+  },
+  "dayNamesShort": {
+    "sun": "Dom",
+    "mon": "Seg",
+    "tue": "Ter",
+    "wed": "Qua",
+    "thu": "Qui",
+    "fri": "Sex",
+    "sat": "Sáb"
+  },
+  "months": {
+    "january": "Janeiro",
+    "february": "Fevereiro",
+    "march": "Março",
+    "april": "Abril",
+    "may": "Maio",
+    "june": "Junho",
+    "july": "Julho",
+    "august": "Agosto",
+    "september": "Setembro",
+    "october": "Outubro",
+    "november": "Novembro",
+    "december": "Dezembro"
+  }
+}

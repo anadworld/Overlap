@@ -1,0 +1,210 @@
+{
+  "tabs": {
+    "holiday": "Feestdagen",
+    "school": "School",
+    "saved": "Opgeslagen",
+    "settings": "Instellingen"
+  },
+  "home": {
+    "title": "Overlap – Feestdagenkalender",
+    "subtitle": "Ontdek feestdagen en lange weekenden per land",
+    "tapToSelect": "Selecteer landen",
+    "emptyTagline": "Je volgende lang weekend wacht op je",
+    "emptyText": "Selecteer 1-5 landen om feestdagen en lange weekenden te ontdekken.",
+    "discoverHolidays": "Ontdek Feestdagen",
+    "noLongWeekends": "Geen lange weekenden gevonden",
+    "noOverlaps": "Geen overlappende feestdagen gevonden"
+  },
+  "stats": {
+    "holidays": "feestdagen",
+    "overlaps": "overlappingen",
+    "longWeekends": "lange weekenden"
+  },
+  "countryPicker": {
+    "title": "Selecteer Landen",
+    "countriesSelected": "{{count}}/5 landen geselecteerd",
+    "clearAll": "Alles wissen",
+    "searchPlaceholder": "Zoek landen...",
+    "favorites": "Favorieten",
+    "allCountries": "Alle Landen",
+    "recent": "Recent"
+  },
+  "yearPicker": {
+    "title": "Selecteer Jaar"
+  },
+  "holidayCard": {
+    "overlap": "Overlapping"
+  },
+  "longWeekend": {
+    "days": "DAGEN",
+    "bridgeDay": "Brugdag",
+    "consecutive": "Opeenvolgend",
+    "longWeekend": "Lang Weekend",
+    "holidaysIncluded": "FEESTDAGEN INBEGREPEN:",
+    "takeFridayOff": "Neem vrijdag vrij voor een weekend van {{days}} dagen!",
+    "takeMondayOff": "Neem maandag vrij voor een weekend van {{days}} dagen!",
+    "opportunity": "mogelijkheid",
+    "opportunities": "mogelijkheden"
+  },
+  "calendar": {
+    "addToCalendar": "Toevoegen aan Agenda",
+    "adding": "Toevoegen...",
+    "addHolidaysTitle": "Feestdagen toevoegen aan agenda",
+    "allCountries": "Alle Landen",
+    "addedTitle": "Toegevoegd aan Agenda",
+    "addedMessage": "{{count}} feestdag(en) toegevoegd aan je agenda.",
+    "permissionTitle": "Toestemming Vereist",
+    "permissionMessage": "Toegang tot de agenda is nodig om evenementen toe te voegen.",
+    "permissionNeeded": "Toegang tot de agenda is nodig.",
+    "productionRequired": "Volledige Versie Vereist",
+    "productionMessage": "Toevoegen aan de agenda is beschikbaar in de volledige app via de App Store of Google Play.",
+    "noCalendar": "Geen Agenda",
+    "noCalendarMessage": "Geen bewerkbare agenda gevonden.",
+    "error": "Fout",
+    "errorMessage": "Kon niet toevoegen aan de agenda.",
+    "publicHoliday": "Feestdag"
+  },
+  "monthCalendar": {
+    "holiday": "Feestdag",
+    "weekend": "Weekend",
+    "bridgeDay": "Brugdag",
+    "sun": "Zo",
+    "mon": "Ma",
+    "tue": "Di",
+    "wed": "Wo",
+    "thu": "Do",
+    "fri": "Vr",
+    "sat": "Za"
+  },
+  "saved": {
+    "title": "Opgeslagen Lange Weekenden",
+    "emptySubtitle": "Je favorieten verschijnen hier",
+    "countSaved": "{{count}} opgeslagen",
+    "emptyTitle": "Nog niets opgeslagen",
+    "emptyText": "Tik op het bladwijzer-icoon bij een lang weekend om het hier op te slaan.",
+    "savedLabel": "Opgeslagen op {{date}}",
+    "rerun": "Opnieuw",
+    "delete": "Verwijderen",
+    "addedTitle": "Toegevoegd!",
+    "addedMessage": "Weekend van {{days}} dagen toegevoegd aan je agenda."
+  },
+  "school": {
+    "title": "Schoolvakanties",
+    "subtitle": "Bekijk schoolvakanties in Europa",
+    "tapToSelect": "Selecteer een land",
+    "allRegions": "Alle regio's",
+    "breaks": "vakanties",
+    "break": "vakantie",
+    "days": "dagen",
+    "nationwide": "Landelijk",
+    "noHolidays": "Geen schoolvakanties gevonden voor {{year}}",
+    "emptyTagline": "Plan rond schoolvakanties",
+    "emptyText": "Selecteer een land om schoolvakanties te bekijken. Beschikbaar voor 36 Europese landen.",
+    "selectCountry": "Selecteer Land",
+    "countriesAvailable": "{{count}} landen met schoolvakantiedata"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "appInfo": "App-informatie",
+    "aboutOverlap": "Over Overlap",
+    "aboutSubtitle": "Meer informatie over de app",
+    "shareApp": "App Delen",
+    "shareSubtitle": "Vertel het je vrienden",
+    "shareMessage": "Bekijk Overlap – Feestdagenkalender! Ontdek feestdagen en lange weekenden per land. {{url}}",
+    "notifications": "Meldingen",
+    "holidayReminders": "Feestdag Herinneringen",
+    "remindersSubtitle": "Ontvang meldingen over je opgeslagen feestdagen.",
+    "remindMe": "Herinner mij",
+    "permissionsRequired": "Toestemming Vereist",
+    "permissionsMessage": "Schakel meldingen in via je apparaatinstellingen.",
+    "support": "Ondersteuning",
+    "helpFaq": "Help & FAQ",
+    "helpSubtitle": "Antwoorden op veelgestelde vragen",
+    "contactSupport": "Contact Opnemen",
+    "contactSubtitle": "We helpen je graag",
+    "legal": "Juridisch",
+    "termsOfUse": "Gebruiksvoorwaarden",
+    "termsSubtitle": "Voorwaarden en condities",
+    "privacyPolicy": "Privacybeleid",
+    "privacySubtitle": "Hoe we je gegevens beschermen",
+    "openSource": "Open Source Licenties",
+    "openSourceSubtitle": "Vermelding van derden",
+    "versionLabel": "Overlap – Feestdagenkalender",
+    "version": "Versie {{version}} ({{build}})",
+    "copyright": "© 2026 Overlap – Holiday Calendar. Alle rechten voorbehouden.",
+    "errorSharing": "Kan niet delen. Probeer het opnieuw.",
+    "timing1day": "1 Dag Eerder",
+    "timing3days": "3 Dagen Eerder",
+    "timing1week": "1 Week Eerder",
+    "timing2weeks": "2 Weken Eerder",
+    "timing1month": "1 Maand Eerder"
+  },
+  "update": {
+    "required": "Update Vereist",
+    "available": "Update Beschikbaar",
+    "requiredMessage": "Een verplichte update (v{{version}}) is beschikbaar. Werk bij om door te gaan.",
+    "availableMessage": "Een nieuwe versie (v{{version}}) is beschikbaar met verbeteringen.",
+    "updateNow": "Nu Bijwerken",
+    "maybeLater": "Later"
+  },
+  "notifications": {
+    "title": "Lang Weekend Komt Eraan!",
+    "body": "Je opgeslagen pauze van {{days}} dagen ({{countries}}) begint {{timing}}!",
+    "timingTomorrow": "morgen",
+    "timing3days": "over 3 dagen",
+    "timing1week": "over een week",
+    "timing2weeks": "over 2 weken",
+    "timing1month": "over een maand",
+    "allowTitle": "Sta meldingen van Overlap toe",
+    "allowMessage": "Ontvang herinneringen zodat je nooit een lang weekend mist.",
+    "allow": "Toestaan",
+    "notNow": "Niet Nu"
+  },
+  "errors": {
+    "loadCountries": "Kan landen niet laden. Probeer het opnieuw.",
+    "compareHolidays": "Kan feestdagen niet vergelijken. Probeer het opnieuw.",
+    "selectCountry": "Selecteer minstens 1 land",
+    "loadSchoolCountries": "Kan beschikbare landen niet laden",
+    "loadSchoolHolidays": "Kan schoolvakanties niet laden"
+  },
+  "share": {
+    "dialogTitle": "Lang Weekend Delen",
+    "foundWith": "Gevonden met Overlap - Holiday Calendar",
+    "savedWith": "Opgeslagen met Overlap - Holiday Calendar",
+    "countries": "Landen",
+    "holidays": "Feestdagen",
+    "tip": "Tip"
+  },
+  "dayNames": {
+    "sun": "ZO",
+    "mon": "MA",
+    "tue": "DI",
+    "wed": "WO",
+    "thu": "DO",
+    "fri": "VR",
+    "sat": "ZA"
+  },
+  "dayNamesShort": {
+    "sun": "Zo",
+    "mon": "Ma",
+    "tue": "Di",
+    "wed": "Wo",
+    "thu": "Do",
+    "fri": "Vr",
+    "sat": "Za"
+  },
+  "months": {
+    "january": "Januari",
+    "february": "Februari",
+    "march": "Maart",
+    "april": "April",
+    "may": "Mei",
+    "june": "Juni",
+    "july": "Juli",
+    "august": "Augustus",
+    "september": "September",
+    "october": "Oktober",
+    "november": "November",
+    "december": "December"
+  }
+}

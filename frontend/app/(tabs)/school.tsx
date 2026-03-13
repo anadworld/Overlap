@@ -18,11 +18,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Country, SchoolHoliday, Subdivision } from '../../src/types';
 import { getCountryFlag } from '../../src/utils';
+import { useTranslation } from 'react-i18next';
 import { useFavoriteCountries } from '../../src/hooks/useFavoriteCountries';
 
 const API_BASE = process.env.EXPO_PUBLIC_BACKEND_URL;
-
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr + 'T00:00:00');
@@ -50,6 +49,14 @@ function daysBetween(start: string, end: string): number {
 }
 
 export default function SchoolScreen() {
+  const { t } = useTranslation();
+
+  const MONTHS = [
+    t('months.january'), t('months.february'), t('months.march'), t('months.april'),
+    t('months.may'), t('months.june'), t('months.july'), t('months.august'),
+    t('months.september'), t('months.october'), t('months.november'), t('months.december'),
+  ];
+
   const [supportedCountries, setSupportedCountries] = useState<Country[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -74,7 +81,7 @@ export default function SchoolScreen() {
         const data: Country[] = await res.json();
         setSupportedCountries(data);
       } catch {
-        setError('Failed to load supported countries');
+        setError(t('errors.loadSchoolCountries'));
       } finally {
         setIsLoadingCountries(false);
       }
@@ -102,7 +109,7 @@ export default function SchoolScreen() {
       const data: SchoolHoliday[] = await res.json();
       setHolidays(data);
     } catch {
-      setError('Failed to load school holidays');
+      setError(t('errors.loadSchoolHolidays'));
       setHolidays([]);
     } finally {
       setIsLoading(false);
@@ -147,8 +154,8 @@ export default function SchoolScreen() {
       <StatusBar barStyle="dark-content" backgroundColor="#F8FAFC" translucent={false} />
 
       <View style={styles.header}>
-        <Text style={styles.headerTitle} data-testid="school-header-title">School Holidays</Text>
-        <Text style={styles.headerSubtitle}>Browse school breaks across Europe</Text>
+        <Text style={styles.headerTitle} data-testid="school-header-title">{t('school.title')}</Text>
+        <Text style={styles.headerSubtitle}>{t('school.subtitle')}</Text>
       </View>
 
       {/* Country selector */}
@@ -165,7 +172,7 @@ export default function SchoolScreen() {
               <Text style={styles.selectedCountryName}>{selectedCountry.name}</Text>
             </View>
           ) : (
-            <Text style={styles.placeholderText}>Tap to select a country</Text>
+            <Text style={styles.placeholderText}>{t('school.tapToSelect')}</Text>
           )}
         </View>
         <TouchableOpacity
@@ -190,7 +197,7 @@ export default function SchoolScreen() {
           <Text style={styles.subdivisionText}>
             {selectedSubdivision
               ? subdivisions.find(s => s.code === selectedSubdivision)?.name || selectedSubdivision
-              : 'All regions'}
+              : t('school.allRegions')}
           </Text>
           <Ionicons name="chevron-down" size={16} color="#A0AEC0" />
         </TouchableOpacity>
@@ -213,7 +220,7 @@ export default function SchoolScreen() {
           <View style={styles.statsRow} data-testid="school-stats">
             <View style={styles.statBadge}>
               <Ionicons name="school-outline" size={14} color="#7C9CBF" />
-              <Text style={styles.statText}>{holidays.length} breaks</Text>
+              <Text style={styles.statText}>{holidays.length} {t('school.breaks')}</Text>
             </View>
             <View style={styles.statBadge}>
               <Ionicons name="flag-outline" size={14} color="#7C9CBF" />
@@ -225,7 +232,7 @@ export default function SchoolScreen() {
             <View key={m} style={styles.monthSection}>
               <View style={styles.monthHeader}>
                 <Text style={styles.monthTitle}>{MONTHS[m]}</Text>
-                <Text style={styles.monthCount}>{grouped[m].length} {grouped[m].length === 1 ? 'break' : 'breaks'}</Text>
+                <Text style={styles.monthCount}>{grouped[m].length} {grouped[m].length === 1 ? t('school.break') : t('school.breaks')}</Text>
               </View>
               {grouped[m].map((h, idx) => (
                 <View key={`${h.id}-${idx}`} style={styles.holidayCard} data-testid={`school-holiday-card-${m}-${idx}`}>
@@ -240,11 +247,11 @@ export default function SchoolScreen() {
                     </Text>
                     <View style={styles.cardMeta}>
                       <View style={styles.durationBadge}>
-                        <Text style={styles.durationText}>{daysBetween(h.startDate, h.endDate)} days</Text>
+                        <Text style={styles.durationText}>{daysBetween(h.startDate, h.endDate)} {t('school.days')}</Text>
                       </View>
                       {h.nationwide ? (
                         <View style={[styles.regionBadge, styles.nationwideBadge]}>
-                          <Text style={styles.nationwideText}>Nationwide</Text>
+                          <Text style={styles.nationwideText}>{t('school.nationwide')}</Text>
                         </View>
                       ) : h.subdivisions.length > 0 ? (
                         <View style={styles.regionBadge}>
@@ -264,7 +271,7 @@ export default function SchoolScreen() {
       ) : selectedCountry && !isLoading ? (
         <View style={styles.emptyStateContainer}>
           <Ionicons name="school-outline" size={48} color="#CBD5E0" />
-          <Text style={styles.emptyStateText}>No school holidays found for {selectedYear}</Text>
+          <Text style={styles.emptyStateText}>{t('school.noHolidays', { year: selectedYear })}</Text>
         </View>
       ) : (
         <View style={styles.emptyStateContainer}>
@@ -275,10 +282,8 @@ export default function SchoolScreen() {
               <View style={styles.heroIcon}>
                 <Ionicons name="school-outline" size={52} color="#7C9CBF" />
               </View>
-              <Text style={styles.emptyStateTagline}>Plan around school breaks</Text>
-              <Text style={styles.emptyStateText}>
-                Select a country to view school holiday calendars. Available for 36 European countries.
-              </Text>
+              <Text style={styles.emptyStateTagline}>{t('school.emptyTagline')}</Text>
+              <Text style={styles.emptyStateText}>{t('school.emptyText')}</Text>
             </>
           )}
         </View>
@@ -319,7 +324,7 @@ export default function SchoolScreen() {
               style={[styles.subdivisionOption, !selectedSubdivision && styles.subdivisionOptionActive]}
               onPress={() => handleSelectSubdivision(null)}
             >
-              <Text style={[styles.subdivisionOptionText, !selectedSubdivision && styles.subdivisionOptionTextActive]}>All regions</Text>
+              <Text style={[styles.subdivisionOptionText, !selectedSubdivision && styles.subdivisionOptionTextActive]}>{t('school.allRegions')}</Text>
             </TouchableOpacity>
             <FlatList
               data={subdivisions}
@@ -353,6 +358,7 @@ function CountryPickerForSchool({ visible, supportedCountries, onSelect, onClose
   favorites: string[];
   onToggleFavorite: (countryCode: string) => void;
 }) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
 
   const filtered = supportedCountries.filter(
@@ -365,29 +371,29 @@ function CountryPickerForSchool({ visible, supportedCountries, onSelect, onClose
 
   const sections: { title: string; data: Country[] }[] = [];
   if (favCountries.length > 0) {
-    sections.push({ title: 'Favorites', data: favCountries });
+    sections.push({ title: t('countryPicker.favorites'), data: favCountries });
   }
-  sections.push({ title: 'All Countries', data: otherCountries });
+  sections.push({ title: t('countryPicker.allCountries'), data: otherCountries });
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
       <SafeAreaView style={styles.modalContainer} edges={['top', 'left', 'right']}>
         <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>Select Country</Text>
+          <Text style={styles.modalTitle}>{t('school.selectCountry')}</Text>
           <TouchableOpacity style={styles.modalCloseButton} onPress={onClose}>
             <Ionicons name="close" size={24} color="#4A5568" />
           </TouchableOpacity>
         </View>
 
         <View style={styles.modalSubheader}>
-          <Text style={styles.modalSubtitle}>{supportedCountries.length} countries with school holiday data</Text>
+          <Text style={styles.modalSubtitle}>{t('school.countriesAvailable', { count: supportedCountries.length })}</Text>
         </View>
 
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color="#9CA3AF" />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search countries..."
+            placeholder={t('countryPicker.searchPlaceholder')}
             placeholderTextColor="#9CA3AF"
             value={search}
             onChangeText={setSearch}
@@ -406,9 +412,9 @@ function CountryPickerForSchool({ visible, supportedCountries, onSelect, onClose
           renderSectionHeader={({ section }) => (
             <View style={styles.sectionHeader}>
               <Ionicons
-                name={section.title === 'Favorites' ? 'heart' : 'globe-outline'}
+                name={section.title === t('countryPicker.favorites') ? 'heart' : 'globe-outline'}
                 size={14}
-                color={section.title === 'Favorites' ? '#E53E3E' : '#718096'}
+                color={section.title === t('countryPicker.favorites') ? '#E53E3E' : '#718096'}
               />
               <Text style={styles.sectionHeaderText}>{section.title}</Text>
             </View>

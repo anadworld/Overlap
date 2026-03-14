@@ -20,6 +20,7 @@ import { Country, SchoolHoliday, Subdivision } from '../../src/types';
 import { getCountryFlag } from '../../src/utils';
 import { useTranslation } from 'react-i18next';
 import { useFavoriteCountries } from '../../src/hooks/useFavoriteCountries';
+import { getLocalizedCountryName } from '../../src/i18n/countryNames';
 
 const API_BASE = process.env.EXPO_PUBLIC_BACKEND_URL;
 
@@ -79,7 +80,11 @@ export default function SchoolScreen() {
       try {
         const res = await fetch(`${API_BASE}/api/school-holiday-countries`);
         const data: Country[] = await res.json();
-        setSupportedCountries(data);
+        const localized = data.map((c: Country) => ({
+          ...c,
+          name: getLocalizedCountryName(c.countryCode, c.name),
+        }));
+        setSupportedCountries(localized);
       } catch {
         setError(t('errors.loadSchoolCountries'));
       } finally {

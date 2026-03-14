@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { HolidayWithCountries } from '../../types';
 import { getCountryFlag, formatHolidayDate } from '../../utils';
+import { getLocalizedHolidayName } from '../../i18n/holidayNames';
 
 interface Props {
   holiday: HolidayWithCountries;
@@ -30,7 +31,7 @@ export function HolidayCard({ holiday, countryNameMap, getCountryColor }: Props)
           <Text style={styles.holidayFlag}>{getCountryFlag(h.countryCode)}</Text>
           <View style={styles.holidayDetails}>
             <Text style={styles.holidayCountry}>{countryNameMap[h.countryCode] || h.countryCode}</Text>
-            <Text style={styles.holidayName}>{h.name}</Text>
+            <Text style={styles.holidayName}>{getLocalizedHolidayName(h.name)}</Text>
           </View>
         </View>
       ))}

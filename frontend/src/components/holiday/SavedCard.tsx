@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 import { Bookmark } from '../../types';
 import { getCountryFlag, formatDateRange, getWeekdayRange, formatHolidayDate, COUNTRY_COLORS } from '../../utils';
+import { getLocalizedHolidayName } from '../../i18n/holidayNames';
 
 const isExpoGo = Constants.appOwnership === 'expo';
 let Calendar: typeof import('expo-calendar') | null = null;
@@ -31,7 +32,7 @@ export function SavedCard({ bookmark, onDelete, onRestore }: Props) {
   const handleAddToCalendar = async () => {
     setAddingCal(true);
     const countryNames = [...new Set(lw.holidays.map((h) => countryNameMap[h.countryCode] || h.countryCode))].join(', ');
-    const holidayNames = lw.holidays.map((h) => h.name).join(', ');
+    const holidayNames = lw.holidays.map((h) => getLocalizedHolidayName(h.name)).join(', ');
     const title = `${lw.totalDays}-${t('longWeekend.days')} (${countryNames})`;
     const notes = `${t('share.holidays')}: ${holidayNames}\n\n${t('share.savedWith')}`;
     const startDate = new Date(lw.startDate + 'T00:00:00');
@@ -63,7 +64,7 @@ export function SavedCard({ bookmark, onDelete, onRestore }: Props) {
 
   const handleShare = async () => {
     const countryNames = [...new Set(lw.holidays.map((h) => countryNameMap[h.countryCode] || h.countryCode))].join(', ');
-    const holidayLines = lw.holidays.map((h) => `- ${h.name} (${countryNameMap[h.countryCode] || h.countryCode})`).join('\n');
+    const holidayLines = lw.holidays.map((h) => `- ${getLocalizedHolidayName(h.name)} (${countryNameMap[h.countryCode] || h.countryCode})`).join('\n');
     const bridgeLine = lw.type === 'bridge' ? `\n${t('share.tip')}: ${lw.description}` : '';
     const shareText = `${lw.totalDays}-${t('longWeekend.days')}: ${formatDateRange(lw.startDate, lw.endDate)}\n${getWeekdayRange(lw.startDate, lw.endDate)}\n\n${t('share.countries')}: ${countryNames}\n\n${t('share.holidays')}:\n${holidayLines}${bridgeLine}\n\n${t('share.foundWith')}`;
     try { await Share.share({ message: shareText }, Platform.OS === 'android' ? { dialogTitle: t('share.dialogTitle') } : {}); } catch (e) { console.error('Share error:', e); }
@@ -90,7 +91,7 @@ export function SavedCard({ bookmark, onDelete, onRestore }: Props) {
               <View key={`${h.countryCode}-${i}`} style={styles.holidayRow}>
                 <View style={[styles.holidayDot, { backgroundColor: COUNTRY_COLORS[Math.max(colorIndex, 0) % COUNTRY_COLORS.length] }]} />
                 <Text style={styles.holidayFlag}>{getCountryFlag(h.countryCode)}</Text>
-                <View style={styles.holidayInfo}><Text style={styles.holidayCountry}>{countryNameMap[h.countryCode] || h.countryCode}</Text><Text style={styles.holidayName}>{h.name}</Text></View>
+                <View style={styles.holidayInfo}><Text style={styles.holidayCountry}>{countryNameMap[h.countryCode] || h.countryCode}</Text><Text style={styles.holidayName}>{getLocalizedHolidayName(h.name)}</Text></View>
                 {h.date && <Text style={styles.holidayDate}>{formatHolidayDate(h.date)}</Text>}
               </View>
             );

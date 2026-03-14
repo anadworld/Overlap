@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { LongWeekendOpportunity } from '../../types';
 import { getCountryFlag, formatDateRange, getDayRange, getWeekdayRange, formatHolidayDate } from '../../utils';
+import { getLocalizedHolidayName } from '../../i18n/holidayNames';
 
 interface Props {
   lw: LongWeekendOpportunity;
@@ -51,7 +52,7 @@ export function LongWeekendCard({ lw, index, countryNameMap, getCountryColor, is
 
   const handleShare = async () => {
     const countryNames = [...new Set(lw.holidays.map((h) => countryNameMap[h.countryCode] || h.countryCode))].join(', ');
-    const holidayLines = lw.holidays.map((h) => `- ${h.name} (${countryNameMap[h.countryCode] || h.countryCode})`).join('\n');
+    const holidayLines = lw.holidays.map((h) => `- ${getLocalizedHolidayName(h.name)} (${countryNameMap[h.countryCode] || h.countryCode})`).join('\n');
     const bridgeLine = lw.type === 'bridge' ? `\n${t('share.tip')}: ${lw.description}` : '';
     const shareText =
       `${lw.totalDays}-${t('longWeekend.days')}: ${formatDateRange(lw.startDate, lw.endDate)}\n` +
@@ -123,7 +124,7 @@ export function LongWeekendCard({ lw, index, countryNameMap, getCountryColor, is
             <Text style={styles.holidayFlag}>{getCountryFlag(h.countryCode)}</Text>
             <View style={styles.holidayDetails}>
               <Text style={styles.holidayCountry}>{countryNameMap[h.countryCode] || h.countryCode}</Text>
-              <Text style={styles.holidayName}>{h.name}</Text>
+              <Text style={styles.holidayName}>{getLocalizedHolidayName(h.name)}</Text>
             </View>
             <Text style={styles.holidayDate}>{formatHolidayDate(h.date || lw.startDate)}</Text>
           </View>

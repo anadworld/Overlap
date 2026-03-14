@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { BACKEND_URL } from '../utils';
 import { Country, CompareResponse } from '../types';
+import { getLocalizedCountryName } from '../i18n/countryNames';
 
 export function useHolidayData() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -27,6 +28,12 @@ export function useHolidayData() {
       if (!response.ok) throw new Error('Failed to fetch countries');
       const data = await response.json();
       setCountries(data);
+	  const data = await response.json();
+	const localized = data.map((c: Country) => ({
+	  ...c,
+	  name: getLocalizedCountryName(c.countryCode, c.name),
+	}));
+	setCountries(localized);
     } catch {
       setError('Failed to load countries. Please try again.');
     } finally {

@@ -19,19 +19,43 @@ import { Ionicons } from '@expo/vector-icons';
 import { Country, SchoolHoliday, Subdivision } from '../../src/types';
 import { getCountryFlag } from '../../src/utils';
 import { useTranslation } from 'react-i18next';
+import i18n from '../../src/i18n';
 import { useFavoriteCountries } from '../../src/hooks/useFavoriteCountries';
 import { getLocalizedCountryName } from '../../src/i18n/countryNames';
+import { getLocalizedHolidayName } from '../../src/i18n/holidayNames';
 
 const API_BASE = process.env.EXPO_PUBLIC_BACKEND_URL;
 
+const getDayNamesShort = (): string[] => [
+  i18n.t('dayNamesShort.sun'), i18n.t('dayNamesShort.mon'), i18n.t('dayNamesShort.tue'),
+  i18n.t('dayNamesShort.wed'), i18n.t('dayNamesShort.thu'), i18n.t('dayNamesShort.fri'), i18n.t('dayNamesShort.sat'),
+];
+
+const getMonthNamesShort = (): string[] => {
+  const lang = i18n.language;
+  const monthShort: Record<string, string[]> = {
+    en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    fr: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
+    nl: ['Jan', 'Feb', 'Mrt', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'],
+    de: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+    es: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+    pt: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+  };
+  return monthShort[lang] || monthShort['en'];
+};
+
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const dayNames = getDayNamesShort();
+  const months = getMonthNamesShort();
+  return `${dayNames[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()}`;
 }
 
 function formatDateWithYear(dateStr: string): string {
   const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  const dayNames = getDayNamesShort();
+  const months = getMonthNamesShort();
+  return `${dayNames[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 }
 
 function formatRange(startDate: string, endDate: string): string {
@@ -246,7 +270,7 @@ export default function SchoolScreen() {
                     <Text style={styles.cardDateDay}>{formatDate(h.startDate).split(' ')[1]}</Text>
                   </View>
                   <View style={styles.cardBody}>
-                    <Text style={styles.cardName}>{h.name}</Text>
+                    <Text style={styles.cardName}>{getLocalizedHolidayName(h.name)}</Text>
                     <Text style={styles.cardDates}>
                       {formatRange(h.startDate, h.endDate)}
                     </Text>

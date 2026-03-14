@@ -20,6 +20,9 @@ export function useHolidayData() {
   useEffect(() => { selectedCountriesRef.current = selectedCountries; }, [selectedCountries]);
   useEffect(() => { selectedYearRef.current = selectedYear; }, [selectedYear]);
 
+  const localizeCountries = (list: Country[]): Country[] =>
+    list.map((c) => ({ ...c, name: getLocalizedCountryName(c.countryCode, c.name) }));
+
   const fetchCountries = useCallback(async () => {
     try {
       setIsLoadingCountries(true);
@@ -27,11 +30,7 @@ export function useHolidayData() {
       const response = await fetch(`${BACKEND_URL}/api/countries`);
       if (!response.ok) throw new Error('Failed to fetch countries');
       const data = await response.json();
-      const localized = data.map((c: Country) => ({
-        ...c,
-        name: getLocalizedCountryName(c.countryCode, c.name),
-      }));
-      setCountries(localized);
+      setCountries(localizeCountries(data));
     } catch {
       setError('Failed to load countries. Please try again.');
     } finally {
@@ -58,8 +57,13 @@ export function useHolidayData() {
         body: JSON.stringify({ countryCodes: currentCountries.map((c) => c.countryCode), year }),
       });
       if (!response.ok) throw new Error('Failed to compare holidays');
-      const data = await response.json();
-      setComparisonResult(data);
+      const data: CompareResponse = await response.json();
+      // Localize country names in comparison results
+      const localizedResult: CompareResponse = {
+        ...data,
+        countries: localizeCountries(data.countries),
+      };
+      setComparisonResult(localizedResult);
       setActiveTab('holidays');
     } catch {
       setError('Failed to compare holidays. Please try again.');

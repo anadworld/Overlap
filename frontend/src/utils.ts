@@ -1,3 +1,5 @@
+import i18n from './i18n';
+
 export const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || '';
 
 export const COUNTRY_COLORS = ['#7C9CBF', '#8FBC8F', '#DDA0DD', '#F4A460', '#87CEEB'];
@@ -10,11 +12,36 @@ export const getCountryFlag = (countryCode: string): string => {
   return String.fromCodePoint(...codePoints);
 };
 
+const getDayNamesUpper = (): string[] => [
+  i18n.t('dayNames.sun'), i18n.t('dayNames.mon'), i18n.t('dayNames.tue'),
+  i18n.t('dayNames.wed'), i18n.t('dayNames.thu'), i18n.t('dayNames.fri'), i18n.t('dayNames.sat'),
+];
+
+const getDayNamesShort = (): string[] => [
+  i18n.t('dayNamesShort.sun'), i18n.t('dayNamesShort.mon'), i18n.t('dayNamesShort.tue'),
+  i18n.t('dayNamesShort.wed'), i18n.t('dayNamesShort.thu'), i18n.t('dayNamesShort.fri'), i18n.t('dayNamesShort.sat'),
+];
+
+const getMonthNamesShort = (): string[] => {
+  const lang = i18n.language;
+  const monthKeys = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  const monthShort: Record<string, string[]> = {
+    en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    fr: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
+    nl: ['Jan', 'Feb', 'Mrt', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'],
+    de: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+    es: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+    pt: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+  };
+  return monthShort[lang] || monthShort['en'];
+};
+
 export const formatDateRange = (startDate: string, endDate: string): string => {
   const start = new Date(startDate + 'T00:00:00');
   const end = new Date(endDate + 'T00:00:00');
-  const startMonth = start.toLocaleDateString('en-US', { month: 'short' });
-  const endMonth = end.toLocaleDateString('en-US', { month: 'short' });
+  const months = getMonthNamesShort();
+  const startMonth = months[start.getMonth()];
+  const endMonth = months[end.getMonth()];
   const startDay = start.getDate();
   const endDay = end.getDate();
   if (startMonth === endMonth) return `${startMonth} ${startDay}-${endDay}`;
@@ -28,7 +55,7 @@ export const getDayRange = (
   const days: { day: string; date: number; isWeekend: boolean }[] = [];
   const start = new Date(startDate + 'T00:00:00');
   const end = new Date(endDate + 'T00:00:00');
-  const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  const dayNames = getDayNamesUpper();
   let current = new Date(start);
   while (current <= end) {
     const dayOfWeek = current.getDay();
@@ -41,11 +68,13 @@ export const getDayRange = (
 export const getWeekdayRange = (startDate: string, endDate: string): string => {
   const start = new Date(startDate + 'T00:00:00');
   const end = new Date(endDate + 'T00:00:00');
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  return `${dayNames[start.getDay()]} to ${dayNames[end.getDay()]}`;
+  const dayNames = getDayNamesShort();
+  return `${dayNames[start.getDay()]} - ${dayNames[end.getDay()]}`;
 };
 
 export const formatHolidayDate = (dateStr: string): string => {
   const date = new Date(dateStr + 'T00:00:00');
-  return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const dayNames = getDayNamesShort();
+  const months = getMonthNamesShort();
+  return `${dayNames[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
 };

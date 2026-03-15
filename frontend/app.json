@@ -13,7 +13,7 @@
       "supportsTablet": true,
       "isTabletOnly": false,
       "bundleIdentifier": "app.emergent.vacationplanner489409be91",
-      "buildNumber": "30",
+      "buildNumber": "2",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
